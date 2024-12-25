@@ -1,11 +1,10 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
 
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeng/themes/aura';
+import { GsrpiPreset } from './gsrpi.preset.config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,8 +12,12 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     providePrimeNG({ 
         theme: {
-            preset: Aura
-        }
+            preset: GsrpiPreset, 
+            options: {
+              // darkMode: true,
+            darkModeSelector: '.gsrpi-dark-mode'
+            }
+        }, 
     })
   ]
 };
