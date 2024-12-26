@@ -59,6 +59,12 @@ const GsrpiPreset = definePreset(Aura, {
                     hoverColor: '{primaryLight.500}',
                     activeColor: '{primary.500}'
                 },
+                secondary: {
+                    color: '{secondary.500}',
+                    inverseColor: '{secondary.500}',
+                    hoverColor: '{secondaryLight.500}',
+                    activeColor: '{secondary.500}'
+                },
                 highlight: {
                     background: '{zinc.950}',
                     focusBackground: '{zinc.700}',
