@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { AppLayoutModule } from './layout/app.layout.module';
+import { AppLayoutModule } from './shared/layout/app.layout.module';
 
 @Component({
   selector: 'app-root',

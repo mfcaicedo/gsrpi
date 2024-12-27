@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { AppLayoutComponent } from './layout/app.layout.component';
-import { WelcomeComponent } from './components/welcome/welcome.component';
+import { AppLayoutComponent } from './shared/layout/app.layout.component';
+import { WelcomeComponent } from './shared/components/welcome/welcome.component';
 
 export const routes: Routes = [{
 
@@ -10,6 +10,10 @@ export const routes: Routes = [{
         {
             path: '',
             component: WelcomeComponent
+        }, 
+        {
+            path: 'user-management',
+            loadChildren: () => import('./user-management/user-management.routes').then(m => m.routes)
         }
     ]
 
