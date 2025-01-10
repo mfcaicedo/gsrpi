@@ -1,10 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 @import "assets/layout/styles/layout/layout.css";
 
-/* @import "primeng/resources/primeng.css"; */
+/* @import "primeng/primeng.css"; */
+/* @import "../node_modules/primeng/api/resources/primeng.min.css"; */
+
+@import "../node_modules/primeflex/primeflex.css";
+@import "primeflex/themes/primeone-light.css";
+/* @import "primeflex/themes/primeone-dark.css"; */
 
 @import "primeicons/primeicons.css";
-@import "../node_modules//primeflex/primeflex.css";
 @import "assets/demo/styles/flags/flags.css";
 @import "assets/demo/styles/badges.scss";
 @import "assets/demo/styles/code.scss";
@@ -13,6 +17,11 @@
     --font-titillium: 'Titillium Web', 'Fira Sans', sans-serif;
     --font-open-sans: 'Open Sans', sans-serif;
     --font-fira-sans: 'Fira Sans', sans-serif;
+
+    /* Redefno colores de primeflex para los textos */
+    --primary-color:#000066;
+
+    --border-radius: 2rem;
 }
 
 body {
