@@ -17,7 +17,7 @@ const GsrpiPreset = definePreset(Aura, {
             950: '#2B3186',
         },
         primaryLight: {
-            500: '#5056AC', 
+            500: '#5056AC',
         },
         primaryDark: {
             500: '#07184A',
@@ -31,20 +31,20 @@ const GsrpiPreset = definePreset(Aura, {
         secondaryDark: {
             500: '#690007',
         },
-        webAccessibility:'#249300',
+        webAccessibility: '#249300',
         neutralHover: '#F6F6F6',
         neutralText: '#454444',
-        security: '#FF554C', 
-        tertiary: '#1D72D3', 
-        error: '#FF6D0A', 
-        red: '#DB141C', 
-        orange: '#FF6C08', 
+        security: '#FF554C',
+        tertiary: '#1D72D3',
+        error: '#FF6D0A',
+        red: '#DB141C',
+        orange: '#FF6C08',
         yellow: '#FFB000',
         green: '#5BAE40',
-        blue: '#00AAE5', 
-        purple: '#5A00BA', 
+        blue: '#00AAE5',
+        purple: '#5A00BA',
         gray: '#928F9A',
-        buttonDisabled: '#C9C8CC', 
+        buttonDisabled: '#C9C8CC',
         focusRing: {
             width: '2px',
             style: 'dashed',
@@ -65,12 +65,24 @@ const GsrpiPreset = definePreset(Aura, {
                     hoverColor: '{secondaryLight.500}',
                     activeColor: '{secondary.500}'
                 },
+                button: {
+                    primary: {
+                        background: '{primary.500}',
+                        color: '#FFFFFF',
+                        borderColor: '{primary.500}',
+                    },
+                    secondary: {
+                        background: '{secondary.500}',
+                        color: '#FFFFFF',
+                        borderColor: '{secondary.500}',
+                    },
+                },
                 highlight: {
                     background: '{zinc.950}',
                     focusBackground: '{zinc.700}',
                     color: '#ffffff',
                     focusColor: '#ffffff'
-                }, 
+                },
                 formField: {
                     hoverBorderColor: '{primary.500}'
                 }
@@ -87,7 +99,7 @@ const GsrpiPreset = definePreset(Aura, {
                     focusBackground: 'rgba(250, 250, 250, .24)',
                     color: 'rgba(255,255,255,.87)',
                     focusColor: 'rgba(255,255,255,.87)'
-                }, 
+                },
                 formField: {
                     hoverBorderColor: '{primaryDark.500}'
                 }
