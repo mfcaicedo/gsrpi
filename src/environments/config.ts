@@ -8,6 +8,12 @@ const ENVIRONMENTS = {
     POST_LOGIN: `${base_url_api_gsrpi}/auth/login`,
     POST_LOGOUT: `${base_url_api_gsrpi}/auth/logout`,
     POST_REFRESH_TOKEN: `${base_url_api_gsrpi}/auth/refresh-token`,
+    //Supabase auth
+    BASE_URL_SUPABASE: ENVIRONMENT.BASE_URL_SUPABASE,
+    PUBLIC_API_KEY_SUPABASE: ENVIRONMENT.PUBLIC_API_KEY_SUPABASE,
+
+    //USER MANAGEMENT
+    GET_USERS_PAGINATED: `${base_url_api_gsrpi}/obtener-usuarios-paginados`,
 
 }
 
