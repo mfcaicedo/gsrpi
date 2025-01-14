@@ -12,13 +12,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   if (authService.isAuthenticated()) {
-  
     const authRequest = addAuthorizationHeader(req);
     return next(authRequest);
 
   } else {
-
-    return authService.refreshToken().pipe(
+    return authService.refreshSession().pipe(
       switchMap(() => {
         const authRequest = addAuthorizationHeader(req);
         return next(authRequest);
@@ -29,9 +27,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 };
 
 const addAuthorizationHeader = (req: HttpRequest<any>) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('sb-bleayfxzpykreishpdvw-auth-token');
+  const tokenFormattedJson = JSON.parse(token ?? '{}');
+
   return req.clone({
-    headers: req.headers.set('Authorization', `Bearer ${token}`)
+    headers: req.headers.set('Authorization', `Bearer ${tokenFormattedJson.access_token}`)
   });
 };
 
