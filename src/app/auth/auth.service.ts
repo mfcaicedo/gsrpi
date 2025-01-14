@@ -4,15 +4,18 @@ import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { User } from './interfaces/models/user.model';
 import { Login, LoginError, LoginResponse, LoginSuccess } from './login/types/login-response.type';
-import { BehaviorSubject, Observable, catchError, of, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, from, of, tap, throwError } from 'rxjs';
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { IS_PUBLIC } from './auth.interceptor';
 import ENVIRONMENTS from '../../environments/config';
+import { AuthChangeEvent, createClient, Session, SupabaseClient } from '@supabase/supabase-js'
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
+  private readonly supabase: SupabaseClient;
 
   // El token será refrescado 5 minutos antes de la hora de expiración
   private readonly TOKEN_EXPIRY_THRESHOLD_MINUTES = 5;
@@ -23,28 +26,34 @@ export class AuthService {
   private readonly destroyRef = inject(DestroyRef);
   private readonly CONTEXT = { context: new HttpContext().set(IS_PUBLIC, true) };
 
-  private authStatusSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
-  public authStatus$ = this.authStatusSubject.asObservable();
+  private session = new BehaviorSubject<Session | null>(null);
 
   urls: string[] = [];
   privileges: string[] = [];
 
-  constructor() { }
+  constructor() {
+    this.supabase = createClient(ENVIRONMENTS.BASE_URL_SUPABASE,
+      ENVIRONMENTS.PUBLIC_API_KEY_SUPABASE);
+  }
+
+  getSession() {
+    return this.session.asObservable();
+  }
 
   get user(): WritableSignal<User | null> {
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('accessToken');
     return signal(token ? this.jwtHelper.decodeToken(token) : null);
 
   }
 
   isAuthenticated(): boolean {
-    return !this.jwtHelper.isTokenExpired();
+    return this.session.value !== null;
   }
 
   getDecodeToken() {
 
-    const token = localStorage.getItem('token') ?? '';
+    const token = localStorage.getItem('accessToken') ?? '';
     //Al decodificar el token obtenemos los datos del usuario, roles y privilegios
     return this.jwtHelper.decodeToken(token).sub
 
@@ -52,98 +61,41 @@ export class AuthService {
 
   updateAuthStatus() {
 
-    const isAuthenticated = this.isAuthenticated();
-    this.authStatusSubject.next(isAuthenticated);
+    this.supabase.auth.getSession().then(({ data: { session } }) => {
+      this.session.next(session);
+    });
 
   }
 
   login(body: Login): Observable<any> {
 
-    return this.http.post<LoginResponse>(`${ENVIRONMENTS.POST_LOGIN}`, body, this.CONTEXT)
-      .pipe(
-        catchError(error => {
-
-          let loginErrorResponse: LoginError;
-
-          if (error.status === 401) {
-            // Credenciales inválidas
-            console.log('Invalid credentials, ', error);
-            loginErrorResponse = error as LoginError;
-            return throwError(() => loginErrorResponse);
-          }
-
-          return throwError(() => error)
-
-        }),
-        tap(data => {
-
-          const loginSuccessData = data as LoginSuccess;
-          this.storeTokens(loginSuccessData);
-          this.scheduleTokenRefresh(loginSuccessData.token);
-          this.router.navigate(['/']);
-          // Actualiza el estado de autenticación
-          this.updateAuthStatus();
-
-        })
-      );
+    return from(this.supabase.auth.signInWithPassword({
+      email: body.username ?? '',
+      password: body.password,
+    }));
 
   }
 
   logout(): void {
 
-    const refreshToken = localStorage.getItem('refreshToken');
-
-    this.http.post<LoginResponse>(`${ENVIRONMENTS.POST_LOGOUT}`, { refreshToken })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
-        this.router.navigate(['/login']);
-        // Actualiza el estado de autenticación
-        this.updateAuthStatus();
-      });
+    this.supabase.auth.signOut().then(() => {
+      this.session.next(null);
+      this.router.navigate(['/login']);
+    });
 
   }
 
-  storeTokens(data: LoginSuccess): void {
+  refreshSession(): Observable<any> {
 
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('refreshToken', data.refreshToken);
-
-  }
-
-  refreshToken(): Observable<LoginResponse | null> {
-
-    const refreshToken = localStorage.getItem('refreshToken');
-    if (!refreshToken) {
-      return of();
-    }
-
-    return this.http.post<LoginResponse>(
-      `${ENVIRONMENTS.POST_REFRESH_TOKEN}`, { refreshToken }, this.CONTEXT)
-      .pipe(
-        catchError(() => of()),
-        tap(data => {
-          const loginSuccessData = data as LoginSuccess;
-          this.storeTokens(loginSuccessData);
-          this.scheduleTokenRefresh(loginSuccessData.token);
-        })
-      );
-  }
-
-  scheduleTokenRefresh(token: string): void {
-
-    const expirationTime = this.jwtHelper.getTokenExpirationDate(token)?.getTime();
-    const refreshTime = expirationTime ? expirationTime - this.TOKEN_EXPIRY_THRESHOLD_MINUTES * 60 * 1000 : Date.now();
-    const refreshInterval = refreshTime - Date.now();
-
-    if (refreshInterval > 0) {
-      setTimeout(() => {
-        this.refreshToken()
-          .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe();
-      }, refreshInterval);
-    }
+    return from(this.supabase.auth.refreshSession()).pipe(
+      tap(({ data, error }) => {
+        if (error) {
+          console.error('Error al refrescar la sesión', error);
+          return;
+        }
+        this.session.next(data.session);
+      })
+    );
 
   }
 
