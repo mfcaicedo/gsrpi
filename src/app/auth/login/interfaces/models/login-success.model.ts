@@ -1,10 +1,10 @@
 export interface LoginSuccess {
-    token: string;
+    accessToken: string;
     refreshToken: string;
-    expiresIn: number;
-    refreshExpiresIn: number;
+    expiresIn: number; // Seconds
+    expiresAt: number; // Timestamp
+    refreshExpiresIn?: number;
     tokenType: string;
     notBeforePolicy: number;
     sessionState: string;
-    scope: string;
 }
