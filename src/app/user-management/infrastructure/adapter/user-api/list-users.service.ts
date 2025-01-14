@@ -3,13 +3,12 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserGateway } from '../../../domain/models/gateway/user-gateway';
 import { UserListPaginated, User } from '../../../domain/models/user.model';
+import ENVIRONMENTS from '../../../../../environments/config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ListUsersService extends UserGateway {
-
-  private urlBase = 'https://localhost:8080/gsrpi/api/v1';
 
   constructor(
     private readonly http: HttpClient
@@ -17,8 +16,8 @@ export class ListUsersService extends UserGateway {
     super();
   }
 
-  override getAllUsersPaginated(): Observable<UserListPaginated> {
-    return this.http.get<UserListPaginated>(`${this.urlBase}/users-paginated`);
+  override getAllUsersPaginated(): Observable<UserListPaginated[]> {
+    return this.http.get<UserListPaginated[]>(`${ENVIRONMENTS.GET_USERS_PAGINATED}`);
   }
   override getUserById(id: number): Observable<User> {
     throw new Error('Method not implemented.');

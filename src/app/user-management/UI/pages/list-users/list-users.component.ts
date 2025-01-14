@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ListUsersUsecase } from '../../../domain/usecase/list-users-usecase';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-list-users',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './list-users.component.html',
   styleUrl: './list-users.component.css'
 })
