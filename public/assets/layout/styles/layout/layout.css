@@ -370,6 +370,7 @@ a {
   justify-content: center;
   padding-top: 1rem;
   border-top: 1px solid var(--surface-border);
+  flex-direction: column;
 }
 
 @media screen and (min-width: 1960px) {
