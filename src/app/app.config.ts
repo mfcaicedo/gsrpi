@@ -19,7 +19,9 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
     provideAnimationsAsync(),
     provideAnimations(),
-    provideHttpClient(),
+    //Se agrega el interceptor de autenticacion
+    provideHttpClient(withInterceptors([authInterceptor])),
+    //Configuracion de PrimeNG
     providePrimeNG({
       theme: {
         preset: GsrpiPreset,
@@ -28,35 +30,36 @@ export const appConfig: ApplicationConfig = {
         }
       },
     }),
-    //Configuracion de la inyeccion de dependencias
-    { provide: UserGateway, useClass: UserManagementService },
 
     //Auth 
     importProvidersFrom([
       //Configuracion JWT
       JwtModule.forRoot({
         config: {
-          tokenGetter: () => localStorage.getItem('token')
+          tokenGetter: () => localStorage.getItem('accessToken')
         }
       })
     ]),
     //Para que se ejecute el refresh token al iniciar la aplicacion
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializerFactory,
-      multi: true,
-      deps: [AuthService]
-    },
-    //Se agrega el interceptor de autenticacion
-    provideHttpClient(withInterceptors([authInterceptor])),
+    // {
+    //   provide: APP_INITIALIZER,
+    //   useFactory: initializerFactory,
+    //   multi: true,
+    //   deps: [AuthService]
+    // },
+
     DatePipe,
     {
       provide: LOCALE_ID,
       useValue: 'es-CO',
     },
+
+    //Configuracion de la inyeccion de dependencias para el desacoplamiento de la capa de infraestructura
+    { provide: UserGateway, useClass: UserManagementService },
+
   ]
 };
 
 export function initializerFactory(authService: AuthService) {
-  return () => authService.refreshToken();
+  return () => authService.refreshSession();
 }
