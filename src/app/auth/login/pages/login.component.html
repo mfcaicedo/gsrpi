@@ -9,29 +9,62 @@
                 </div>
                 <div>
                     <form action="" [formGroup]="loginForm" (submit)="onLoginFormSubmitted()">
-                        <label for="email1" class="block text-primary text-lg font-medium mb-2">
-                            Correo institucional
-                        </label>
-                        <input id="email1" type="text" formControlName="username" placeholder="correo" pInputText
-                            class="w-full md:w-30rem mb-5" style="padding:1rem">
-                        <label for="password1" class="block text-primary font-medium text-lg mb-2">Contraseña</label>
-                        <p-password id="password1" promptLabel="Ingrese su contraseña" formControlName="password"
-                            placeholder="contraseña" [toggleMask]="true" styleClass="mb-5"
-                            inputStyleClass="w-full p-3 md:w-30rem">
-                        </p-password>
-                        <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <!-- <p-iconfield> -->
+                        <div class="">
+
+                            <label for="username" class="block text-primary text-lg font-medium mb-2">
+                                Correo institucional <span class="text-orange-500">*</span>
+                            </label>
+                            <input id="username" type="text" formControlName="username" placeholder="correo" pInputText
+                                class="w-full md:w-30rem" style="padding:1rem">
+                            <!-- <p-inputicon styleClass="pi pi-spinner pi-spin" style="padding:1rem" /> -->
+                            @if (this.loginForm.get('username')?.hasError('required') &&
+                            this.loginForm.get('username')?.touched){
+                            <div class="text-error text-sm mt-1">
+                                El correo es requerido
+                            </div>
+                            }
+                            @if (this.loginForm.get('username')?.hasError('email') &&
+                            this.loginForm.get('username')?.touched){
+                            <div class="text-error text-sm mt-1">
+                                Ingrese un correo válido
+                            </div>
+                            }
+
+                            <!-- </p-iconfield> -->
+                        </div>
+                        <div class="mt-5">
+                            <label for="password" class="block text-primary font-medium text-lg mb-2">
+                                Contraseña <span class="text-orange-500">*</span>
+                            </label>
+                            <p-password id="password" promptLabel="Ingrese su contraseña" formControlName="password"
+                                placeholder="contraseña" [toggleMask]="true" styleClass=""
+                                inputStyleClass="w-full p-3 md:w-30rem">
+                            </p-password>
+                            @if (this.loginForm.get('password')?.hasError('required') &&
+                            this.loginForm.get('password')?.touched){
+                            <div class="text-error text-sm mt-1">
+                                La contraseña es requerida
+                            </div>
+                            }
+                        </div>
+                        <div class="flex align-items-center justify-content-between mb-5 gap-5 mt-5">
                             <div class="flex align-items-center">
                                 <p-checkbox id="rememberme1" [binary]="true" styleClass="mr-2"></p-checkbox>
                                 <label for="rememberme1">Recuérdame</label>
                             </div>
-                            <a class="font-medium no-underline ml-2 text-right cursor-pointer"
-                                style="color: var(--primary-color)">Forgot password?</a>
+                            <a class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">
+                                ¿Olvidó su contraseña?
+                            </a>
                         </div>
-                        <button pButton pRipple label="Iniciar sesión" class="w-full p-3 text-xl border-round"
-                            [routerLink]="['/']"></button>
+                        <button pButton pRipple label="Iniciar sesión" class="w-full p-3 text-xl border-round">
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Dialog alert -->
+    <p-toast />
+    <p-confirmdialog />
 </div>
