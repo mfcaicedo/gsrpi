@@ -19,7 +19,17 @@
     --font-fira-sans: 'Fira Sans', sans-serif;
 
     /* Redefno colores de primeflex para los textos */
-    --primary-color:#000066;
+    --primary-color: #000066;
+    --primary-light-color: #5056AC;
+    --text-color: #495057;
+    --text-color-secondary: #6c757d;
+    --primary-color-text: #ffffff;
+    --orange-500: #FF6C08;
+    --red-500: #ff3d32;
+    --gray-500: #9E9E9E;
+    --error-color: #FF6D0A;
+    --p-red-400: var(--error-color) !important;
+    --p-red-600: var(--error-color) !important;
 
     --border-radius: 2rem;
 }
@@ -303,11 +313,15 @@ h6 {
 button {
     font-size: 12px;
     font-family: var(--font-open-sans), serif !important;
-    font-weight: 600!important;
+    font-weight: 600 !important;
 }
 
 .caption-title {
     font-size: 12px;
     font-family: var(--font-open-sans), serif;
     font-weight: 400;
+}
+
+.text-error {
+    color: var(--error-color) !important;
 }
