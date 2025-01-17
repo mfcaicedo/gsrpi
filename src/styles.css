@@ -31,6 +31,10 @@
     --p-red-400: var(--error-color) !important;
     --p-red-600: var(--error-color) !important;
 
+    /* Se personaliza el color del select */
+    --p-select-option-selected-background: var(--primary-color) !important;
+    --p-select-option-selected-focus-background: var(--primary-light-color) !important;
+
     --border-radius: 2rem;
 }
 
@@ -324,4 +328,22 @@ button {
 
 .text-error {
     color: var(--error-color) !important;
+}
+
+/* Button secondary */
+.p-button-secondary {
+    background: var(--primary-color-text) !important;
+    border: 3px solid var(--primary-color) !important;
+    color: var(--primary-color) !important;
+}
+
+.p-button-secondary:hover {
+    border: 3px solid var(--primary-light-color) !important;
+    color: var(--primary-light-color) !important;
+}
+
+.p-button-secondary:disabled {
+    background: var(--gray-500) !important;
+    border: 3px solid var(--text-color) !important;
+    color: var(--text-color) !important;
 }
