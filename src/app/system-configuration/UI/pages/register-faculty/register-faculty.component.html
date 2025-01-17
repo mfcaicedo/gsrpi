@@ -1,0 +1,36 @@
+<div class="container">
+    <div class="">
+        <h2>Configuración del sistema</h2>
+    </div>
+    <div class="flex flex-column ga py-2 mb-3">
+        <span class="text-primary mb-1">
+            Paso 1 - Registro de facultad
+        </span>
+        <p-progressbar [value]="33" />
+    </div>
+    <div class="container-form row">
+        <form action="" [formGroup]="registerForm" (submit)="onSubmit()">
+            <div class="col-12 sm:col-5 mb-3 pl-0">
+                <label for="selectedDepartment" class="block text-primary text-lg font-medium mb-2">
+                    Facultad <span class="text-orange-500">*</span>
+                </label>
+                <p-select class="p-3" [options]="departments" [required]="true" [showClear]="true"
+                    formControlName="department" optionLabel="value" [filter]="true" filterBy="value"
+                    placeholder="Seleccione un departamento" class="w-full md:w-56" />
+                @if (this.registerForm.get('department')?.hasError('required') &&
+                this.registerForm.get('department')?.touched){
+                <div class="text-error text-sm mt-1">
+                    Debe seleccionar una facultad
+                </div>
+                }
+            </div>
+            <div class="col-12 sm:col-5 flex flex-row gap-2 pl-0">
+                <button pButton severity="secondary" pRipple label="Anterior" [disabled]="true"
+                    class="w-full border-round">
+                </button>
+                <button pButton pRipple label="Siguiente" class="w-full border-round">
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
