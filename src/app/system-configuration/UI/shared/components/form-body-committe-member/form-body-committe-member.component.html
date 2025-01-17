@@ -1,0 +1,105 @@
+<div class="grid mb-3">
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="firstName" class="block text-primary text-md font-medium mb-2">
+            Primer nombre <span class="text-orange-500">*</span>
+        </label>
+        <input id="firstName" type="text" [formControl]="$any(formGroup.get('firstName'))" placeholder="Tu nombre"
+            pInputText class="w-full">
+        @if (this.formGroup.get('firstName')?.hasError('required') &&
+        this.formGroup.get('firstName')?.touched){
+        <div class="text-error text-sm mt-1">
+            El primer nombre es requerido
+        </div>
+        }
+    </div>
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="middleName" class="block text-primary text-md font-medium mb-2">
+            Segundo nombre
+        </label>
+        <input id="middleName" type="text" [formControl]="$any(formGroup.get('middleName'))"
+            placeholder="Tu segundo nombre" pInputText class="w-full">
+    </div>
+
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="firstLastName" class="block text-primary text-md font-medium mb-2">
+            Primer apellido <span class="text-orange-500">*</span>
+        </label>
+        <input id="firstLastName" type="text" [formControl]="$any(formGroup.get('firstLastName'))"
+            placeholder="Tu apellido" pInputText class="w-full">
+        @if (this.formGroup.get('firstLastName')?.hasError('required') &&
+        this.formGroup.get('firstLastName')?.touched){
+        <div class="text-error text-sm mt-1">
+            El primer apellido es requerido
+        </div>
+        }
+    </div>
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="secondLastName" class="block text-primary text-md font-medium mb-2">
+            Segundo apellido
+        </label>
+        <input id="secondLastName" type="text" [formControl]="$any(formGroup.get('secondLastName'))"
+            placeholder="Tu segundo apellido" pInputText class="w-full">
+    </div>
+
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="selectedDepartment" class="block text-primary text-md font-medium mb-2">
+            Tipo identificación <span class="text-orange-500">*</span>
+        </label>
+        <p-select class="p-3" [options]="identificationTypeDataList" [required]="true" [showClear]="true"
+            [formControl]="$any(formGroup.get('identificationType'))" optionLabel="value" [filter]="true"
+            filterBy="value" placeholder="Seleccione el tipo identificación" class="w-full md:w-56" />
+        @if (this.formGroup.get('identificationType')?.hasError('required') &&
+        this.formGroup.get('identificationType')?.touched){
+        <div class="text-error text-sm mt-1">
+            Debe seleccionar el tipo de identificación
+        </div>
+        }
+    </div>
+
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="identificationNumber" class="block text-primary text-md font-medium mb-2">
+            Número identificación <span class="text-orange-500">*</span>
+        </label>
+        <p-inputnumber inputId="integeronly" [formControl]="$any(formGroup.get('identificationNumber'))" class="w-full"
+            placeholder="Tu identificación" />
+        @if (this.formGroup.get('identificationNumber')?.hasError('required') &&
+        this.formGroup.get('identificationNumber')?.touched){
+        <div class="text-error text-sm mt-1">
+            El número de identificación es requerido
+        </div>
+        }
+    </div>
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="cellphone" class="block text-primary text-md font-medium mb-2">
+            Teléfono/Celular <span class="text-orange-500">*</span>
+        </label>
+        <p-inputnumber [formControl]="$any(formGroup.get('cellphone'))" mode="decimal" inputId="withoutgrouping"
+            [useGrouping]="false" placeholder="Tu teléfono o celular" class="w-full" />
+        @if (this.formGroup.get('cellphone')?.hasError('required') &&
+        this.formGroup.get('cellphone')?.touched){
+        <div class="text-error text-sm mt-1">
+            El teléfono/celular es requerido
+        </div>
+        }
+    </div>
+
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="email" class="block text-primary text-md font-medium mb-2">
+            Correo institucional <span class="text-orange-500">*</span>
+        </label>
+        <input id="email" type="text" [formControl]="$any(formGroup.get('email'))" placeholder="Tu correo institucional"
+            pInputText class="w-full">
+        @if (this.formGroup.get('email')?.hasError('required') &&
+        this.formGroup.get('email')?.touched){
+        <div class="text-error text-sm mt-1">
+            El correo es requerido
+        </div>
+        }
+        @if (this.formGroup.get('email')?.hasError('email') &&
+        this.formGroup.get('email')?.touched){
+        <div class="text-error text-sm mt-1">
+            Ingrese un correo válido
+        </div>
+        }
+    </div>
+</div>
