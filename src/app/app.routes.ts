@@ -7,20 +7,24 @@ export const routes: Routes = [
     {
         path: 'login',
         loadComponent: () => import('./auth/login/pages/login.component').then(m => m.LoginComponent),
-        canActivate: [accountGuard],
+        // canActivate: [accountGuard],
     },
     {
         path: '',
         component: AppLayoutComponent,
-        canActivate: [authGuard],
+        // canActivate: [authGuard],
         children: [
             {
                 path: '',
                 component: WelcomeComponent
             },
             {
-                path: 'user-management',
+                path: 'gestion-usuarios',
                 loadChildren: () => import('./user-management/user-management.routes').then(m => m.routes)
+            },
+            {
+                path: 'configuracion-sistema',
+                loadChildren: () => import('./system-configuration/system-configuration.routes').then(m => m.routes)
             }
         ]
 
