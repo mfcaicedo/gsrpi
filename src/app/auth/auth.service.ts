@@ -15,7 +15,7 @@ import { AuthChangeEvent, createClient, Session, SupabaseClient } from '@supabas
 })
 export class AuthService {
 
-  private readonly supabase: SupabaseClient;
+  private readonly supabase!: SupabaseClient;
 
   // El token será refrescado 5 minutos antes de la hora de expiración
   private readonly TOKEN_EXPIRY_THRESHOLD_MINUTES = 5;
