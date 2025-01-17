@@ -47,9 +47,6 @@ export class AppTopBarComponent implements OnInit {
                     '<span>Administrador</span></div>',
                 icon: 'pi pi-user',
                 iconStyle: { 'font-size': '2rem', 'color': 'var(--primary-color)' },
-                command: () => {
-                    this.onClickProfile();
-                },
                 items: [
                     {
                         label: 'Perfil',

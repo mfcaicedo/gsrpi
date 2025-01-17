@@ -27,7 +27,38 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'Configuración inicial',
                 items: [
-                    { label: 'Configuración', icon: 'pi pi-fw pi-cog', routerLink: ['/uikit/formlayout'] },
+                    {
+                        label: 'Configuración CPD', icon: 'pi pi-fw pi-cog',
+                        items: [
+                            {
+                                label: 'Registrar facultad', icon: 'pi pi-fw pi-cog',
+                                routerLink: ['/configuracion-sistema/registrar-facultad']
+                            },
+                            {
+                                label: 'Registrar miembros CPD', icon: 'pi pi-fw pi-cog',
+                                routerLink: ['/configuracion-sistema/registrar-cpd']
+                            },
+                            {
+                                label: 'Registrar secretaria CPD', icon: 'pi pi-fw pi-cog',
+                                routerLink: ['/configuracion-sistema/registrar-secretaria-cpd']
+                            }
+                        ],
+                        // routerLink: ['/configuracion-sistema/registrar-facultad']
+                    },
+                    {
+                        label: 'Configuración CIARP', icon: 'pi pi-fw pi-cog',
+                        items: [
+                            {
+                                label: 'Registrar miembros CIARP', icon: 'pi pi-fw pi-cog',
+                                routerLink: ['/configuracion-sistema/registrar-ciarp']
+                            },
+                            {
+                                label: 'Registrar secretaria CIARP', icon: 'pi pi-fw pi-cog',
+                                routerLink: ['/configuracion-sistema/registrar-secretaria-ciarp']
+                            }
+                        ],
+                        // routerLink: ['/configuracion-sistema/registrar-ciarp'] 
+                    },
                     // { label: 'Input', icon: 'pi pi-fw pi-check-square', routerLink: ['/uikit/input'] },
                     // { label: 'Float Label', icon: 'pi pi-fw pi-bookmark', routerLink: ['/uikit/floatlabel'] },
                     // { label: 'Invalid State', icon: 'pi pi-fw pi-exclamation-circle', routerLink: ['/uikit/invalidstate'] },
