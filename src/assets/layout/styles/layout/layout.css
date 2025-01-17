@@ -464,19 +464,12 @@ a {
   top: 100px;
 }
 
-h1, h2, h3, h5, h6 {
+h1, h2, h3, h4, h5, h6 {
   margin: 1.5rem 0 1rem 0;
   font-family: inherit;
   font-weight: 500;
   line-height: 1.2;
-  color: var(--surface-900);
-}
-
-h4 {
   color: var(--primary-color);
-  font-size: 16px;
-  font-family: var(--font-titillium), serif;
-  font-weight: 700;
 }
 
 h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child, h6:first-child {
