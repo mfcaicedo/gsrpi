@@ -84,7 +84,21 @@ const GsrpiPreset = definePreset(Aura, {
                     focusColor: '#ffffff'
                 },
                 formField: {
-                    hoverBorderColor: '{primary.500}'
+                    hoverBorderColor: '{primary.500}',
+                    focusBorderColor: '{primary.500}',
+                    errorBorderColor: '{error}',
+                    disabledBorderColor: '{neutralHover}',
+                    hoverBackgroundColor: '{primaryLight.500}',
+                    focusBackgroundColor: '{primary.50}',
+                    disabledBackgroundColor: '{neutralHover}',
+                    errorTextColor: '{error}',
+                    placeholderTextColor: '{neutralText}',
+                    textColor: '{primary.900}',
+                    labelTextColor: '{primaryDark.500}',
+                    iconColor: '{primary.500}',
+                    requiredAsteriskColor: '{error}',
+                    focusBoxShadow: '0 0 4px 2px {primary.500}'
+                    
                 }
             },
             dark: {
