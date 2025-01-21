@@ -6,7 +6,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { SelectModule } from 'primeng/select';
-import { KeyValueOption } from '../../../../domain/models/form-builder.model';
+import { KeyValueOption } from '../../../../../shared/utils/models/form-builder.model';
 
 @Component({
   selector: 'app-form-body-committe-member',

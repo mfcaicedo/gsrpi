@@ -11,7 +11,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 import { FormBodyCommitteMemberComponent } from '../../shared/components/form-body-committe-member/form-body-committe-member.component';
-import { KeyValueOption } from '../../../domain/models/form-builder.model';
+import { KeyValueOption } from '../../../../shared/utils/models/form-builder.model';
 
 @Component({
   selector: 'app-register-ciarp-member',
