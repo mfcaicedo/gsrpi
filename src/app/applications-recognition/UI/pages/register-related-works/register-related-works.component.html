@@ -1,0 +1,87 @@
+<div class="container">
+    <div class="">
+        <h2>
+            Solicitud de reconocimiento de producción intelectual
+        </h2>
+    </div>
+    <div class="flex flex-column ga py-2 mb-3">
+        <span class="text-primary mb-1">
+            Paso 6 - Completar formulario - Trabajos relacionados
+        </span>
+        <p-progressbar [value]="70" />
+    </div>
+    <div class="container-form">
+        <form action="" [formGroup]="registerRelatedWorksForm" (submit)="onSubmit()">
+            <div class="mt-2">
+                <h5 class="">
+                    Si existen trabajos o publicaciones previamente reconocidos a usted o a otros profesores,
+                    relacionados con la presente producción, indicarlos a continuación
+                </h5>
+            </div>
+            <div class="grid">
+
+                <div class="col-12 sm:col-6 md:col-4">
+                    <label for="productionName" class="block text-primary text-md font-medium mb-2">
+                        Nombre de producción <span class="text-orange-500">*</span>
+                    </label>
+                    <input id="productionName" type="text" formControlName="productionName"
+                        placeholder="Digitar respuesta" pInputText class="w-full">
+                    @if (this.registerRelatedWorksForm.get('productionName')?.hasError('required') &&
+                    this.registerRelatedWorksForm.get('productionName')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        El nombre de la producción es requerido
+                    </div>
+                    }
+                </div>
+                <div class="col-12 sm:col-6 md:col-4">
+                    <label for="resolution" class="block text-primary text-md font-medium mb-2">
+                        Resolución
+                    </label>
+                    <input id="resolution" type="text" formControlName="resolution" placeholder="Digitar respuesta"
+                        pInputText class="w-full">
+                </div>
+
+                <div class="col-12 sm:col-6 md:col-4">
+                    <label for="date" class="block text-primary text-md font-medium mb-2">
+                        Fecha <span class="text-orange-500">*</span>
+                    </label>
+                    <p-datepicker placeholder="Seleccione la fecha" formControlName="date" class="w-full" showIcon
+                        iconDisplay="input" />
+                    @if (this.registerRelatedWorksForm.get('date')?.hasError('required') &&
+                    this.registerRelatedWorksForm.get('date')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        La fecha es requerida
+                    </div>
+                    }
+                </div>
+
+                <div class="col-12 sm:col-6 md:col-4">
+                    <label for="authors" class="block text-primary text-md font-medium mb-2">
+                        Autores
+                    </label>
+                    <textarea rows="4" placeholder="Ejemplo: Autor 1, Autor 2, ..." cols="31" pTextarea
+                        [autoResize]="true" formControlName="authors">
+                    </textarea>
+                </div>
+
+            </div>
+
+            <div class="col-12 sm:col-7 flex flex-row gap-2 pl-0 mt-3">
+                <button pButton severity="secondary" type="button" pRipple label="Anterior" [disabled]="false"
+                    class="w-full border-round">
+                </button>
+                <button pButton severity="secondary" type="button" pRipple label="Omitir" [disabled]="false"
+                    class="w-full border-round">
+                </button>
+                <button pButton pRipple label="Guardar" type="submit" class="w-full border-round">
+                </button>
+                <button pButton pRipple label="Siguiente" type="button" [disabled]="isDisabledNextStep"
+                    (click)="modalNewApplicantOrNextStep($event)" class="w-full border-round">
+                </button>
+            </div>
+        </form>
+    </div>
+    <!-- Dialog alert -->
+    <p-toast />
+    <p-confirmdialog />
+</div>
