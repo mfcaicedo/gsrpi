@@ -1,0 +1,168 @@
+<div class="container">
+    <div class="">
+        <h2>
+            Solicitud de reconocimiento de producción intelectual
+        </h2>
+    </div>
+    <div class="flex flex-column ga py-2 mb-3">
+        <span class="text-primary mb-1">
+            Paso 2 - Completar formulario - Datos de los docentes que solicitan el reconocimiento
+        </span>
+        <p-progressbar [value]="20" />
+    </div>
+    <div class="container-form">
+        <form action="" [formGroup]="registerApplicantForm" (submit)="onSubmit()">
+            <div class="col-12 sm:col-6 pl-0">
+                <label for="totalNumberAuthors" class="block text-primary text-md font-medium mb-2">
+                    Número total de autores <span class="text-orange-500">*</span>
+                </label>
+                <p-inputnumber inputId="integeronly" formControlName="totalNumberAuthors" class="w-full"
+                    placeholder="Digitar respuesta" />
+                @if (this.registerApplicantForm.get('totalNumberAuthors')?.hasError('required') &&
+                this.registerApplicantForm.get('totalNumberAuthors')?.touched){
+                <div class="text-error text-sm mt-1">
+                    El número total de autores es requerido
+                </div>
+                }
+            </div>
+            <div class="mt-2">
+                <h5 class="">
+                    Datos del docente que solicita el reconocimiento
+                </h5>
+            </div>
+            <div class="grid mb-3">
+                <div class="col-12 sm:col-6 md:col-4">
+                    <label for="firstName" class="block text-primary text-md font-medium mb-2">
+                        Primer nombre <span class="text-orange-500">*</span>
+                    </label>
+                    <input id="firstName" type="text" formControlName="firstName" placeholder="Tu nombre" pInputText
+                        class="w-full">
+                    @if (this.registerApplicantForm.get('firstName')?.hasError('required') &&
+                    this.registerApplicantForm.get('firstName')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        El primer nombre es requerido
+                    </div>
+                    }
+                </div>
+                <div class="col-12 sm:col-6 md:col-4">
+                    <label for="middleName" class="block text-primary text-md font-medium mb-2">
+                        Segundo nombre
+                    </label>
+                    <input id="middleName" type="text" formControlName="middleName" placeholder="Tu segundo nombre"
+                        pInputText class="w-full">
+                </div>
+
+                <div class="col-12 sm:col-6 md:col-4">
+                    <label for="firstLastName" class="block text-primary text-md font-medium mb-2">
+                        Primer apellido <span class="text-orange-500">*</span>
+                    </label>
+                    <input id="firstLastName" type="text" formControlName="firstLastName" placeholder="Tu apellido"
+                        pInputText class="w-full">
+                    @if (this.registerApplicantForm.get('firstLastName')?.hasError('required') &&
+                    this.registerApplicantForm.get('firstLastName')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        El primer apellido es requerido
+                    </div>
+                    }
+                </div>
+                <div class="col-12 sm:col-6 md:col-4">
+                    <label for="secondLastName" class="block text-primary text-md font-medium mb-2">
+                        Segundo apellido
+                    </label>
+                    <input id="secondLastName" type="text" formControlName="secondLastName"
+                        placeholder="Tu segundo apellido" pInputText class="w-full">
+                </div>
+
+                <div class="col-12 sm:col-6 md:col-4">
+                    <label for="selectedDepartment" class="block text-primary text-md font-medium mb-2">
+                        Tipo identificación <span class="text-orange-500">*</span>
+                    </label>
+                    <p-select class="p-3" [options]="identificationTypeDataList" [required]="true" [showClear]="true"
+                        formControlName="identificationType" optionLabel="value" [filter]="true" filterBy="value"
+                        placeholder="Seleccione el tipo identificación" class="w-full md:w-56" />
+                    @if (this.registerApplicantForm.get('identificationType')?.hasError('required') &&
+                    this.registerApplicantForm.get('identificationType')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        Debe seleccionar el tipo de identificación
+                    </div>
+                    }
+                </div>
+
+                <div class="col-12 sm:col-6 md:col-4">
+                    <label for="identificationNumber" class="block text-primary text-md font-medium mb-2">
+                        Número identificación <span class="text-orange-500">*</span>
+                    </label>
+                    <p-inputnumber inputId="integeronly" formControlName="identificationNumber" class="w-full"
+                        placeholder="Tu identificación" />
+                    @if (this.registerApplicantForm.get('identificationNumber')?.hasError('required') &&
+                    this.registerApplicantForm.get('identificationNumber')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        El número de identificación es requerido
+                    </div>
+                    }
+                </div>
+                <div class="col-12 sm:col-6 md:col-4">
+                    <label for="cellphone" class="block text-primary text-md font-medium mb-2">
+                        Teléfono/Celular <span class="text-orange-500">*</span>
+                    </label>
+                    <p-inputnumber formControlName="cellphone" mode="decimal" inputId="withoutgrouping"
+                        [useGrouping]="false" placeholder="Tu teléfono o celular" class="w-full" />
+                    @if (this.registerApplicantForm.get('cellphone')?.hasError('required') &&
+                    this.registerApplicantForm.get('cellphone')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        El teléfono/celular es requerido
+                    </div>
+                    }
+                </div>
+
+                <div class="col-12 sm:col-6 md:col-4">
+                    <label for="email" class="block text-primary text-md font-medium mb-2">
+                        Correo institucional <span class="text-orange-500">*</span>
+                    </label>
+                    <input id="email" type="text" formControlName="email" placeholder="Tu correo institucional"
+                        pInputText class="w-full">
+                    @if (this.registerApplicantForm.get('email')?.hasError('required') &&
+                    this.registerApplicantForm.get('email')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        El correo es requerido
+                    </div>
+                    }
+                    @if (this.registerApplicantForm.get('email')?.hasError('email') &&
+                    this.registerApplicantForm.get('email')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        Ingrese un correo válido
+                    </div>
+                    }
+                </div>
+                <div class="col-12 sm:col-6 md:col-4">
+                    <label for="selectedDepartment" class="block text-primary text-md font-medium mb-2">
+                        Departamento <span class="text-orange-500">*</span>
+                    </label>
+                    <p-select class="p-3" [options]="departmentDataList" [required]="true" [showClear]="true"
+                        formControlName="departmentFaculty" optionLabel="value" [filter]="true" filterBy="value"
+                        placeholder="Seleccione el tipo identificación" class="w-full md:w-56" />
+                    @if (this.registerApplicantForm.get('departmentFaculty')?.hasError('required') &&
+                    this.registerApplicantForm.get('departmentFaculty')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        Debe seleccionar el tipo de identificación
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <div class="col-12 sm:col-5 flex flex-row gap-2 pl-0">
+                <button pButton severity="secondary" type="button" pRipple label="Anterior" [disabled]="false"
+                    class="w-full border-round">
+                </button>
+                <button pButton pRipple label="Guardar" type="submit" class="w-full border-round">
+                </button>
+                <button pButton pRipple label="Siguiente" type="button" [disabled]="isDisabledNextStep"
+                    (click)="modalNewApplicantOrNextStep($event)" class="w-full border-round">
+                </button>
+            </div>
+        </form>
+    </div>
+    <!-- Dialog alert -->
+    <p-toast />
+    <p-confirmdialog />
+</div>
