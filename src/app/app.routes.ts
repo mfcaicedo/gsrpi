@@ -25,6 +25,10 @@ export const routes: Routes = [
             {
                 path: 'configuracion-sistema',
                 loadChildren: () => import('./system-configuration/system-configuration.routes').then(m => m.routes)
+            },
+            {
+                path: 'solicitudes-reconocimiento',
+                loadChildren: () => import('./applications-recognition/applications-recognition.routes').then(m => m.routes)
             }
         ]
 
