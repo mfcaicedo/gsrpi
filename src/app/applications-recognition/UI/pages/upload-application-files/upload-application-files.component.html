@@ -1,0 +1,49 @@
+<div class="container">
+    <div class="">
+        <h2>
+            Solicitud de reconocimiento de producción intelectual
+        </h2>
+    </div>
+    <div class="flex flex-column ga py-2 mb-3">
+        <span class="text-primary mb-1">
+            Paso 8 - Subida de archivos
+        </span>
+        <p-progressbar [value]="100" />
+    </div>
+    <div class="container-file">
+        <div class="mt-2">
+            <h5 class="">
+                Sube el producto
+            </h5>
+        </div>
+        <div class=" border-2 p-6 border-round-xl border-dashed">
+            <p-fileupload mode="basic" chooseLabel="Seleccionar archivo" chooseIcon="pi pi-upload" name="productionFile"
+                accept=".pdf" maxFileSize="1000000" (onSelect)="onSelectFiles($event)" />
+        </div>
+    </div>
+    <div class="container-file">
+        <div class="mt-2">
+            <h5 class="">
+                Sube la copia de la clasificación / homologación por Colciencias de Sistema de Información Publindex de
+                la revista en la que aparece su vigencia.
+            </h5>
+        </div>
+        <div class=" border-2 p-6 border-round-xl border-dashed">
+            <p-fileupload #file2 mode="basic" chooseLabel="Seleccionar archivo" chooseIcon="pi pi-upload" name="classificationFile"
+                accept=".pdf" maxFileSize="1000000" (onSelect)="onSelectFiles($event)" />
+        </div>
+    </div>
+    <div class="col-12 sm:col-7 flex flex-row gap-2 pl-0 mt-3">
+        <button pButton severity="secondary" type="button" pRipple label="Anterior" [disabled]="false"
+            class="w-full border-round">
+        </button>
+        <button pButton pRipple label="Subir archivos" (click)="onUpload()"  type="button" class="w-full border-round">
+        </button>
+        <button pButton pRipple label="Enviar solicitud" type="button" [disabled]="isDisabledNextStep"
+            (click)="modalNewApplicantOrNextStep($event)" class="w-full border-round">
+        </button>
+    </div>
+    <!-- Dialog alert -->
+    <p-toast />
+    <p-confirmdialog />
+</div>
