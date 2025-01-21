@@ -76,6 +76,19 @@ export class AppMenuComponent implements OnInit {
                     // { label: 'Misc', icon: 'pi pi-fw pi-circle', routerLink: ['/uikit/misc'] }
                 ]
             },
+            {
+                label: 'Solicitudes de producción',
+                items: [
+                    {
+                        label: 'Crear solicitud', icon: 'pi pi-fw pi-cog',
+                        routerLink: ['/solicitudes-reconocimiento/crear-solicitud']
+                    },
+                    {
+                        label: 'Listar solicitudes', icon: 'pi pi-fw pi-cog',
+                        routerLink: ['/solicitudes-reconocimiento/listar-solicitudes']
+                    },
+                ]
+            },
             // {
             //     label: 'Prime Blocks',
             //     items: [
