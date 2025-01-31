@@ -15,6 +15,9 @@ const ENVIRONMENTS = {
     //USER MANAGEMENT
     GET_USERS_PAGINATED: `${base_url_api_gsrpi}/obtener-usuarios-paginados`,
 
+    //SYSTEM CONFIGURATION
+    GET_ALL_FACULTIES: `${base_url_api_gsrpi}/obtener-facultades`,
+
 }
 
 export default ENVIRONMENTS;

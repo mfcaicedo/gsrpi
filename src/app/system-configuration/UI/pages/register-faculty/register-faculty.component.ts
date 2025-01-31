@@ -6,43 +6,60 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { SelectModule } from 'primeng/select';
 import { KeyValueOption } from '../../../../shared/utils/models/form-builder.model';
 import { InputTextModule } from 'primeng/inputtext';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { ListFacultiesUsecase } from '../../../domain/usecase/list-faculties-usecase';
 
 @Component({
   selector: 'app-register-faculty',
-  imports: [CommonModule, ButtonModule, ProgressBarModule, SelectModule, FormsModule, InputTextModule, 
+  imports: [CommonModule, ButtonModule, ProgressBarModule, SelectModule, FormsModule, InputTextModule,
     ReactiveFormsModule, RouterModule],
   templateUrl: './register-faculty.component.html',
   styleUrl: './register-faculty.component.css'
 })
 export class RegisterFacultyComponent implements OnInit {
 
-  departments: KeyValueOption[] = [
-    { key: 1, value: 'FIET' },
-    { key: 2, value: 'Humanidades' },
-    { key: 3, value: 'Contables' },
-    { key: 4, value: 'Ciencias exactas' }
-  ];
-
-  private readonly formBuilder = inject(FormBuilder);
-  private readonly router = inject(Router)
+  facultiesList: KeyValueOption[] = [];
 
   registerForm!: FormGroup;
+
+  isDisabledNextStep = true;
+
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly listFacultiesUseCase = inject(ListFacultiesUsecase);
 
   ngOnInit() {
 
     this.registerForm = this.formBuilder.group({
-      department: [undefined, [Validators.required]]
+      faculty: [undefined, [Validators.required]]
+    });
+
+    this.getAllFaculties();
+
+  }
+
+  getAllFaculties() {
+
+    this.listFacultiesUseCase.getAllFaculties().subscribe({
+      next: (response) => {
+        this.facultiesList = response.map((faculty) => {
+          return { key: faculty.facultyId, value: faculty.name };
+        });
+      },
+      error: (error) => {
+        console.error(error);
+      }
     });
 
   }
 
   onSubmit() {
+
     console.log("selectedDepartment", this.registerForm.value);
     //TODO: Guardar el departamento por medio del serviicio back 
 
-    //2. Redirigir a la siguiete pagina del siguiente paso 
-    this.router.navigate(['/configuracion-sistema/registrar-cpd']);
+    //1. Habilitar el siguiente paso
+    this.isDisabledNextStep = false;
+
   }
 
 }
