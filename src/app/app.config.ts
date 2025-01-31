@@ -13,6 +13,8 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { AuthService } from './auth/auth.service';
 import { authInterceptor } from './auth/auth.interceptor';
 import { DatePipe } from '@angular/common';
+import { SystemConfigurationGateway } from './system-configuration/domain/models/gateway/system-configuration-gateway';
+import { SystemConfigService } from './system-configuration/infrastructure/adapter/system-configuration-api/system-config.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -56,6 +58,7 @@ export const appConfig: ApplicationConfig = {
 
     //Configuracion de la inyeccion de dependencias para el desacoplamiento de la capa de infraestructura
     { provide: UserGateway, useClass: UserManagementService },
+    { provide: SystemConfigurationGateway, useClass: SystemConfigService },
 
   ]
 };
