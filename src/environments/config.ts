@@ -17,7 +17,9 @@ const ENVIRONMENTS = {
 
     //SYSTEM CONFIGURATION
     GET_ALL_FACULTIES: `${base_url_api_gsrpi}/obtener-facultades`,
-
+    CREATE_INITIAL_CONFIGURATION: `${base_url_api_gsrpi}/crear-configuracion`,
+    GET_CONFIGURATION_BY_ID: `${base_url_api_gsrpi}/obtener-configuracion-por-id`,
+    CREATE_CPD_MEMBER: `${base_url_api_gsrpi}/crear-persona`,
 }
 
 export default ENVIRONMENTS;

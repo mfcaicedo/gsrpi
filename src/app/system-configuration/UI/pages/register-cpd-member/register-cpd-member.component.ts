@@ -12,6 +12,9 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { FormBodyCommitteMemberComponent } from '../../shared/components/form-body-committe-member/form-body-committe-member.component';
+import { AuthService } from '../../../../auth/auth.service';
+import { CreateInitialConfigurationUsecase } from '../../../domain/usecase/create-initial-configuration-usecase';
+import { PersonRequest } from '../../../domain/models/person.model';
 
 @Component({
   selector: 'app-register-cpd-member',
@@ -34,10 +37,14 @@ export class RegisterCpdMemberComponent {
 
   isDisabledNextStep = true;
   registerCpdMemberForm!: FormGroup;
+  userUid = '';
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly messageService = inject(MessageService);
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly createInitialConfigurationUseCase = inject(CreateInitialConfigurationUsecase);
 
   ngOnInit() {
 
@@ -55,18 +62,90 @@ export class RegisterCpdMemberComponent {
 
   }
 
-  onSubmit() {
-    console.log("values", this.registerCpdMemberForm.value);
-    //TODO: Enviar datos al servicio para guardar el miembro del CPD
+  async onSubmit() {
 
-    //2. Activo el boton siguiente 
-    this.isDisabledNextStep = false;
+    this.registerCpdMemberForm.markAllAsTouched();
+    if (this.registerCpdMemberForm.invalid) {
+      return;
+    }
+
+    // obtengo el id de la configuración inicial
+    const configurationId = this.authService.configurationId.value;
+
+    //TODO: crear un usuario en supabse con una contraseña por defecto. 
+    await this.createUserSupabase();
+    //TODO: Crear el objeto de la persona
+    const resquestBody: PersonRequest = {
+      firstName: this.registerCpdMemberForm.value.firstLastName,
+      secondName: this.registerCpdMemberForm.value.middleName,
+      firstLastName: this.registerCpdMemberForm.value.firstLastName,
+      secondLastName: this.registerCpdMemberForm.value.secondLastName,
+      identificationTypeCatId: this.registerCpdMemberForm.value.identificationType.key,
+      identificationNumber: this.registerCpdMemberForm.value.identificationNumber,
+      phone: this.registerCpdMemberForm.value.cellphone,
+      email: this.registerCpdMemberForm.value.email,
+      configurationId: configurationId,
+      user: {
+        uid: this.userUid,
+        email: this.registerCpdMemberForm.value.email,
+        password: '',
+        userRoles: [
+          {
+            role: {
+              name: 'integrante-cpd'
+            }
+          }
+        ]
+      }
+    };
+
+    //TODO: Enviar datos al servicio para guardar el miembro del CPD
+    this.createInitialConfigurationUseCase.createCpdMember(resquestBody).subscribe({
+      next: (response) => {
+        //Activo el boton siguiente 
+        this.isDisabledNextStep = false;
+        this.registerCpdMemberForm.reset();
+        this.messageService.add(
+          {
+            severity: 'success',
+            summary: 'Miembro del CPD creado',
+            detail: 'El miembro del CPD se ha creado correctamente'
+          });
+      },
+      error: (error) => {
+        this.messageService.add(
+          {
+            severity: 'error',
+            summary: 'Error al crear el miembro del CPD',
+            detail: 'Ocurrió un error al crear el miembro del CPD'
+          });
+        console.log("error", error);
+      }
+    });
+
+  }
+
+  createUserSupabase() {
+    //TODO: los miembros del CPD deben verificar el correo cuando les llegue la invitación
+    return new Promise((resolve) => {
+      this.authService.createUser(this.registerCpdMemberForm.value.email).subscribe({
+        next: (response) => {
+          this, this.userUid = response.data.user.id;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false)
+          console.log("error", error);
+        }
+      });
+    });
+
   }
 
   modalNewCpdMemberOrNextStep(event: Event) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: '¿Desea agregar otro miembro del CPD?',
+      message: '¿Desea continuar con el siguiente paso?',
       header: 'Confirmación',
       closable: true,
       closeOnEscape: true,
@@ -82,11 +161,10 @@ export class RegisterCpdMemberComponent {
       },
       accept: () => {
         console.log("acept button modal");
-        //TODO: Permancer en la misma pagina
+        this.router.navigate(['configuracion-sistema/registrar-secretaria-cpd']);
       },
       reject: () => {
         console.log("reject button modal");
-        this.router.navigate(['configuracion-sistema/registrar-secretaria-cpd']);
       },
     });
   }

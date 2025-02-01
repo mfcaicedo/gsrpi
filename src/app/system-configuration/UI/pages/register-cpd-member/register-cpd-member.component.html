@@ -13,15 +13,22 @@
             <app-form-body-committe-member [formGroup]="registerCpdMemberForm"
                 [identificationTypeDataList]="identificationTypeDataList">
             </app-form-body-committe-member>
+            <div class="">
+                <p class="mb-3">
+                    <span class="font-bold">Nota:</span>
+                    Agrega los miembros del Comité de Personal Docente (CPD) pertinentes y al finalizar
+                    presiona el botón "Siguiente" para continuar con el proceso de configuración del sistema.
+                </p>
+            </div>
             <div class="col-12 sm:col-7 flex flex-row gap-2 pl-0">
                 <button pButton type="button" severity="secondary" pRipple label="Anterior" [disabled]="false"
                     class="w-full border-round" [routerLink]="['../registrar-facultad']">
                 </button>
-                <button pButton pRipple type="submit" label="Guardar" class="w-full border-round">
-                </button>
-                <button pButton pRipple type="button" label="Siguiente"
-                    [disabled]="isDisabledNextStep" (click)="modalNewCpdMemberOrNextStep($event)"
+                <button pButton pRipple type="submit" label="Guardar" [disabled]="!registerCpdMemberForm.valid"
                     class="w-full border-round">
+                </button>
+                <button pButton pRipple type="button" label="Siguiente" [disabled]="isDisabledNextStep"
+                    (click)="modalNewCpdMemberOrNextStep($event)" class="w-full border-round">
                 </button>
             </div>
         </form>
