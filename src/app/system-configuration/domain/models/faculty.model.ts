@@ -1,5 +1,5 @@
-export interface FacultyListResponse {
+export interface FacultyDTO {
     facultyId: number; 
     name: string;
-    abbreviation: string;
+    abbreviation?: string;
 }
