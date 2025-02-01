@@ -12,6 +12,9 @@ import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 import { KeyValueOption } from '../../../../shared/utils/models/form-builder.model';
 import { FormBodyCommitteMemberComponent } from '../../shared/components/form-body-committe-member/form-body-committe-member.component';
+import { AuthService } from '../../../../auth/auth.service';
+import { PersonRequest } from '../../../domain/models/person.model';
+import { CreateInitialConfigurationUsecase } from '../../../domain/usecase/create-initial-configuration-usecase';
 
 @Component({
   selector: 'app-register-cpd-secretary',
@@ -33,10 +36,14 @@ export class RegisterCpdSecretaryComponent {
   ];
 
   registerCpdSecretaryForm!: FormGroup;
+  userUid = '';
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly messageService = inject(MessageService);
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly createInitialConfigurationUseCase = inject(CreateInitialConfigurationUsecase);
 
   ngOnInit() {
 
@@ -54,37 +61,85 @@ export class RegisterCpdSecretaryComponent {
 
   }
 
-  onSubmit() {
-    console.log("values", this.registerCpdSecretaryForm.value);
-    //TODO: Enviar datos al servicio para guardar la secretaria del CIARP
+  async onSubmit() {
+
+    this.registerCpdSecretaryForm.markAllAsTouched();
+    if (this.registerCpdSecretaryForm.invalid) {
+      return;
+    }
+    // obtengo el id de la configuración inicial
+    const configurationId = this.authService.configurationId.value;
+    //TODO: Enviar datos al servicio para guardar la secretaria del CIARP 
+    //TODO: crear un usuario en supabse con una contraseña por defecto. 
+    await this.createUserSupabase();
+    //TODO: Crear el objeto de la persona
+    const resquestBody: PersonRequest = {
+      firstName: this.registerCpdSecretaryForm.value.firstLastName,
+      secondName: this.registerCpdSecretaryForm.value.middleName,
+      firstLastName: this.registerCpdSecretaryForm.value.firstLastName,
+      secondLastName: this.registerCpdSecretaryForm.value.secondLastName,
+      identificationTypeCatId: this.registerCpdSecretaryForm.value.identificationType.key,
+      identificationNumber: this.registerCpdSecretaryForm.value.identificationNumber,
+      phone: this.registerCpdSecretaryForm.value.cellphone,
+      email: this.registerCpdSecretaryForm.value.email,
+      configurationId: configurationId,
+      user: {
+        uid: this.userUid,
+        email: this.registerCpdSecretaryForm.value.email,
+        password: '',
+        userRoles: [
+          {
+            role: {
+              name: 'secretaria-cpd'
+            }
+          }
+        ]
+      }
+    };
+
+    //TODO: Enviar datos al servicio para guardar la secretaria del CPD
+    this.createInitialConfigurationUseCase.createPerson(resquestBody).subscribe({
+      next: (response) => {
+
+        this.registerCpdSecretaryForm.reset();
+        this.messageService.add(
+          {
+            severity: 'success',
+            summary: 'Secretaria del CPD creada correctamente',
+            detail: 'La secretaria del CPD fue creada correctamente'
+          });
+          setTimeout(() => {
+            this.router.navigate(['/'])
+          }, 3000);
+      },
+      error: (error) => {
+        this.messageService.add(
+          {
+            severity: 'error',
+            summary: 'Error al crear la secretaria del CPD',
+            detail: 'Ocurrió un error al crear la secretaria del CPD'
+          });
+        console.log("error", error);
+      }
+    });
 
   }
 
-  modalNewCpdMemberOrNextStep(event: Event) {
-    this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: '¿Desea agregar otro miembro del CIARP?',
-      header: 'Confirmación',
-      closable: true,
-      closeOnEscape: true,
-      icon: 'pi pi-info-circle',
-      rejectButtonProps: {
-        label: 'Cancelar',
-        severity: 'secondary',
-        outlined: true,
-
-      },
-      acceptButtonProps: {
-        label: 'Aceptar',
-      },
-      accept: () => {
-        console.log("acept button modal");
-        //TODO: Permancer en la misma pagina
-      },
-      reject: () => {
-        console.log("reject button modal");
-      },
+  createUserSupabase() {
+    //TODO: los miembros del CPD deben verificar el correo cuando les llegue la invitación
+    return new Promise((resolve) => {
+      this.authService.createUser(this.registerCpdSecretaryForm.value.email).subscribe({
+        next: (response) => {
+          this, this.userUid = response.data.user.id;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false)
+          console.log("error", error);
+        }
+      });
     });
+
   }
 
 }

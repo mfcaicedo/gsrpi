@@ -31,7 +31,7 @@ export class SystemConfigService extends SystemConfigurationGateway {
     return this.http.get<GenericResponse>(`${ENVIRONMENTS.GET_CONFIGURATION_BY_ID}/${configurationId}`);
   }
 
-  override createCpdMember(personRequest: PersonRequest): Observable<GenericResponse> {
+  override createPerson(personRequest: PersonRequest): Observable<GenericResponse> {
     return this.http.post<GenericResponse>(`${ENVIRONMENTS.CREATE_CPD_MEMBER}`, personRequest);
   }
 

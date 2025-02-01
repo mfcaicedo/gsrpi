@@ -20,8 +20,8 @@ export class CreateInitialConfigurationUsecase {
         return this.systemConfigurationGateway.getConfigurationById(configurationId);
     }
 
-    createCpdMember(personRequest: PersonRequest): Observable<GenericResponse> {
-        return this.systemConfigurationGateway.createCpdMember(personRequest);
+    createPerson(personRequest: PersonRequest): Observable<GenericResponse> {
+        return this.systemConfigurationGateway.createPerson(personRequest);
     }
 
 }

@@ -8,5 +8,5 @@ export abstract class SystemConfigurationGateway {
     abstract getAllFaculties(): Observable<FacultyDTO[]>;
     abstract createInitialConfiguration(systemConfigurationRequest: SystemConfigurationRequest): Observable<GenericResponse>;
     abstract getConfigurationById(configurationId: number): Observable<GenericResponse>;
-    abstract createCpdMember(personRequest: PersonRequest): Observable<GenericResponse>;
+    abstract createPerson(personRequest: PersonRequest): Observable<GenericResponse>;
 }

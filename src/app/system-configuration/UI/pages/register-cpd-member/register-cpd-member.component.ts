@@ -100,7 +100,7 @@ export class RegisterCpdMemberComponent {
     };
 
     //TODO: Enviar datos al servicio para guardar el miembro del CPD
-    this.createInitialConfigurationUseCase.createCpdMember(resquestBody).subscribe({
+    this.createInitialConfigurationUseCase.createPerson(resquestBody).subscribe({
       next: (response) => {
         //Activo el boton siguiente 
         this.isDisabledNextStep = false;
