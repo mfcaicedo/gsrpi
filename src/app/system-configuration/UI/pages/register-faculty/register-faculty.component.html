@@ -28,7 +28,8 @@
                 <button pButton severity="secondary" pRipple label="Anterior" [disabled]="true"
                     class="w-full border-round">
                 </button>
-                <button pButton pRipple label="Guardar" type="submit" class="w-full border-round">
+                <button pButton pRipple label="Guardar" type="submit" [disabled]="!registerForm.valid || disabledOnSubmit"
+                    class="w-full border-round">
                 </button>
                 <button pButton pRipple label="Siguiente" type="button" [disabled]="isDisabledNextStep"
                     class="w-full border-round" [routerLink]="['../registrar-cpd']">
@@ -36,4 +37,7 @@
             </div>
         </form>
     </div>
+    <!-- Dialog alert -->
+    <p-toast />
+    <p-confirmdialog />
 </div>

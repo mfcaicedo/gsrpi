@@ -8,11 +8,19 @@ import { KeyValueOption } from '../../../../shared/utils/models/form-builder.mod
 import { InputTextModule } from 'primeng/inputtext';
 import { RouterModule } from '@angular/router';
 import { ListFacultiesUsecase } from '../../../domain/usecase/list-faculties-usecase';
+import { CreateInitialConfigurationUsecase } from '../../../domain/usecase/create-initial-configuration-usecase';
+import { SystemConfigurationRequest } from '../../../domain/models/system-configuration.model';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { BehaviorSubject } from 'rxjs';
+import { AuthService } from '../../../../auth/auth.service';
 
 @Component({
   selector: 'app-register-faculty',
   imports: [CommonModule, ButtonModule, ProgressBarModule, SelectModule, FormsModule, InputTextModule,
-    ReactiveFormsModule, RouterModule],
+    ReactiveFormsModule, RouterModule, ToastModule, ConfirmDialogModule],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './register-faculty.component.html',
   styleUrl: './register-faculty.component.css'
 })
@@ -24,8 +32,13 @@ export class RegisterFacultyComponent implements OnInit {
 
   isDisabledNextStep = true;
 
+  disabledOnSubmit = false;
+
   private readonly formBuilder = inject(FormBuilder);
+  private readonly messageService = inject(MessageService);
   private readonly listFacultiesUseCase = inject(ListFacultiesUsecase);
+  private readonly createConfigurationInitialUseCase = inject(CreateInitialConfigurationUsecase);
+  private readonly authService = inject(AuthService)
 
   ngOnInit() {
 
@@ -54,8 +67,38 @@ export class RegisterFacultyComponent implements OnInit {
 
   onSubmit() {
 
-    console.log("selectedDepartment", this.registerForm.value);
+    console.log("faculty", this.registerForm.value);
     //TODO: Guardar el departamento por medio del serviicio back 
+    const configurationRequest: SystemConfigurationRequest = {
+      faculty: {
+        facultyId: this.registerForm.value.faculty.key,
+        name: this.registerForm.value.faculty.value,
+      }
+    }
+    this.createConfigurationInitialUseCase.createInitialConfiguration(configurationRequest).subscribe({
+      next: (response: any) => {
+        console.log("response, ", response);
+        //Guardo el id de la configuración inicial 
+        this.authService.saveConfigurationsId(response?.configurationId);
+        //Alerta de que se guardo correctamente
+        this.messageService.add(
+          {
+            severity: 'success',
+            summary: 'Configuración inicial creada',
+            detail: 'La configuración inicial se ha creado correctamente'
+          });
+        this.disabledOnSubmit = true;
+      },
+      error: (error) => {
+        //Mensaje de error 
+        this.messageService.add(
+          {
+            severity: 'error',
+            summary: 'Error al guardar la configuración inicial',
+            detail: 'Ocurrió un error al guardar la configuración inicial'
+          });
+      }
+    });
 
     //1. Habilitar el siguiente paso
     this.isDisabledNextStep = false;
