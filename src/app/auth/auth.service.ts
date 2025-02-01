@@ -28,6 +28,9 @@ export class AuthService {
 
   private session = new BehaviorSubject<Session | null>(null);
 
+  //Guardo el id de la configuración inicial en un BehaviorSubject
+  configurationId: BehaviorSubject<number> = new BehaviorSubject<number>(12); //Por defecto será la FIET 
+
   urls: string[] = [];
   privileges: string[] = [];
 
@@ -45,6 +48,14 @@ export class AuthService {
     const token = localStorage.getItem('accessToken');
     return signal(token ? this.jwtHelper.decodeToken(token) : null);
 
+  }
+
+  saveConfigurationsId(id: number) {
+    this.configurationId.next(id);
+  }
+
+  getConfigurationsId() {
+    return this.configurationId.asObservable();
   }
 
   isAuthenticated(): boolean {
@@ -97,6 +108,14 @@ export class AuthService {
       })
     );
 
+  }
+
+  createUser(email: string, password: string = "Gspri2025."): Observable<any> {
+
+    return from(this.supabase.auth.signUp({
+      email: email,
+      password: password,
+    }));
   }
 
   removeAccents(str: any) {
