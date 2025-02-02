@@ -12,6 +12,9 @@ import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 import { FormBodyCommitteMemberComponent } from '../../shared/components/form-body-committe-member/form-body-committe-member.component';
 import { KeyValueOption } from '../../../../shared/utils/models/form-builder.model';
+import { AuthService } from '../../../../auth/auth.service';
+import { CreateInitialConfigurationUsecase } from '../../../domain/usecase/create-initial-configuration-usecase';
+import { PersonRequest } from '../../../domain/models/person.model';
 
 @Component({
   selector: 'app-register-ciarp-member',
@@ -34,10 +37,14 @@ export class RegisterCiarpMemberComponent {
 
   isDisabledNextStep = true;
   registerCiarpMemberForm!: FormGroup;
+  userUid = '';
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly messageService = inject(MessageService);
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly createInitialConfigurationUseCase = inject(CreateInitialConfigurationUsecase);
 
   ngOnInit() {
 
@@ -55,18 +62,90 @@ export class RegisterCiarpMemberComponent {
 
   }
 
-  onSubmit() {
-    console.log("values", this.registerCiarpMemberForm.value);
-    //TODO: Enviar datos al servicio para guardar el miembro del CIARP
+  async onSubmit() {
+    
+    this.registerCiarpMemberForm.markAllAsTouched();
+    if (this.registerCiarpMemberForm.invalid) {
+      return;
+    }
 
-    //2. Activo el boton siguiente 
-    this.isDisabledNextStep = false;
+    // obtengo el id de la configuración inicial
+    const configurationId = this.authService.configurationId.value;
+
+    //TODO: crear un usuario en supabse con una contraseña por defecto. 
+    await this.createUserSupabase();
+    //TODO: Crear el objeto de la persona
+    const resquestBody: PersonRequest = {
+      firstName: this.registerCiarpMemberForm.value.firstName,
+      secondName: this.registerCiarpMemberForm.value.middleName,
+      firstLastName: this.registerCiarpMemberForm.value.firstLastName,
+      secondLastName: this.registerCiarpMemberForm.value.secondLastName,
+      identificationTypeCatId: this.registerCiarpMemberForm.value.identificationType.key,
+      identificationNumber: this.registerCiarpMemberForm.value.identificationNumber,
+      phone: this.registerCiarpMemberForm.value.cellphone,
+      email: this.registerCiarpMemberForm.value.email,
+      configurationId: configurationId,
+      user: {
+        uid: this.userUid,
+        email: this.registerCiarpMemberForm.value.email,
+        password: '',
+        userRoles: [
+          {
+            role: {
+              name: 'integrante-ciarp'
+            }
+          }
+        ]
+      }
+    };
+
+    //TODO: Enviar datos al servicio para guardar el miembro del CPD
+    this.createInitialConfigurationUseCase.createPerson(resquestBody).subscribe({
+      next: (response) => {
+        //Activo el boton siguiente 
+        this.isDisabledNextStep = false;
+        this.registerCiarpMemberForm.reset();
+        this.messageService.add(
+          {
+            severity: 'success',
+            summary: '¡Registro exitoso!',
+            detail: 'El miembro del CIARP se ha creado exitosamente'
+          });
+      },
+      error: (error) => {
+        this.messageService.add(
+          {
+            severity: 'error',
+            summary: 'Ups, algo salió mal',
+            detail: 'Ocurrió un error al crear el miembro del CIARP'
+          });
+        console.log("error", error);
+      }
+    });
+
+  }
+
+  createUserSupabase() {
+    //TODO: los miembros del CPD deben verificar el correo cuando les llegue la invitación
+    return new Promise((resolve) => {
+      this.authService.createUser(this.registerCiarpMemberForm.value.email).subscribe({
+        next: (response) => {
+          this, this.userUid = response.data.user.id;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false)
+          console.log("error", error);
+        }
+      });
+    });
+
   }
 
   modalNewCpdMemberOrNextStep(event: Event) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: '¿Desea agregar otro miembro del CIARP?',
+      message: '¿Desea continuar con el siguiente paso?',
       header: 'Confirmación',
       closable: true,
       closeOnEscape: true,
@@ -82,11 +161,10 @@ export class RegisterCiarpMemberComponent {
       },
       accept: () => {
         console.log("acept button modal");
-        //TODO: Permancer en la misma pagina
+        this.router.navigate(['configuracion-sistema/registrar-secretaria-ciarp']);
       },
       reject: () => {
         console.log("reject button modal");
-        this.router.navigate(['configuracion-sistema/registrar-secretaria-ciarp']);
       },
     });
   }
