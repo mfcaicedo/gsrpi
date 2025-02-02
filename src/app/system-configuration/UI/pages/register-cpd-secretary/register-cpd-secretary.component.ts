@@ -39,7 +39,6 @@ export class RegisterCpdSecretaryComponent {
   userUid = '';
 
   private readonly formBuilder = inject(FormBuilder);
-  private readonly confirmationService = inject(ConfirmationService);
   private readonly messageService = inject(MessageService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
@@ -69,12 +68,12 @@ export class RegisterCpdSecretaryComponent {
     }
     // obtengo el id de la configuración inicial
     const configurationId = this.authService.configurationId.value;
-    //TODO: Enviar datos al servicio para guardar la secretaria del CIARP 
+    //TODO: Enviar datos al servicio para guardar la secretaria del CPD
     //TODO: crear un usuario en supabse con una contraseña por defecto. 
     await this.createUserSupabase();
     //TODO: Crear el objeto de la persona
     const resquestBody: PersonRequest = {
-      firstName: this.registerCpdSecretaryForm.value.firstLastName,
+      firstName: this.registerCpdSecretaryForm.value.firstName,
       secondName: this.registerCpdSecretaryForm.value.middleName,
       firstLastName: this.registerCpdSecretaryForm.value.firstLastName,
       secondLastName: this.registerCpdSecretaryForm.value.secondLastName,
@@ -105,8 +104,8 @@ export class RegisterCpdSecretaryComponent {
         this.messageService.add(
           {
             severity: 'success',
-            summary: 'Secretaria del CPD creada correctamente',
-            detail: 'La secretaria del CPD fue creada correctamente'
+            summary: '¡Registro exitoso!',
+            detail: 'La secretaria del CIARP fue creada exitosamente'
           });
           setTimeout(() => {
             this.router.navigate(['/'])
@@ -116,7 +115,7 @@ export class RegisterCpdSecretaryComponent {
         this.messageService.add(
           {
             severity: 'error',
-            summary: 'Error al crear la secretaria del CPD',
+            summary: 'Ups, algo salió mal',
             detail: 'Ocurrió un error al crear la secretaria del CPD'
           });
         console.log("error", error);

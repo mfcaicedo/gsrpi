@@ -76,7 +76,7 @@ export class RegisterCpdMemberComponent {
     await this.createUserSupabase();
     //TODO: Crear el objeto de la persona
     const resquestBody: PersonRequest = {
-      firstName: this.registerCpdMemberForm.value.firstLastName,
+      firstName: this.registerCpdMemberForm.value.firstName,
       secondName: this.registerCpdMemberForm.value.middleName,
       firstLastName: this.registerCpdMemberForm.value.firstLastName,
       secondLastName: this.registerCpdMemberForm.value.secondLastName,
@@ -108,7 +108,7 @@ export class RegisterCpdMemberComponent {
         this.messageService.add(
           {
             severity: 'success',
-            summary: 'Miembro del CPD creado',
+            summary: '¡Registro exitoso!',
             detail: 'El miembro del CPD se ha creado correctamente'
           });
       },
@@ -116,7 +116,7 @@ export class RegisterCpdMemberComponent {
         this.messageService.add(
           {
             severity: 'error',
-            summary: 'Error al crear el miembro del CPD',
+            summary: 'Ups, algo salió mal',
             detail: 'Ocurrió un error al crear el miembro del CPD'
           });
         console.log("error", error);

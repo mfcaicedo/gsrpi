@@ -85,7 +85,7 @@ export class RegisterFacultyComponent implements OnInit {
           {
             severity: 'success',
             summary: 'Configuración inicial creada',
-            detail: 'La configuración inicial se ha creado correctamente'
+            detail: 'La configuración inicial se ha creado exitosamente'
           });
         this.disabledOnSubmit = true;
       },
@@ -94,8 +94,8 @@ export class RegisterFacultyComponent implements OnInit {
         this.messageService.add(
           {
             severity: 'error',
-            summary: 'Error al guardar la configuración inicial',
-            detail: 'Ocurrió un error al guardar la configuración inicial'
+            summary: 'Ups, algo salió mal',
+            detail: 'Ocurrió un error al crear la configuración inicial'
           });
       }
     });
