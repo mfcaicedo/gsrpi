@@ -15,6 +15,8 @@ import { authInterceptor } from './auth/auth.interceptor';
 import { DatePipe } from '@angular/common';
 import { SystemConfigurationGateway } from './system-configuration/domain/models/gateway/system-configuration-gateway';
 import { SystemConfigService } from './system-configuration/infrastructure/adapter/system-configuration-api/system-config.service';
+import { ApplicationsRecognitionGateway } from './applications-recognition/domain/models/gateway/applications-recognition-gateway';
+import { ApplicationManagementService } from './applications-recognition/infrastructure/adapter/application-management-api/application-management.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -59,6 +61,7 @@ export const appConfig: ApplicationConfig = {
     //Configuracion de la inyeccion de dependencias para el desacoplamiento de la capa de infraestructura
     { provide: UserGateway, useClass: UserManagementService },
     { provide: SystemConfigurationGateway, useClass: SystemConfigService },
+    { provide: ApplicationsRecognitionGateway, useClass: ApplicationManagementService }
 
   ]
 };
