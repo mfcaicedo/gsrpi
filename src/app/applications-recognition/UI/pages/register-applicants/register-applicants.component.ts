@@ -11,6 +11,10 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 import { KeyValueOption } from '../../../../shared/utils/models/form-builder.model';
+import { AuthService } from '../../../../auth/auth.service';
+import { ApplicationTempManagementUsecase } from '../../../domain/usecase/application-temp-management-usecase';
+import { UserManagementUseCase } from '../../../../user-management/domain/usecase/user-management-usecase';
+import { ApplicationRequestTemp, TeacherPersonUnifiedResponse } from '../../../domain/models/applications.model';
 
 @Component({
   selector: 'app-register-applicants',
@@ -39,13 +43,33 @@ export class RegisterApplicantsComponent implements OnInit {
 
   isDisabledNextStep = true;
   registerApplicantForm!: FormGroup;
+  userId: number = 0;
+  teacherResponse: TeacherPersonUnifiedResponse = {} as TeacherPersonUnifiedResponse;
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly messageService = inject(MessageService);
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly userManagementUseCase = inject(UserManagementUseCase);
+  private readonly applicationTempManagementUsecase = inject(ApplicationTempManagementUsecase);
 
-  ngOnInit() {
+  async ngOnInit() {
 
+    this.buildFormRegisterApplicant();
+
+    //1. Consultar usuario por uid 
+    await this.getUserByUid();
+    //2. Consultar persona por id de usuario
+    await this.getPersonByUserId();
+    //3. Consultar docente por id de persona
+    await this.getTeacherByPersonId();
+
+    await this.getApplicationTempByTeacherId();
+
+  }
+
+  buildFormRegisterApplicant() {
     this.registerApplicantForm = this.formBuilder.group({
       totalNumberAuthors: [undefined, [Validators.required]],
       firstName: ['', [Validators.required]],
@@ -59,28 +83,122 @@ export class RegisterApplicantsComponent implements OnInit {
       departmentFaculty: [undefined, [Validators.required]],
 
     });
+  }
+
+  async getUserByUid() {
+    return new Promise((resolve) => {
+      this.userManagementUseCase.getUserByUid(this.authService.getDecodeToken()).subscribe({
+        next: (response: any) => {
+          this.userId = response.userId;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+  }
+
+  async getPersonByUserId() {
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.getPersonByUserId(this.userId).subscribe({
+        next: (response: any) => {
+          this.teacherResponse.person = response;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+  }
+
+  async getTeacherByPersonId() {
+
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.getTeacherByPersonId(this.teacherResponse.person.personId).subscribe({
+        next: (response: any) => {
+          this.teacherResponse.teacher = response;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+
+  }
+
+  async getApplicationTempByTeacherId() {
+
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.getApplicationTempByTeacherId(this.teacherResponse.teacher.teacherId).subscribe({
+        next: (response: any) => {
+          if (response !== null) {
+            //Actualizar la solicitud en la tabla temporal
+            this.autoCompleteForm(response.numberOfAuthors);
+          }
+          resolve(true);
+        },
+        error: (error) => {
+          this.messageService.add(
+            {
+              severity: 'error',
+              summary: 'Ups, algo salió mal',
+              detail: 'Tuvimos un problema al consultar la solicitud de reconocimiento. Inténtelo de nuevo en unos minutos.'
+            });
+          console.error("error", error);
+          resolve(false);
+        }
+      });
+    });
+  }
+
+  autoCompleteForm(numberOfAuthors: number) {
+
+    this.registerApplicantForm.patchValue({
+      firstName: this.teacherResponse.person.firstName,
+      middleName: this.teacherResponse.person.secondName,
+      firstLastName: this.teacherResponse.person.firstLastName,
+      secondLastName: this.teacherResponse.person.secondLastName,
+      identificationType: this.teacherResponse.person.identificationTypeCatId,
+      identificationNumber: this.teacherResponse.person.identificationNumber,
+      cellphone: this.teacherResponse.person.phone,
+      email: this.teacherResponse.person.email,
+      departmentFaculty: this.teacherResponse.teacher.departmentId,
+      totalNumberAuthors: numberOfAuthors,
+    });
+
+    this.registerApplicantForm.disable();
+    this.registerApplicantForm.get('totalNumberAuthors')?.enable();
+
+    if (numberOfAuthors !== 0) this.isDisabledNextStep = false;
 
   }
 
   onSubmit() {
-    console.log("values", this.registerApplicantForm.value);
-    //TODO: Enviar datos al servicio para guardar el miembro del CIARP
+    this.registerApplicantForm.markAllAsTouched();
+    if (this.registerApplicantForm.invalid) {
+      return;
+    }
+    //Modal de confirmación de guardar datos 
+    this.modalConfirmationSaveData();
 
-    //2. Activo el boton siguiente 
-    this.isDisabledNextStep = false;
   }
 
-  modalNewApplicantOrNextStep(event: Event) {
-    console.log("si");
+  modalConfirmationSaveData() {
     this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: '¿Desea agregar otro autor solicitante?',
+      target: 'body' as unknown as EventTarget,
+      message: '¿Está seguro(a) de guardar la información?',
       header: 'Confirmación',
       closable: true,
       closeOnEscape: true,
       icon: 'pi pi-info-circle',
       rejectButtonProps: {
-        label: 'No, continuar',
+        label: 'Cancelar',
         severity: 'secondary',
         outlined: true,
 
@@ -88,14 +206,47 @@ export class RegisterApplicantsComponent implements OnInit {
       acceptButtonProps: {
         label: 'Aceptar',
       },
-      accept: () => {
+      accept: async () => {
         console.log("acept button modal");
-        //TODO: Permancer en la misma pagina
+        //Guardar datos
+        await this.updateApplicationTemp();
       },
-      reject: () => {
-        console.log("reject button modal");
-        this.router.navigate(['solicitudes-reconocimiento/registrar-datos-generales-produccion/step-3']);
-      },
+    });
+  }
+
+  async updateApplicationTemp() {
+    const bodyRequest: ApplicationRequestTemp = {
+      applicationTempId: 2, //TODO: Consultar el id de la solicitud temporal iniciada por el usuario
+      teacherId: this.teacherResponse.teacher.teacherId,
+      numberOfAuthors: this.registerApplicantForm.value.totalNumberAuthors,
+      departmentId: this.registerApplicantForm.value.departmentFaculty,
+    };
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.updateApplicationTemp(bodyRequest).subscribe({
+        next: (response: any) => {
+          //Activo el boton siguiente 
+          this.isDisabledNextStep = false;
+          //Mensaje de exito 
+          this.messageService.add(
+            {
+              severity: 'success',
+              summary: '¡Registro exitoso!',
+              detail: 'Los datos de la solicitud se han guardado exitosamente.'
+            });
+          resolve(true);
+        },
+        error: (error) => {
+          this.messageService.add(
+            {
+              severity: 'error',
+              summary: 'Ups, algo salió mal',
+              detail: 'Tuvimos un problema al guardar los dartos de la solicitud de reconocimiento. ' +
+                'Inténtelo de nuevo en unos minutos.'
+            });
+          resolve(false);
+          console.log("error", error);
+        }
+      });
     });
   }
 
