@@ -26,13 +26,20 @@
                 </div>
                 }
             </div>
-            <div class="col-12 sm:col-5 flex flex-row gap-2 pl-0">
+            <div class="col-12 sm:col-6 flex flex-row gap-2 pl-0">
                 <button pButton severity="secondary" pRipple label="Anterior" [disabled]="true"
                     class="w-full border-round">
                 </button>
-                <button pButton pRipple label="Siguiente" class="w-full border-round">
+                <button pButton pRipple label="Guardar" type="submit" [disabled]="!registerForm.valid"
+                    class="w-full border-round">
+                </button>
+                <button pButton pRipple label="Siguiente" type="button" [disabled]="!isDisabledNextStep"
+                    class="w-full border-round" [routerLink]="['../registrar-solicitantes/step-2']">
                 </button>
             </div>
         </form>
     </div>
+    <!-- Dialog alert -->
+    <p-toast />
+    <p-confirmdialog />
 </div>
