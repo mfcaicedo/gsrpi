@@ -66,6 +66,7 @@ export class AuthService {
 
     const token = localStorage.getItem('accessToken') ?? '';
     //Al decodificar el token obtenemos los datos del usuario, roles y privilegios
+    //Pero por el momento solo se obtiene el uid del usuario
     return this.jwtHelper.decodeToken(token).sub
 
   }

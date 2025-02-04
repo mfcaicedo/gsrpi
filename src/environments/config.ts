@@ -14,12 +14,25 @@ const ENVIRONMENTS = {
 
     //USER MANAGEMENT
     GET_USERS_PAGINATED: `${base_url_api_gsrpi}/obtener-usuarios-paginados`,
+    GET_USER_BY_UID: `${base_url_api_gsrpi}/obtener-usuario-por-uid`,
+    GET_USER_BY_ID: `${base_url_api_gsrpi}/obtener-usuario-por-id`,
 
     //SYSTEM CONFIGURATION
     GET_ALL_FACULTIES: `${base_url_api_gsrpi}/obtener-facultades`,
     CREATE_INITIAL_CONFIGURATION: `${base_url_api_gsrpi}/crear-configuracion`,
     GET_CONFIGURATION_BY_ID: `${base_url_api_gsrpi}/obtener-configuracion-por-id`,
     CREATE_CPD_MEMBER: `${base_url_api_gsrpi}/crear-persona`,
+
+    //APPLICATION MANAGEMENT
+    CREATE_TEMPORARY_APPLICATION: `${base_url_api_gsrpi}/crear-solicitud-temporal`,
+    UPDATE_TEMPORARY_APPLICATION: `${base_url_api_gsrpi}/actualizar-solicitud-temporal`,
+    CREATE_RECOGNIZED_APPLICATION: `${base_url_api_gsrpi}/crear-solicitud-reconocida`,
+    CREATE_APPLICATION: `${base_url_api_gsrpi}/crear-solicitud`,
+    GET_PRODUCTION_TYPE_BY_ALIAS: `${base_url_api_gsrpi}/obtener-tipo-produccion-por-alias`,
+    GET_PRODUCTION_TYPE_BY_ID: `${base_url_api_gsrpi}/obtener-tipo-produccion-por-id`,
+    GET_TEACHER_BY_PERSON_ID: `${base_url_api_gsrpi}/obtener-docente-por-id-persona`,
+    GET_PERSON_BY_USER_ID: `${base_url_api_gsrpi}/obtener-persona-por-usuario-id`,
+    GET_TEMPORARY_APPLICATION_BY_TEACHER_ID : `${base_url_api_gsrpi}/obtener-solicitud-temporal-por-docente-id`,
 }
 
 export default ENVIRONMENTS;
