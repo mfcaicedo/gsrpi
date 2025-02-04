@@ -21,6 +21,9 @@ export class UserManagementService extends UserGateway {
   override getUserById(id: number): Observable<User> {
     throw new Error('Method not implemented.');
   }
+  override getUserByUid(uid: string): Observable<User> {
+    return this.http.get<User>(`${ENVIRONMENTS.GET_USER_BY_UID}/${uid}`);
+  }
   override createUser(user: User): Observable<User> {
     throw new Error('Method not implemented.');
   }
