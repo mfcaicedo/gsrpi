@@ -1,6 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { ApplicationsRecognitionGateway } from "../models/gateway/applications-recognition-gateway";
-import { ApplicationRequestTemp } from "../models/applications.model";
+import { ApplicationTemp } from "../models/applications.model";
 
 @Injectable({
     providedIn: 'root'
@@ -9,11 +9,11 @@ export class ApplicationTempManagementUsecase {
 
     private readonly applicationRecognitionGateway = inject(ApplicationsRecognitionGateway);
 
-    saveApplicationTemp(applicationRequestTemp: ApplicationRequestTemp) {
+    saveApplicationTemp(applicationRequestTemp: ApplicationTemp) {
         return this.applicationRecognitionGateway.saveApplicationTemp(applicationRequestTemp);
     }
 
-    updateApplicationTemp(applicationRequestTemp: Partial<ApplicationRequestTemp>) {
+    updateApplicationTemp(applicationRequestTemp: Partial<ApplicationTemp>) {
         return this.applicationRecognitionGateway.updateApplicationTemp(applicationRequestTemp);
     }
 

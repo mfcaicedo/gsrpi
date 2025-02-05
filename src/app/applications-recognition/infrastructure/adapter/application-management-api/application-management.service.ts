@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { ApplicationsRecognitionGateway } from '../../../domain/models/gateway/applications-recognition-gateway';
 import { Observable } from 'rxjs';
 import { GenericResponse } from '../../../../shared/utils/models/request-response.model';
-import { ApplicationRequestTemp } from '../../../domain/models/applications.model';
+import { ApplicationTemp } from '../../../domain/models/applications.model';
 import ENVIRONMENTS from '../../../../../environments/config';
 
 @Injectable({
@@ -17,11 +17,11 @@ export class ApplicationManagementService extends ApplicationsRecognitionGateway
     super();
   }
 
-  override saveApplicationTemp(applicationRequestTemp: ApplicationRequestTemp): Observable<GenericResponse> {
+  override saveApplicationTemp(applicationRequestTemp: ApplicationTemp): Observable<GenericResponse> {
     return this.http.post<GenericResponse>(ENVIRONMENTS.CREATE_TEMPORARY_APPLICATION, applicationRequestTemp);
   }
 
-  override updateApplicationTemp(applicationRequestTemp: Partial<ApplicationRequestTemp>): Observable<GenericResponse> {
+  override updateApplicationTemp(applicationRequestTemp: Partial<ApplicationTemp>): Observable<GenericResponse> {
     return this.http.patch<GenericResponse>(ENVIRONMENTS.UPDATE_TEMPORARY_APPLICATION, applicationRequestTemp);
   }
 

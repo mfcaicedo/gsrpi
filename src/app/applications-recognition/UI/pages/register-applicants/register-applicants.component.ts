@@ -14,7 +14,7 @@ import { KeyValueOption } from '../../../../shared/utils/models/form-builder.mod
 import { AuthService } from '../../../../auth/auth.service';
 import { ApplicationTempManagementUsecase } from '../../../domain/usecase/application-temp-management-usecase';
 import { UserManagementUseCase } from '../../../../user-management/domain/usecase/user-management-usecase';
-import { ApplicationRequestTemp, TeacherPersonUnifiedResponse } from '../../../domain/models/applications.model';
+import { ApplicationTemp, TeacherPersonUnifiedResponse } from '../../../domain/models/applications.model';
 
 @Component({
   selector: 'app-register-applicants',
@@ -45,11 +45,11 @@ export class RegisterApplicantsComponent implements OnInit {
   registerApplicantForm!: FormGroup;
   userId: number = 0;
   teacherResponse: TeacherPersonUnifiedResponse = {} as TeacherPersonUnifiedResponse;
+  applicationTempId: number = 0;
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly messageService = inject(MessageService);
-  private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly userManagementUseCase = inject(UserManagementUseCase);
   private readonly applicationTempManagementUsecase = inject(ApplicationTempManagementUsecase);
@@ -139,6 +139,7 @@ export class RegisterApplicantsComponent implements OnInit {
         next: (response: any) => {
           if (response !== null) {
             //Actualizar la solicitud en la tabla temporal
+            this.applicationTempId = response.applicationTempId;
             this.autoCompleteForm(response.numberOfAuthors);
           }
           resolve(true);
@@ -215,8 +216,8 @@ export class RegisterApplicantsComponent implements OnInit {
   }
 
   async updateApplicationTemp() {
-    const bodyRequest: ApplicationRequestTemp = {
-      applicationTempId: 2, //TODO: Consultar el id de la solicitud temporal iniciada por el usuario
+    const bodyRequest: ApplicationTemp = {
+      applicationTempId: this.applicationTempId,
       teacherId: this.teacherResponse.teacher.teacherId,
       numberOfAuthors: this.registerApplicantForm.value.totalNumberAuthors,
       departmentId: this.registerApplicantForm.value.departmentFaculty,
@@ -240,7 +241,7 @@ export class RegisterApplicantsComponent implements OnInit {
             {
               severity: 'error',
               summary: 'Ups, algo salió mal',
-              detail: 'Tuvimos un problema al guardar los dartos de la solicitud de reconocimiento. ' +
+              detail: 'Tuvimos un problema al guardar los datos de la solicitud de reconocimiento. ' +
                 'Inténtelo de nuevo en unos minutos.'
             });
           resolve(false);

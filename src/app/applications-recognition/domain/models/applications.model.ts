@@ -1,7 +1,7 @@
 import { Person } from "./person.model";
 import { TeacherResponse } from "./teacher.model";
 
-export interface ApplicationRequestTemp {
+export interface ApplicationTemp {
     applicationTempId?: number;
     teacherId?: number;
     description?: string;

@@ -11,7 +11,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ApplicationTempManagementUsecase } from '../../../domain/usecase/application-temp-management-usecase';
-import { ApplicationRequestTemp } from '../../../domain/models/applications.model';
+import { ApplicationTemp } from '../../../domain/models/applications.model';
 import { UserManagementUseCase } from '../../../../user-management/domain/usecase/user-management-usecase';
 import { AuthService } from '../../../../auth/auth.service';
 
@@ -36,7 +36,7 @@ export class CreateApplicationComponent {
   personId: number = 0;
   teacherId: number = 0;
   isUpdate: boolean = false;
-  requestBody: Partial<ApplicationRequestTemp> = {};
+  requestBody: Partial<ApplicationTemp> = {};
   applicationTempId: number = 0;
 
   private readonly formBuilder = inject(FormBuilder);
@@ -137,7 +137,6 @@ export class CreateApplicationComponent {
         next: (response: any) => {
           if (response !== null) {
             //Actualizar la solicitud en la tabla temporal
-            console.log("el response ver: ", response);
             this.isUpdate = true;
             this.applicationTempId = response.applicationTempId;
             this.autoCompleteForm(response.applicationTypeCatId);

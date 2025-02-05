@@ -13,6 +13,10 @@ import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 import { CheckboxModule } from 'primeng/checkbox';
 import { TextareaModule } from 'primeng/textarea';
+import { AuthService } from '../../../../auth/auth.service';
+import { UserManagementUseCase } from '../../../../user-management/domain/usecase/user-management-usecase';
+import { ApplicationTempManagementUsecase } from '../../../domain/usecase/application-temp-management-usecase';
+import { ApplicationTemp } from '../../../domain/models/applications.model';
 
 @Component({
   selector: 'app-register-general-production-data',
@@ -38,13 +42,36 @@ export class RegisterGeneralProductionDataComponent {
 
   isDisabledNextStep = true;
   registerGeneralProductionDataForm!: FormGroup;
+  userId: number = 0;
+  personId: number = 0;
+  teacherId: number = 0;
+  applicationTempId: number = 0;
+
+  applicationTempResponse = {} as ApplicationTemp;
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly confirmationService = inject(ConfirmationService);
-  private readonly router = inject(Router);
+  private readonly messageService = inject(MessageService);
+  private readonly authService = inject(AuthService);
+  private readonly userManagementUseCase = inject(UserManagementUseCase);
+  private readonly applicationTempManagementUsecase = inject(ApplicationTempManagementUsecase);
 
-  ngOnInit() {
+  async ngOnInit() {
 
+    this.buildFormRegisterGeneralProductionData();
+
+    //1. Consultar usuario por uid 
+    await this.getUserByUid();
+    //2. Consultar persona por id de usuario
+    await this.getPersonByUserId();
+    //3. Consultar docente por id de persona
+    await this.getTeacherByPersonId();
+
+    await this.getApplicationTempByTeacherId();
+
+  }
+
+  buildFormRegisterGeneralProductionData() {
     this.registerGeneralProductionDataForm = this.formBuilder.group({
       title: ['', [Validators.required]],
       disciplinaryArea: ['', [Validators.required]],
@@ -55,21 +82,120 @@ export class RegisterGeneralProductionDataComponent {
       observations: ['', [Validators.minLength(3), Validators.maxLength(200)]],
 
     });
+  }
+
+  async getUserByUid() {
+    return new Promise((resolve) => {
+      this.userManagementUseCase.getUserByUid(this.authService.getDecodeToken()).subscribe({
+        next: (response: any) => {
+          this.userId = response.userId;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+  }
+
+  async getPersonByUserId() {
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.getPersonByUserId(this.userId).subscribe({
+        next: (response: any) => {
+          this.personId = response.personId;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+  }
+
+  async getTeacherByPersonId() {
+
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.getTeacherByPersonId(this.personId).subscribe({
+        next: (response: any) => {
+          this.teacherId = response.teacherId;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+
+  }
+
+  async getApplicationTempByTeacherId() {
+
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.getApplicationTempByTeacherId(this.teacherId).subscribe({
+        next: (response: any) => {
+          if (response !== null) {
+            //Actualizar la solicitud en la tabla temporal
+            this.applicationTempId = response.applicationTempId;
+            this.applicationTempResponse = response;
+            this.autoCompleteForm();
+          }
+          resolve(true);
+        },
+        error: (error) => {
+          this.messageService.add(
+            {
+              severity: 'error',
+              summary: 'Ups, algo salió mal',
+              detail: 'Tuvimos un problema al consultar la solicitud de reconocimiento. Inténtelo de nuevo en unos minutos.'
+            });
+          console.error("error", error);
+          resolve(false);
+        }
+      });
+    });
+  }
+
+  autoCompleteForm() {
+
+    this.registerGeneralProductionDataForm.patchValue({
+      title: this.applicationTempResponse.productionTitle,
+      disciplinaryArea: this.applicationTempResponse.productionDisciplinaryArea,
+      numberPages: this.applicationTempResponse.productionNumberOfPages === 0 ? undefined :
+        this.applicationTempResponse.productionNumberOfPages,
+      firstPage: this.applicationTempResponse.productionStartPage === 0 ? undefined :
+        this.applicationTempResponse.productionStartPage,
+      finalPage: this.applicationTempResponse.productionEndPage === 0 ? undefined :
+        this.applicationTempResponse.productionEndPage,
+      publicationMechanisms: this.applicationTempResponse.productionPublicationMechanisms ?
+        JSON.parse(this.applicationTempResponse.productionPublicationMechanisms) : [],
+      observations: this.applicationTempResponse.productionObservations
+    });
+
+    if(this.applicationTempResponse.productionTitle) { //Valido con un campo obligatorio
+      this.isDisabledNextStep = false;
+    }
 
   }
 
   onSubmit() {
-    console.log("values", this.registerGeneralProductionDataForm.value);
-    //TODO: Enviar datos al servicio para guardar el miembro del CIARP
 
-    //2. Activo el boton siguiente 
-    this.isDisabledNextStep = false;
+    this.registerGeneralProductionDataForm.markAllAsTouched();
+    if (this.registerGeneralProductionDataForm.invalid) {
+      return;
+    }
+
+    //Modal de confirmación de guardar datos 
+    this.modalConfirmationSaveData();
+
   }
 
-  modalNewApplicantOrNextStep(event: Event) {
+  modalConfirmationSaveData() {
     this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: '¿Desea continuar al siguiente paso?',
+      target: 'body' as unknown as EventTarget,
+      message: '¿Está seguro(a) de guardar la información?',
       header: 'Confirmación',
       closable: true,
       closeOnEscape: true,
@@ -83,14 +209,51 @@ export class RegisterGeneralProductionDataComponent {
       acceptButtonProps: {
         label: 'Aceptar',
       },
-      accept: () => {
-        console.log("acept button modal");
-        //TODO: Pasar a la siguiente pantalla - paso 4
-        this.router.navigate(['solicitudes-reconocimiento/registrar-tipo-produccion/step-4']);
+      accept: async () => {
+        //Guardar datos
+        await this.updateApplicationTemp();
       },
-      reject: () => {
-        console.log("reject button modal");
-      },
+    });
+  }
+
+  async updateApplicationTemp() {
+    const bodyRequest: ApplicationTemp = {
+      applicationTempId: this.applicationTempId,
+      productionTitle: this.registerGeneralProductionDataForm.value.title,
+      productionDisciplinaryArea: this.registerGeneralProductionDataForm.value.disciplinaryArea,
+      productionNumberOfPages: this.registerGeneralProductionDataForm.value.numberPages,
+      productionStartPage: this.registerGeneralProductionDataForm.value.firstPage,
+      productionEndPage: this.registerGeneralProductionDataForm.value.finalPage,
+      productionPublicationMechanisms: JSON.stringify(this.registerGeneralProductionDataForm.value.publicationMechanisms),
+      productionObservations: this.registerGeneralProductionDataForm.value.observations
+    };
+
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.updateApplicationTemp(bodyRequest).subscribe({
+        next: (response: any) => {
+          //Activo el boton siguiente 
+          this.isDisabledNextStep = false;
+          //Mensaje de exito 
+          this.messageService.add(
+            {
+              severity: 'success',
+              summary: '¡Registro exitoso!',
+              detail: 'Los datos de la solicitud se han guardado exitosamente.'
+            });
+          resolve(true);
+        },
+        error: (error) => {
+          this.messageService.add(
+            {
+              severity: 'error',
+              summary: 'Ups, algo salió mal',
+              detail: 'Tuvimos un problema al guardar los datos de la solicitud de reconocimiento. ' +
+                'Inténtelo de nuevo en unos minutos.'
+            });
+          resolve(false);
+          console.log("error", error);
+        }
+      });
     });
   }
 
