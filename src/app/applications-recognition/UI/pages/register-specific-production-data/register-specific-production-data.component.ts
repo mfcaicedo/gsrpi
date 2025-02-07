@@ -15,6 +15,10 @@ import { ToastModule } from 'primeng/toast';
 import { KeyValueOption } from '../../../../shared/utils/models/form-builder.model';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { DatePickerModule } from 'primeng/datepicker';
+import { AuthService } from '../../../../auth/auth.service';
+import { UserManagementUseCase } from '../../../../user-management/domain/usecase/user-management-usecase';
+import { ApplicationTempManagementUsecase } from '../../../domain/usecase/application-temp-management-usecase';
+import { ApplicationTypeJsonStructureResponse } from '../../../domain/models/applications.model';
 
 @Component({
   selector: 'app-register-specific-production-data',
@@ -50,37 +54,173 @@ export class RegisterSpecificProductionDataComponent {
 
   isDisabledNextStep = true;
   registerSpecificProductionDataForm!: FormGroup;
+  userId: number = 0;
+  personId: number = 0;
+  teacherId: number = 0;
+  applicationTempId: number = 0;
+  productionTypeId: number = 0;
+
+  applicationTypeJsonStructureResponse: ApplicationTypeJsonStructureResponse = {} as ApplicationTypeJsonStructureResponse;
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly confirmationService = inject(ConfirmationService);
-  private readonly router = inject(Router);
+  private readonly messageService = inject(MessageService);
+  private readonly authService = inject(AuthService);
+  private readonly userManagementUseCase = inject(UserManagementUseCase);
+  private readonly applicationTempManagementUsecase = inject(ApplicationTempManagementUsecase);
 
-  ngOnInit() {
+  async ngOnInit() {
 
+    this.buildRegisterSpecificProductionDataForm();
+
+
+    //1. Consultar usuario por uid 
+    await this.getUserByUid();
+    //2. Consultar persona por id de usuario
+    await this.getPersonByUserId();
+    //3. Consultar docente por id de persona
+    await this.getTeacherByPersonId();
+
+    await this.getApplicationTempByTeacherId();
+
+    await this.getProductionTypeById();
+
+  }
+
+  buildRegisterSpecificProductionDataForm() {
     this.registerSpecificProductionDataForm = this.formBuilder.group({
       magazineType: [undefined, [Validators.required]],
+      doi: [undefined, []],
       issn: [undefined, [Validators.required]],
       publindexCategory: [undefined, [Validators.required]],
       startDate: [undefined, [Validators.required]],
       endDate: [undefined, [Validators.required]],
       articleType: [undefined, [Validators.required]],
-
     });
+  }
+
+  async getUserByUid() {
+    return new Promise((resolve) => {
+      this.userManagementUseCase.getUserByUid(this.authService.getDecodeToken()).subscribe({
+        next: (response: any) => {
+          this.userId = response.userId;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+  }
+
+  async getPersonByUserId() {
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.getPersonByUserId(this.userId).subscribe({
+        next: (response: any) => {
+          this.personId = response.personId;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+  }
+
+  async getTeacherByPersonId() {
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.getTeacherByPersonId(this.personId).subscribe({
+        next: (response: any) => {
+          this.teacherId = response.teacherId;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+  }
+
+  async getApplicationTempByTeacherId() {
+
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.getApplicationTempByTeacherId(this.teacherId).subscribe({
+        next: (response: any) => {
+          if (response !== null) {
+            //Actualizar la solicitud en la tabla temporal
+            this.applicationTempId = response.applicationTempId;
+            this.productionTypeId = response.productionTypeId;
+            this.autoCompleteForm(response.productionJsonData);
+          }
+          resolve(true);
+        },
+        error: (error) => {
+          this.messageService.add(
+            {
+              severity: 'error',
+              summary: 'Ups, algo salió mal',
+              detail: 'Tuvimos un problema al consultar la solicitud de reconocimiento. Inténtelo de nuevo en unos minutos.'
+            });
+          console.error("error", error);
+          resolve(false);
+        }
+      });
+    });
+  }
+
+  async getProductionTypeById() {
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.getProductionTypeJsonStructureById(this.productionTypeId).subscribe({
+        next: (response: any) => {
+          this.applicationTypeJsonStructureResponse.jsonStructure = response.jsonStructure;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+  }
+
+  autoCompleteForm(response: any) {
+
+    if (response) {
+      const data = JSON.parse(response);
+      this.registerSpecificProductionDataForm.patchValue({
+        magazineType: data.magazineType,
+        doi: data.doi,
+        issn: data.issn,
+        publindexCategory: data.publindexCategory,
+        startDate: new Date(data.startDate),
+        endDate: new Date(data.endDate),
+        articleType: data.articleType,
+      });
+      this.isDisabledNextStep = false;
+    }
 
   }
 
   onSubmit() {
-    console.log("values", this.registerSpecificProductionDataForm.value);
-    //TODO: Enviar datos al servicio para guardar el miembro del CIARP
 
-    //2. Activo el boton siguiente 
-    this.isDisabledNextStep = false;
+    this.registerSpecificProductionDataForm.markAllAsTouched();
+    if (this.registerSpecificProductionDataForm.invalid) {
+      return;
+    }
+
+    //Modal de confirmación de guardar datos 
+    this.modalConfirmationSaveData();
+
   }
 
-  modalNewApplicantOrNextStep(event: Event) {
+  modalConfirmationSaveData() {
+
     this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: '¿Desea continuar al siguiente paso?',
+      target: 'body' as unknown as EventTarget,
+      message: '¿Está seguro(a) de guardar la información?',
       header: 'Confirmación',
       closable: true,
       closeOnEscape: true,
@@ -94,14 +234,56 @@ export class RegisterSpecificProductionDataComponent {
       acceptButtonProps: {
         label: 'Aceptar',
       },
-      accept: () => {
-        console.log("acept button modal");
-        //TODO: Pasar a la siguiente pantalla - paso 4
-        this.router.navigate(['solicitudes-reconocimiento/registrar-trabajos-relacionados/step-6']);
+      accept: async () => {
+        //Guardar datos
+        await this.updateApplicationTemp();
       },
-      reject: () => {
-        console.log("reject button modal");
-      },
+    });
+
+  }
+
+  async updateApplicationTemp() {
+
+    const bodyRequest = JSON.parse(this.applicationTypeJsonStructureResponse.jsonStructure);
+    bodyRequest.magazineType = this.registerSpecificProductionDataForm.value.magazineType;
+    bodyRequest.doi = this.registerSpecificProductionDataForm.value.doi;
+    bodyRequest.issn = this.registerSpecificProductionDataForm.value.issn;
+    bodyRequest.publindexCategory = this.registerSpecificProductionDataForm.value.publindexCategory;
+    bodyRequest.startDate = this.registerSpecificProductionDataForm.value.startDate;
+    bodyRequest.endDate = this.registerSpecificProductionDataForm.value.endDate;
+    bodyRequest.articleType = this.registerSpecificProductionDataForm.value.articleType;
+
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.updateApplicationTemp(
+        {
+          applicationTempId: this.applicationTempId,
+          productionJsonData: JSON.stringify(bodyRequest)
+        }
+      ).subscribe({
+        next: (response: any) => {
+          //Activo el boton siguiente 
+          this.isDisabledNextStep = false;
+          //Mensaje de exito 
+          this.messageService.add(
+            {
+              severity: 'success',
+              summary: '¡Registro exitoso!',
+              detail: 'Los datos de la solicitud se han guardado exitosamente.'
+            });
+          resolve(true);
+        },
+        error: (error) => {
+          this.messageService.add(
+            {
+              severity: 'error',
+              summary: 'Ups, algo salió mal',
+              detail: 'Tuvimos un problema al guardar los datos de la solicitud de reconocimiento. ' +
+                'Inténtelo de nuevo en unos minutos.'
+            });
+          resolve(false);
+          console.log("error", error);
+        }
+      });
     });
   }
 

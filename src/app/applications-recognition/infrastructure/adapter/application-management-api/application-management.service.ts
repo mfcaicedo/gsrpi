@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { ApplicationsRecognitionGateway } from '../../../domain/models/gateway/applications-recognition-gateway';
 import { Observable } from 'rxjs';
 import { GenericResponse } from '../../../../shared/utils/models/request-response.model';
-import { ApplicationTemp } from '../../../domain/models/applications.model';
+import { ApplicationRecognized, ApplicationTemp } from '../../../domain/models/applications.model';
 import ENVIRONMENTS from '../../../../../environments/config';
 
 @Injectable({
@@ -35,6 +35,21 @@ export class ApplicationManagementService extends ApplicationsRecognitionGateway
 
   override getTeacherByPersonId(personId: number): Observable<GenericResponse> {
     return this.http.get<GenericResponse>(`${ENVIRONMENTS.GET_TEACHER_BY_PERSON_ID}/${personId}`);
+  }
+
+  override getProductionTypeJsonStructureById(productionTypeId: number): Observable<GenericResponse> {
+    return this.http.get<GenericResponse>(`${ENVIRONMENTS.GET_PRODUCTION_TYPE_BY_ID}/${productionTypeId}`);
+  }
+
+  override createApplicationRecognized(applicationRecognized: ApplicationRecognized): Observable<GenericResponse> {
+    return this.http.post<GenericResponse>(ENVIRONMENTS.CREATE_RECOGNIZED_APPLICATION, applicationRecognized);
+  }
+
+  override updateApplicationRecognized(applicationRecognized: Partial<ApplicationRecognized>): Observable<GenericResponse> {
+    return this.http.patch<GenericResponse>(ENVIRONMENTS.UPDATE_RECOGNIZED_APPLICATION, applicationRecognized);
+  }
+  override getApplicationRecognizedByApplicationId(applicationId: number): Observable<GenericResponse> {
+    return this.http.get<GenericResponse>(`${ENVIRONMENTS.GET_RECOGNIZED_APPLICATION_BY_APPLICATION_ID}/${applicationId}`);
   }
 
 }

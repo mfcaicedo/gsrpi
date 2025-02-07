@@ -1,6 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { ApplicationsRecognitionGateway } from "../models/gateway/applications-recognition-gateway";
-import { ApplicationTemp } from "../models/applications.model";
+import { ApplicationRecognized, ApplicationTemp } from "../models/applications.model";
 
 @Injectable({
     providedIn: 'root'
@@ -27,6 +27,22 @@ export class ApplicationTempManagementUsecase {
 
     getTeacherByPersonId(personId: number) {
         return this.applicationRecognitionGateway.getTeacherByPersonId(personId);
+    }
+
+    getProductionTypeJsonStructureById(productionTypeId: number) {
+        return this.applicationRecognitionGateway.getProductionTypeJsonStructureById(productionTypeId);
+    }
+
+    createApplicationRecognized(applicationRecognized: ApplicationRecognized) {
+        return this.applicationRecognitionGateway.createApplicationRecognized(applicationRecognized);
+    }
+
+    updateApplicationRecognized(applicationRecognized: Partial<ApplicationRecognized>) {
+        return this.applicationRecognitionGateway.updateApplicationRecognized(applicationRecognized);
+    }
+
+    getApplicationRecognizedByApplicationId(applicationId: number) {
+        return this.applicationRecognitionGateway.getApplicationRecognizedByApplicationId(applicationId);
     }
 
 }

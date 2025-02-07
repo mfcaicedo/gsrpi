@@ -26,7 +26,7 @@
                     <div class="flex gap-3">
                         @for (item of magazineTypeDataList; track $index) {
                         <div class="field-checkbox">
-                            <p-radiobutton [value]="item" formControlName="magazineType" [styleClass]="
+                            <p-radiobutton [value]="item.key" formControlName="magazineType" [styleClass]="
                                 (registerSpecificProductionDataForm.get('magazineType')?.hasError('required') && 
                                 registerSpecificProductionDataForm.get('magazineType')?.touched ? 'ng-invalid' : '') + 
                                 'ng-dirty'" />
@@ -42,11 +42,24 @@
                     }
                 </div>
                 <div class="col-12 sm:col-6 md:col-4">
+                    <label for="doi" class="block text-primary text-md font-medium mb-2">
+                        DOI
+                    </label>
+                    <input id="disciplinaryArea" type="text" formControlName="doi"
+                    placeholder="Digitar respuesta" pInputText class="w-full">
+                    @if (this.registerSpecificProductionDataForm.get('doi')?.hasError('required') &&
+                    this.registerSpecificProductionDataForm.get('doi')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        El DOI es requerido
+                    </div>
+                    }
+                </div>
+                <div class="col-12 sm:col-6 md:col-4">
                     <label for="issn" class="block text-primary text-md font-medium mb-2">
                         ISSN <span class="text-orange-500">*</span>
                     </label>
-                    <p-inputnumber inputId="integeronly" formControlName="issn" class="w-full"
-                        placeholder="Digitar respuesta" />
+                    <input id="disciplinaryArea" type="text" formControlName="issn"
+                    placeholder="Digitar respuesta" pInputText class="w-full">
                     @if (this.registerSpecificProductionDataForm.get('issn')?.hasError('required') &&
                     this.registerSpecificProductionDataForm.get('issn')?.touched){
                     <div class="text-error text-sm mt-1">
@@ -61,7 +74,7 @@
                     <div class="flex gap-3">
                         @for (item of publindexCategoryDataList; track $index) {
                         <div class="field-checkbox">
-                            <p-radiobutton [value]="item" formControlName="publindexCategory" [styleClass]="
+                            <p-radiobutton [value]="item.key" formControlName="publindexCategory" [styleClass]="
                                 (registerSpecificProductionDataForm.get('publindexCategory')?.hasError('required') && 
                                 registerSpecificProductionDataForm.get('publindexCategory')?.touched ? 'ng-invalid' : '') + 
                                 'ng-dirty'" />
@@ -94,8 +107,8 @@
                     <label for="endDate" class="block text-primary text-md font-medium mb-2">
                         Fecha fin <span class="text-orange-500">*</span>
                     </label>
-                    <p-datepicker placeholder="Seleccione fecha fin" formControlName="endDate" class="w-full"
-                        showIcon iconDisplay="input" />
+                    <p-datepicker placeholder="Seleccione fecha fin" formControlName="endDate" class="w-full" showIcon
+                        iconDisplay="input" />
                     @if (this.registerSpecificProductionDataForm.get('endDate')?.hasError('required') &&
                     this.registerSpecificProductionDataForm.get('endDate')?.touched){
                     <div class="text-error text-sm mt-1">
@@ -113,7 +126,7 @@
                     <div class="flex flex-column gap-2">
                         @for (item of articleTypeDataList; track $index) {
                         <div class="field-checkbox">
-                            <p-radiobutton [value]="item" formControlName="articleType" [styleClass]="
+                            <p-radiobutton [value]="item.key" formControlName="articleType" [styleClass]="
                                 (registerSpecificProductionDataForm.get('articleType')?.hasError('required') && 
                                 registerSpecificProductionDataForm.get('articleType')?.touched ? 'ng-invalid' : '') + 
                                 'ng-dirty'" />
@@ -132,12 +145,13 @@
 
             <div class="col-12 sm:col-5 flex flex-row gap-2 pl-0 mt-3">
                 <button pButton severity="secondary" type="button" pRipple label="Anterior" [disabled]="false"
-                    class="w-full border-round">
+                    class="w-full border-round" [routerLink]="['../../registrar-tipo-produccion/step-4']">
                 </button>
-                <button pButton pRipple label="Guardar" type="submit" class="w-full border-round">
+                <button pButton pRipple label="Guardar" type="submit"
+                    [disabled]="!registerSpecificProductionDataForm.valid" class="w-full border-round">
                 </button>
                 <button pButton pRipple label="Siguiente" type="button" [disabled]="isDisabledNextStep"
-                    (click)="modalNewApplicantOrNextStep($event)" class="w-full border-round">
+                    class="w-full border-round" [routerLink]="['../../registrar-trabajos-relacionados/step-6']">
                 </button>
             </div>
         </form>
