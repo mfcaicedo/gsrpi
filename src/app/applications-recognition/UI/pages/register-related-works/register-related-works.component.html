@@ -66,17 +66,27 @@
 
             </div>
 
+            <div class="">
+                <p class="mb-3">
+                    <span class="font-bold">Nota:</span>
+                    En este apartado puedes agregar trabajos o publicaciones ya reconocidas que estén relacionadas con
+                    la producción intelectual que estás solicitando. Si no tienes trabajos relacionados, puedes omitir
+                    este paso.
+                </p>
+            </div>
+
             <div class="col-12 sm:col-7 flex flex-row gap-2 pl-0 mt-3">
                 <button pButton severity="secondary" type="button" pRipple label="Anterior" [disabled]="false"
-                    class="w-full border-round">
+                    class="w-full border-round" [routerLink]="['../../registrar-datos-especificos-produccion/step-5']">
                 </button>
                 <button pButton severity="secondary" type="button" pRipple label="Omitir" [disabled]="false"
+                    class="w-full border-round" (click)="isDisabledNextStep = false">
+                </button>
+                <button pButton pRipple label="Guardar" type="submit" [disabled]="!registerRelatedWorksForm.valid"
                     class="w-full border-round">
                 </button>
-                <button pButton pRipple label="Guardar" type="submit" class="w-full border-round">
-                </button>
                 <button pButton pRipple label="Siguiente" type="button" [disabled]="isDisabledNextStep"
-                    (click)="modalNewApplicantOrNextStep($event)" class="w-full border-round">
+                    class="w-full border-round" [routerLink]="['../../terminos-condiciones/step-7']">
                 </button>
             </div>
         </form>

@@ -15,6 +15,11 @@ import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { KeyValueOption } from '../../../../shared/utils/models/form-builder.model';
+import { AuthService } from '../../../../auth/auth.service';
+import { UserManagementUseCase } from '../../../../user-management/domain/usecase/user-management-usecase';
+import { ApplicationTempManagementUsecase } from '../../../domain/usecase/application-temp-management-usecase';
+import { TeacherResponse } from '../../../domain/models/teacher.model';
+import { ApplicationRecognized, ApplicationTemp } from '../../../domain/models/applications.model';
 
 @Component({
   selector: 'app-register-related-works',
@@ -29,34 +34,171 @@ export class RegisterRelatedWorksComponent {
 
   isDisabledNextStep = true;
   registerRelatedWorksForm!: FormGroup;
+  userId: number = 0;
+  personId: number = 0;
+  teacherId: number = 0;
+  applicationTempId: number = 0;
+  isUpdate: boolean = false;
+
+  teacherResponse: TeacherResponse = {} as TeacherResponse;
+  applicationRecognizedResponse: ApplicationRecognized = {} as ApplicationRecognized;
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly confirmationService = inject(ConfirmationService);
-  private readonly router = inject(Router);
+  private readonly messageService = inject(MessageService);
+  private readonly authService = inject(AuthService);
+  private readonly userManagementUseCase = inject(UserManagementUseCase);
+  private readonly applicationTempManagementUsecase = inject(ApplicationTempManagementUsecase);
 
-  ngOnInit() {
+  async ngOnInit() {
 
+    this.buildRegisterRelatedWorksForm();
+
+    //1. Consultar usuario por uid 
+    await this.getUserByUid();
+    //2. Consultar persona por id de usuario
+    await this.getPersonByUserId();
+    //3. Consultar docente por id de persona
+    await this.getTeacherByPersonId();
+
+    await this.getApplicationTempByTeacherId();
+
+    await this.getApplicationRecognizedByApplicationId();
+
+  }
+
+  buildRegisterRelatedWorksForm() {
     this.registerRelatedWorksForm = this.formBuilder.group({
       productionName: ['', [Validators.required]],
       resolution: ['', []],
       date: [undefined, [Validators.required]],
       authors: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
     });
+  }
 
+  async getUserByUid() {
+    return new Promise((resolve) => {
+      this.userManagementUseCase.getUserByUid(this.authService.getDecodeToken()).subscribe({
+        next: (response: any) => {
+          this.userId = response.userId;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+  }
+
+  async getPersonByUserId() {
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.getPersonByUserId(this.userId).subscribe({
+        next: (response: any) => {
+          this.personId = response.personId;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+  }
+
+  async getTeacherByPersonId() {
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.getTeacherByPersonId(this.personId).subscribe({
+        next: (response: any) => {
+          this.teacherResponse = response;
+          this.teacherId = response.teacherId;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+  }
+
+  async getApplicationTempByTeacherId() {
+
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.getApplicationTempByTeacherId(this.teacherId).subscribe({
+        next: (response: any) => {
+          if (response !== null) {
+            //Actualizar la solicitud en la tabla temporal
+            this.applicationTempId = response.applicationTempId;
+          }
+          resolve(true);
+        },
+        error: (error) => {
+          this.messageService.add(
+            {
+              severity: 'error',
+              summary: 'Ups, algo salió mal',
+              detail: 'Tuvimos un problema al consultar la solicitud de reconocimiento. Inténtelo de nuevo en unos minutos.'
+            });
+          console.error("error", error);
+          resolve(false);
+        }
+      });
+    });
+  }
+
+  async getApplicationRecognizedByApplicationId() {
+
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.getApplicationRecognizedByApplicationId(this.applicationTempId).subscribe({
+        next: (response: any) => {
+          if (response !== null) {
+            this.applicationRecognizedResponse = response;
+            this.isUpdate = true;
+            this.isDisabledNextStep = false;
+            this.autoCompleteForm();
+          }
+          resolve(true);
+        },
+        error: (error) => {
+          this.messageService.add(
+            {
+              severity: 'error',
+              summary: 'Ups, algo salió mal',
+              detail: 'Tuvimos un problema al consultar la solicitud de reconocimiento. Inténtelo de nuevo en unos minutos.'
+            });
+          console.error("error", error);
+          resolve(false);
+        }
+      });
+    });
+  }
+
+  autoCompleteForm() {
+    this.registerRelatedWorksForm.patchValue({
+      productionName: this.applicationRecognizedResponse.title,
+      resolution: this.applicationRecognizedResponse.resolutionName,
+      date: new Date(this.applicationRecognizedResponse.date),
+      authors: this.applicationRecognizedResponse.authors
+    });
   }
 
   onSubmit() {
-    console.log("values", this.registerRelatedWorksForm.value);
-    //TODO: Enviar datos al servicio para guardar la información en la tabla temporal de la base de datos
+    
+    this.registerRelatedWorksForm.markAllAsTouched();
+    if (this.registerRelatedWorksForm.invalid) {
+      return;
+    }
 
-    //2. Activo el boton siguiente 
-    this.isDisabledNextStep = false;
+    //Modal de confirmación de guardar datos 
+    this.modalConfirmationSaveData();
   }
 
-  modalNewApplicantOrNextStep(event: Event) {
+  modalConfirmationSaveData() {
+
     this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: '¿Desea continuar al siguiente paso?',
+      target: 'body' as unknown as EventTarget,
+      message: '¿Está seguro(a) de guardar la información?',
       header: 'Confirmación',
       closable: true,
       closeOnEscape: true,
@@ -70,14 +212,96 @@ export class RegisterRelatedWorksComponent {
       acceptButtonProps: {
         label: 'Aceptar',
       },
-      accept: () => {
-        console.log("acept button modal");
-        //TODO: Pasar a la siguiente pantalla - paso 4
-        this.router.navigate(['solicitudes-reconocimiento/terminos-condiciones/step-7']);
+      accept: async () => {
+        //Guardar datos
+        if (this.isUpdate) {
+          await this.updateApplicationRecognized();
+        } else {
+          await this.createApplicationRecognized();
+        }
       },
-      reject: () => {
-        console.log("reject button modal");
-      },
+    });
+
+  }
+
+  async createApplicationRecognized() {
+
+    const bodyRequest: ApplicationRecognized = {
+      title: this.registerRelatedWorksForm.value.productionName,
+      resolutionName: this.registerRelatedWorksForm.value.resolution,
+      date: this.registerRelatedWorksForm.value.date,
+      authors: this.registerRelatedWorksForm.value.authors,
+      applicationId: this.applicationTempId,
+      teacher: this.teacherResponse
+    };
+
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.createApplicationRecognized(bodyRequest).subscribe({
+        next: (response: any) => {
+          //Activo el boton siguiente 
+          this.isDisabledNextStep = false;
+          //Mensaje de exito 
+          this.messageService.add(
+            {
+              severity: 'success',
+              summary: '¡Registro exitoso!',
+              detail: 'Los datos de la solicitud se han guardado exitosamente.'
+            });
+          resolve(true);
+        },
+        error: (error) => {
+          this.messageService.add(
+            {
+              severity: 'error',
+              summary: 'Ups, algo salió mal',
+              detail: 'Tuvimos un problema al guardar los datos de la solicitud de reconocimiento. ' +
+                'Inténtelo de nuevo en unos minutos.'
+            });
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+  }
+
+  async updateApplicationRecognized() {
+
+    const bodyRequest: ApplicationRecognized = {
+      applicationRecognizedId: this.applicationRecognizedResponse.applicationRecognizedId,
+      title: this.registerRelatedWorksForm.value.productionName,
+      resolutionName: this.registerRelatedWorksForm.value.resolution,
+      date: this.registerRelatedWorksForm.value.date,
+      authors: this.registerRelatedWorksForm.value.authors,
+      applicationId: this.applicationTempId,
+      teacher: this.teacherResponse
+    };
+
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.updateApplicationRecognized(bodyRequest).subscribe({
+        next: (response: any) => {
+          //Activo el boton siguiente 
+          this.isDisabledNextStep = false;
+          //Mensaje de exito 
+          this.messageService.add(
+            {
+              severity: 'success',
+              summary: '¡Registro exitoso!',
+              detail: 'Los datos de la solicitud se han guardado exitosamente.'
+            });
+          resolve(true);
+        },
+        error: (error) => {
+          this.messageService.add(
+            {
+              severity: 'error',
+              summary: 'Ups, algo salió mal',
+              detail: 'Tuvimos un problema al guardar los datos de la solicitud de reconocimiento. ' +
+                'Inténtelo de nuevo en unos minutos.'
+            });
+          resolve(false);
+          console.log("error", error);
+        }
+      });
     });
   }
 
