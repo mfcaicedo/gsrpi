@@ -118,6 +118,7 @@ export class TermsAndConditionsComponent {
             this.termsAndConditionsForm.patchValue({
               termsAndConditions: new Array(response.termsAndConditions)
             });
+            this.isDisabledNextStep = false;
 
           }
           resolve(true);
