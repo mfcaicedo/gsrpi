@@ -1,5 +1,5 @@
 import { Observable } from "rxjs";
-import { ApplicationTemp } from "../applications.model";
+import { ApplicationRecognized, ApplicationTemp } from "../applications.model";
 import { GenericResponse } from "../../../../shared/utils/models/request-response.model";
 
 export abstract class ApplicationsRecognitionGateway {
@@ -8,4 +8,8 @@ export abstract class ApplicationsRecognitionGateway {
     abstract getApplicationTempByTeacherId(teacherId: number): Observable<GenericResponse>;
     abstract getPersonByUserId(userId: number): Observable<GenericResponse>;
     abstract getTeacherByPersonId(personId: number): Observable<GenericResponse>;
+    abstract getProductionTypeJsonStructureById(productionTypeId: number): Observable<GenericResponse>;
+    abstract createApplicationRecognized(applicationRecognized: ApplicationRecognized): Observable<GenericResponse>;
+    abstract updateApplicationRecognized(applicationRecognized: Partial<ApplicationRecognized>): Observable<GenericResponse>;
+    abstract getApplicationRecognizedByApplicationId(applicationId: number): Observable<GenericResponse>;
 }

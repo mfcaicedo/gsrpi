@@ -24,3 +24,17 @@ export interface TeacherPersonUnifiedResponse {
     person: Person;
     teacher: TeacherResponse;
 }
+
+export interface ApplicationTypeJsonStructureResponse {
+    jsonStructure: string;
+}
+
+export interface ApplicationRecognized {
+    applicationRecognizedId?: number;
+    title: string;
+    resolutionName: string;
+    date: string;
+    authors: string;
+    applicationId: number;
+    teacher: TeacherResponse;
+}
