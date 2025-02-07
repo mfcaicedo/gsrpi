@@ -25,8 +25,9 @@
                     conformidad con las leyes y normas, reglamento y estatutos de la Universidad del Cauca existentes
                     sobre producción intelectual y derechos de autor.</p>
                 <p>
-                    Yo, {{nameMainApplicant}}, manifiesto que previo a la presente solicitud, he revisado que la
-                    productividad anexa al presente documento no se encuentra en revista predadoras o pséudo- journal.
+                    Yo, <span class="font-bold"> {{nameMainApplicant}} </span>, manifiesto que previo a la presente
+                    solicitud, he revisado que la productividad anexa al presente documento no se encuentra en revista
+                    predadoras o pséudo- journal.
                     No obstante, en caso de que se presente inconsistencias respecto a la legitimidad del mismo,
                     autorizo para que se realicen las gestiones administrativas que correspondan. </p>
                 <p>
@@ -59,11 +60,12 @@
                 <button pButton severity="secondary" type="button" pRipple label="Anterior" [disabled]="false"
                     class="w-full border-round" [routerLink]="['../../registrar-trabajos-relacionados/step-6']">
                 </button>
-                <button pButton pRipple label="Guardar" type="submit" class="w-full border-round">
+                <button pButton pRipple label="Guardar" [disabled]="!termsAndConditionsForm.valid" type="submit"
+                    class="w-full border-round">
                 </button>
                 <button pButton pRipple label="Siguiente" type="button" [disabled]="isDisabledNextStep"
                     class="w-full border-round"
-                    [routerLink]="['../../solicitudes-reconocimiento/subir-archivos/step-8']">
+                    [routerLink]="['../../subir-archivos/step-8']">
                 </button>
             </div>
         </form>
