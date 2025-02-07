@@ -17,23 +17,24 @@
                     Tipo producción y/o reconocimiento <span class="text-orange-500">*</span>
                 </label>
                 <p-select class="p-3" [options]="productionTypeDataList" [required]="true" [showClear]="true"
-                    formControlName="productionType" optionLabel="value" [filter]="true" filterBy="value"
-                    placeholder="Seleccione el tipo de solicitud" class="w-full md:w-56" />
+                    formControlName="productionType" optionValue="key" optionLabel="value" [filter]="true" filterBy="value"
+                    placeholder="Seleccione el tipo de producción" class="w-full md:w-56" />
                 @if (this.productionTypeRegisterForm.get('productionType')?.hasError('required') &&
                 this.productionTypeRegisterForm.get('productionType')?.touched){
                 <div class="text-error text-sm mt-1">
-                    Debe seleccionar un tipo de solicitud
+                    Debe seleccionar un tipo de producción y/o reconocimiento
                 </div>
                 }
             </div>
-            <div class="col-12 sm:col-5 flex flex-row gap-2 pl-0 mt-3">
+            <div class="col-12 sm:col-6 flex flex-row gap-2 pl-0 mt-3">
                 <button pButton severity="secondary" type="button" pRipple label="Anterior" [disabled]="false"
+                    class="w-full border-round" [routerLink]="['../../registrar-datos-generales-produccion/step-3']">
+                </button>
+                <button pButton pRipple label="Guardar" type="submit" [disabled]="!productionTypeRegisterForm.valid"
                     class="w-full border-round">
                 </button>
-                <button pButton pRipple label="Guardar" type="submit" class="w-full border-round">
-                </button>
                 <button pButton pRipple label="Siguiente" type="button" [disabled]="isDisabledNextStep"
-                    (click)="modalNewApplicantOrNextStep($event)" class="w-full border-round">
+                    class="w-full border-round" [routerLink]="['../../registrar-datos-especificos-produccion/step-5']">
                 </button>
             </div>
         </form>

@@ -10,50 +10,150 @@ import { KeyValueOption } from '../../../../shared/utils/models/form-builder.mod
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { AuthService } from '../../../../auth/auth.service';
+import { UserManagementUseCase } from '../../../../user-management/domain/usecase/user-management-usecase';
+import { ApplicationTempManagementUsecase } from '../../../domain/usecase/application-temp-management-usecase';
 
 @Component({
   selector: 'app-register-production-type',
   imports: [CommonModule, ButtonModule, ProgressBarModule, SelectModule, FormsModule, InputTextModule,
     ReactiveFormsModule, RouterModule, ToastModule, ConfirmDialogModule],
-    providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService, MessageService],
   templateUrl: './register-production-type.component.html',
   styleUrl: './register-production-type.component.css'
 })
 export class RegisterProductionTypeComponent {
 
+  //Cambiar por consulta a servicio que trae los tipos de producción
   productionTypeDataList: KeyValueOption[] = [
     { key: 1, value: 'Trabajo, ensayo o artículo, de carácter científico, técnico, ...' },
   ];
 
-  private readonly formBuilder = inject(FormBuilder);
-  private readonly router = inject(Router)
-  private readonly confirmationService = inject(ConfirmationService);
-
   productionTypeRegisterForm!: FormGroup;
+  userId: number = 0;
+  personId: number = 0;
+  teacherId: number = 0;
+  applicationTempId: number = 0;
 
   isDisabledNextStep: boolean = true;
 
-  ngOnInit() {
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly messageService = inject(MessageService);
+  private readonly authService = inject(AuthService);
+  private readonly userManagementUseCase = inject(UserManagementUseCase);
+  private readonly applicationTempManagementUsecase = inject(ApplicationTempManagementUsecase);
+
+  async ngOnInit() {
 
     this.productionTypeRegisterForm = this.formBuilder.group({
       productionType: [undefined, [Validators.required]]
     });
 
+    //1. Consultar usuario por uid 
+    await this.getUserByUid();
+    //2. Consultar persona por id de usuario
+    await this.getPersonByUserId();
+    //3. Consultar docente por id de persona
+    await this.getTeacherByPersonId();
+
+    await this.getApplicationTempByTeacherId();
+
   }
 
-  onSubmit() {
-    console.log("productionType", this.productionTypeRegisterForm.value);
-    //TODO: Guardar en la tabla temporal por medio del serviicio back 
+  async getUserByUid() {
+    return new Promise((resolve) => {
+      this.userManagementUseCase.getUserByUid(this.authService.getDecodeToken()).subscribe({
+        next: (response: any) => {
+          this.userId = response.userId;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+  }
 
-    //2. Habilitar el boton de siguiente paso
-    this.isDisabledNextStep = false;
+  async getPersonByUserId() {
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.getPersonByUserId(this.userId).subscribe({
+        next: (response: any) => {
+          this.personId = response.personId;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+  }
+
+  async getTeacherByPersonId() {
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.getTeacherByPersonId(this.personId).subscribe({
+        next: (response: any) => {
+          this.teacherId = response.teacherId;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+  }
+
+  async getApplicationTempByTeacherId() {
+
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.getApplicationTempByTeacherId(this.teacherId).subscribe({
+        next: (response: any) => {
+          if (response !== null) {
+            //Actualizar la solicitud en la tabla temporal
+            this.applicationTempId = response.applicationTempId;
+            if (response.productionTypeId) {
+              this.productionTypeRegisterForm.patchValue({
+                productionType: response.productionTypeId
+              });
+              this.isDisabledNextStep = false;
+            }
+          }
+          resolve(true);
+        },
+        error: (error) => {
+          this.messageService.add(
+            {
+              severity: 'error',
+              summary: 'Ups, algo salió mal',
+              detail: 'Tuvimos un problema al consultar la solicitud de reconocimiento. Inténtelo de nuevo en unos minutos.'
+            });
+          console.error("error", error);
+          resolve(false);
+        }
+      });
+    });
+  }
+
+  async onSubmit() {
+
+    this.productionTypeRegisterForm.markAllAsTouched();
+    if (this.productionTypeRegisterForm.invalid) {
+      return;
+    }
+
+    //Modal de confirmación de guardar datos 
+    this.modalConfirmationSaveData();
 
   }
 
-  modalNewApplicantOrNextStep(event: Event) {
+  modalConfirmationSaveData() {
+
     this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: '¿Desea continuar al siguiente paso?',
+      target: 'body' as unknown as EventTarget,
+      message: '¿Está seguro(a) de guardar la información?',
       header: 'Confirmación',
       closable: true,
       closeOnEscape: true,
@@ -67,14 +167,44 @@ export class RegisterProductionTypeComponent {
       acceptButtonProps: {
         label: 'Aceptar',
       },
-      accept: () => {
-        console.log("acept button modal");
-        //TODO: Pasar a la siguiente pantalla - paso 5
-        this.router.navigate(['solicitudes-reconocimiento/registrar-datos-especificos-produccion/step-5']);
+      accept: async () => {
+        //Guardar datos
+        await this.updateApplicationTemp();
       },
-      reject: () => {
-        console.log("reject button modal");
-      },
+    });
+
+  }
+
+  async updateApplicationTemp() {
+    return new Promise((resolve) => {
+      this.applicationTempManagementUsecase.updateApplicationTemp({
+        applicationTempId: this.applicationTempId,
+        productionTypeId: this.productionTypeRegisterForm.value.productionType
+      }).subscribe({
+        next: (response: any) => {
+          //Activo el boton siguiente 
+          this.isDisabledNextStep = false;
+          //Mensaje de exito 
+          this.messageService.add(
+            {
+              severity: 'success',
+              summary: '¡Registro exitoso!',
+              detail: 'Los datos de la solicitud se han guardado exitosamente.'
+            });
+          resolve(true);
+        },
+        error: (error) => {
+          this.messageService.add(
+            {
+              severity: 'error',
+              summary: 'Ups, algo salió mal',
+              detail: 'Tuvimos un problema al guardar los datos de la solicitud de reconocimiento. ' +
+                'Inténtelo de nuevo en unos minutos.'
+            });
+          resolve(false);
+          console.log("error", error);
+        }
+      });
     });
   }
 
