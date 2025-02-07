@@ -3,7 +3,7 @@ import { ENVIRONMENT } from "./environment";
 const base_url_api_gsrpi = ENVIRONMENT.BASE_URL_API_GSRPI;
 
 const ENVIRONMENTS = {
-    
+
     //Login 
     POST_LOGIN: `${base_url_api_gsrpi}/auth/login`,
     POST_LOGOUT: `${base_url_api_gsrpi}/auth/logout`,
@@ -27,12 +27,14 @@ const ENVIRONMENTS = {
     CREATE_TEMPORARY_APPLICATION: `${base_url_api_gsrpi}/crear-solicitud-temporal`,
     UPDATE_TEMPORARY_APPLICATION: `${base_url_api_gsrpi}/actualizar-solicitud-temporal`,
     CREATE_RECOGNIZED_APPLICATION: `${base_url_api_gsrpi}/crear-solicitud-reconocida`,
+    UPDATE_RECOGNIZED_APPLICATION: `${base_url_api_gsrpi}/actualizar-solicitud-reconocida`,
+    GET_RECOGNIZED_APPLICATION_BY_APPLICATION_ID: `${base_url_api_gsrpi}/obtener-solicitud-reconocida-por-solicitud-id`,
     CREATE_APPLICATION: `${base_url_api_gsrpi}/crear-solicitud`,
     GET_PRODUCTION_TYPE_BY_ALIAS: `${base_url_api_gsrpi}/obtener-tipo-produccion-por-alias`,
     GET_PRODUCTION_TYPE_BY_ID: `${base_url_api_gsrpi}/obtener-tipo-produccion-por-id`,
     GET_TEACHER_BY_PERSON_ID: `${base_url_api_gsrpi}/obtener-docente-por-id-persona`,
     GET_PERSON_BY_USER_ID: `${base_url_api_gsrpi}/obtener-persona-por-usuario-id`,
-    GET_TEMPORARY_APPLICATION_BY_TEACHER_ID : `${base_url_api_gsrpi}/obtener-solicitud-temporal-por-docente-id`,
+    GET_TEMPORARY_APPLICATION_BY_TEACHER_ID: `${base_url_api_gsrpi}/obtener-solicitud-temporal-por-docente-id`,
 }
 
 export default ENVIRONMENTS;
