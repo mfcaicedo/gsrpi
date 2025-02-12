@@ -119,6 +119,68 @@ export class AuthService {
     }));
   }
 
+  //Servicios para guardar archivo en supabase
+  saveFile(file: File, fileName: string, bucket: string, folder: string): Observable<any> {
+
+    return from(this.supabase
+      .storage
+      .from(bucket)
+      .upload(`${folder}/${fileName}-${new Date().getTime()}.pdf`, file, {
+        cacheControl: '3600', // mantener en caché durante 1 hora
+        upsert: false // no sobrescribir el archivo si ya existe
+      }))
+
+  }
+
+  //Servicio para actualizar archivo en supabase
+  updateFile(file: File, fileName: string, bucket: string, folder: string) {
+
+    return from(this.supabase
+      .storage
+      .from(bucket)
+      .update(`${folder}/${fileName}`, file, {
+        cacheControl: '3600', // mantener en caché durante 1 hora
+        upsert: true // sobrescribir el archivo si ya existe
+      }))
+
+  }
+
+  //Servicio para eliminar uno o varios archivo en supabase
+  deleteFiles(files: string[], bucket: string) {
+
+    return from(this.supabase
+      .storage
+      .from(bucket)
+      .remove(files)) //files es un array con los nombres de los archivos a eliminar [nombrecarpeta/nombrearchivo]
+
+  }
+
+  //Servicio para obtener archivo en supabase
+  getFile(fileName: string, bucket: string, folder: string) {
+
+    return from(this.supabase
+      .storage
+      .from(bucket)
+      .download(`${folder}/${fileName}`))
+
+  }
+
+  //Servicio para obtener todos los archivos en supabase de un bucket 
+  getFiles(bucket: string, folder: string) {
+
+    return from(this.supabase
+      .storage
+      .from(bucket)
+      .list(folder, {
+        limit: 100,
+        offset: 0,
+        sortBy: { column: 'name', order: 'asc' },
+      })
+    )
+
+  }
+
+
   removeAccents(str: any) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   }
