@@ -35,6 +35,9 @@ const ENVIRONMENTS = {
     GET_TEACHER_BY_PERSON_ID: `${base_url_api_gsrpi}/obtener-docente-por-id-persona`,
     GET_PERSON_BY_USER_ID: `${base_url_api_gsrpi}/obtener-persona-por-usuario-id`,
     GET_TEMPORARY_APPLICATION_BY_TEACHER_ID: `${base_url_api_gsrpi}/obtener-solicitud-temporal-por-docente-id`,
+
+    //FILE MANAGEMENT
+    CREATE_FILE: `${base_url_api_gsrpi}/subir-archivo`,
 }
 
 export default ENVIRONMENTS;

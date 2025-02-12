@@ -208,7 +208,6 @@ export class RegisterApplicantsComponent implements OnInit {
         label: 'Aceptar',
       },
       accept: async () => {
-        console.log("acept button modal");
         //Guardar datos
         await this.updateApplicationTemp();
       },
@@ -220,8 +219,9 @@ export class RegisterApplicantsComponent implements OnInit {
       applicationTempId: this.applicationTempId,
       teacherId: this.teacherResponse.teacher.teacherId,
       numberOfAuthors: this.registerApplicantForm.value.totalNumberAuthors,
-      departmentId: this.registerApplicantForm.value.departmentFaculty,
+      departmentId: this.registerApplicantForm.getRawValue().departmentFaculty,
     };
+
     return new Promise((resolve) => {
       this.applicationTempManagementUsecase.updateApplicationTemp(bodyRequest).subscribe({
         next: (response: any) => {
