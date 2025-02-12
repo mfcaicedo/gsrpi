@@ -1,3 +1,4 @@
+import { FileRequest } from "./file.model";
 import { Person } from "./person.model";
 import { TeacherResponse } from "./teacher.model";
 
@@ -37,4 +38,9 @@ export interface ApplicationRecognized {
     authors: string;
     applicationId: number;
     teacher: TeacherResponse;
+}
+
+export interface ApplicationRequest {
+    applicationTempId: number;
+    productionFiles: FileRequest[];
 }
