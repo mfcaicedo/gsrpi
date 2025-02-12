@@ -1,6 +1,7 @@
 import { Injectable, inject } from "@angular/core";
 import { ApplicationsRecognitionGateway } from "../models/gateway/applications-recognition-gateway";
-import { ApplicationRecognized, ApplicationTemp } from "../models/applications.model";
+import { ApplicationRecognized, ApplicationRequest, ApplicationTemp } from "../models/applications.model";
+import { FileMetadataRequest } from "../models/file.model";
 
 @Injectable({
     providedIn: 'root'
@@ -43,6 +44,14 @@ export class ApplicationTempManagementUsecase {
 
     getApplicationRecognizedByApplicationId(applicationId: number) {
         return this.applicationRecognitionGateway.getApplicationRecognizedByApplicationId(applicationId);
+    }
+
+    saveMetadataFile(fileMetadataRequest: FileMetadataRequest) {
+        return this.applicationRecognitionGateway.saveMetadataFile(fileMetadataRequest);
+    }
+
+    createApplication(applicationRequest: ApplicationRequest) {
+        return this.applicationRecognitionGateway.createApplication(applicationRequest);
     }
 
 }

@@ -3,8 +3,9 @@ import { inject, Injectable } from '@angular/core';
 import { ApplicationsRecognitionGateway } from '../../../domain/models/gateway/applications-recognition-gateway';
 import { Observable } from 'rxjs';
 import { GenericResponse } from '../../../../shared/utils/models/request-response.model';
-import { ApplicationRecognized, ApplicationTemp } from '../../../domain/models/applications.model';
+import { ApplicationRecognized, ApplicationRequest, ApplicationTemp } from '../../../domain/models/applications.model';
 import ENVIRONMENTS from '../../../../../environments/config';
+import { FileMetadataRequest } from '../../../domain/models/file.model';
 
 @Injectable({
   providedIn: 'root'
@@ -48,8 +49,17 @@ export class ApplicationManagementService extends ApplicationsRecognitionGateway
   override updateApplicationRecognized(applicationRecognized: Partial<ApplicationRecognized>): Observable<GenericResponse> {
     return this.http.patch<GenericResponse>(ENVIRONMENTS.UPDATE_RECOGNIZED_APPLICATION, applicationRecognized);
   }
+
   override getApplicationRecognizedByApplicationId(applicationId: number): Observable<GenericResponse> {
     return this.http.get<GenericResponse>(`${ENVIRONMENTS.GET_RECOGNIZED_APPLICATION_BY_APPLICATION_ID}/${applicationId}`);
+  }
+
+  override saveMetadataFile(fileMetadataRequest: FileMetadataRequest): Observable<GenericResponse> {
+    return this.http.post<GenericResponse>(ENVIRONMENTS.CREATE_FILE, fileMetadataRequest);
+  }
+
+  override createApplication(applicationRequest: ApplicationRequest): Observable<GenericResponse> {
+    return this.http.post<GenericResponse>(ENVIRONMENTS.CREATE_APPLICATION, applicationRequest);
   }
 
 }
