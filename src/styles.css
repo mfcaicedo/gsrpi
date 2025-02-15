@@ -36,6 +36,9 @@
     --p-select-option-selected-focus-background: var(--primary-light-color) !important;
 
     --border-radius: 2rem;
+
+    /* Se personaliza el color la paginación de la tabla */
+    --p-paginator-nav-button-selected-background: var(--primary-color) !important;
 }
 
 body {
