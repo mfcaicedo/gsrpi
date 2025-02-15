@@ -15,6 +15,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { take } from 'rxjs';
+import { UserManagementUseCase } from '../../../user-management/domain/usecase/user-management-usecase';
+import { UserDataSession } from '../interfaces/models/user-data-session.model';
 
 @Component({
   selector: 'app-login',
@@ -27,13 +29,16 @@ import { take } from 'rxjs';
 })
 export class LoginComponent implements OnInit {
 
+  loginForm!: FormGroup;
+  userDataSession: Partial<UserDataSession> = {};
+
   private readonly authService = inject(AuthService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly messageService = inject(MessageService);
+  private readonly userManagementUseCase = inject(UserManagementUseCase);
 
-  loginForm!: FormGroup;
 
   constructor() { }
 
@@ -47,13 +52,14 @@ export class LoginComponent implements OnInit {
   }
 
   onLoginFormSubmitted() {
+
     if (!this.loginForm.valid) {
       this.loginForm.markAllAsTouched();
       return;
     }
 
     this.authService.login(this.loginForm.value as Login).subscribe({
-      next: (response) => {
+      next: async (response) => {
         // const loginSuccessData: LoginSuccess = {
         //   accessToken: response.data.session.access_token,
         //   refreshToken: response.data.session.refresh_token,
@@ -64,13 +70,20 @@ export class LoginComponent implements OnInit {
         //   sessionState: response.data.user.aud
         // };
         if (response.data.session !== null) {
+
           // Actualiza el estado de autenticación
           this.authService.updateAuthStatus();
+
+          //Consulto datos del usuario 
+          await this.getUserByUid(response.data.user.id);
+          await this.getPersonByUserId();
+          await this.getTeacherByPersonId();
+          this.authService.setUserDataSession(this.userDataSession);
+
           this.authService.getSession().pipe(take(1)).subscribe(() => {
             this.router.navigate(['/']);
           });
 
-          // this.router.navigate(['/']);
         } else if (response.error.status === 400) {
           this.messageService.add({
             severity: 'error',
@@ -84,6 +97,55 @@ export class LoginComponent implements OnInit {
       error: (error) => {
         console.log('Login error ', error);
       }
+    });
+
+  }
+
+  async getUserByUid(uid: string) {
+    return new Promise((resolve) => {
+      this.userManagementUseCase.getUserByUid(uid).subscribe({
+        next: (response: any) => {
+          this.userDataSession.userId = response.userId;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+  }
+
+  async getPersonByUserId() {
+    return new Promise((resolve) => {
+      this.userManagementUseCase.getPersonByUserId(this.userDataSession.userId ?? 0).subscribe({
+        next: (response: any) => {
+          this.userDataSession.personId = response.personId;
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
+    });
+  }
+
+  async getTeacherByPersonId() {
+
+    return new Promise((resolve) => {
+      this.userManagementUseCase.getTeacherByPersonId(this.userDataSession.personId ?? 0).subscribe({
+        next: (response: any) => {
+          if (response !== null) {
+            this.userDataSession.teacherId = response.teacherId;
+          }
+          resolve(true);
+        },
+        error: (error) => {
+          resolve(false);
+          console.log("error", error);
+        }
+      });
     });
 
   }

@@ -9,6 +9,8 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { IS_PUBLIC } from './auth.interceptor';
 import ENVIRONMENTS from '../../environments/config';
 import { AuthChangeEvent, createClient, Session, SupabaseClient } from '@supabase/supabase-js'
+import { UserManagementUseCase } from '../user-management/domain/usecase/user-management-usecase';
+import { UserDataSession } from './login/interfaces/models/user-data-session.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,19 +22,22 @@ export class AuthService {
   // El token será refrescado 5 minutos antes de la hora de expiración
   private readonly TOKEN_EXPIRY_THRESHOLD_MINUTES = 5;
 
-  private readonly http = inject(HttpClient);
-  private readonly router = inject(Router);
-  private readonly jwtHelper = inject(JwtHelperService);
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly CONTEXT = { context: new HttpContext().set(IS_PUBLIC, true) };
-
   private session = new BehaviorSubject<Session | null>(null);
 
   //Guardo el id de la configuración inicial en un BehaviorSubject
   configurationId: BehaviorSubject<number> = new BehaviorSubject<number>(12); //Por defecto será la FIET 
 
+  //UserDataSession
+  userDataSession: BehaviorSubject<Partial<UserDataSession>> = new BehaviorSubject<Partial<UserDataSession>>({});
+
   urls: string[] = [];
   privileges: string[] = [];
+
+  private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
+  private readonly jwtHelper = inject(JwtHelperService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly CONTEXT = { context: new HttpContext().set(IS_PUBLIC, true) };
 
   constructor() {
     this.supabase = createClient(ENVIRONMENTS.BASE_URL_SUPABASE,
@@ -92,6 +97,8 @@ export class AuthService {
 
     this.supabase.auth.signOut().then(() => {
       this.session.next(null);
+      this.userDataSession.next({});
+      localStorage.removeItem('userDataSession');
       this.router.navigate(['/login']);
     });
 
@@ -180,6 +187,14 @@ export class AuthService {
 
   }
 
+  setUserDataSession(userData: Partial<UserDataSession>) {
+    this.userDataSession.next(userData);
+    localStorage.setItem('userDataSession', JSON.stringify(userData));
+  }
+
+  getUserDataSession() {
+    return this.userDataSession.asObservable();
+  }
 
   removeAccents(str: any) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");

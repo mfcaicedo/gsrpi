@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { UserGateway } from '../../../domain/models/gateway/user-gateway';
 import { UserListPaginated, User } from '../../../domain/models/user.model';
 import ENVIRONMENTS from '../../../../../environments/config';
+import { GenericResponse } from '../../../../shared/utils/models/request-response.model';
 @Injectable({
   providedIn: 'root'
 })
@@ -32,6 +33,13 @@ export class UserManagementService extends UserGateway {
   }
   override deleteUser(id: number): Observable<User> {
     throw new Error('Method not implemented.');
+  }
+
+  override getPersonByUserId(userId: number): Observable<GenericResponse> {
+    return this.http.get<GenericResponse>(`${ENVIRONMENTS.GET_PERSON_BY_USER_ID}/${userId}`);
+  }
+  override getTeacherByPersonId(personId: number): Observable<GenericResponse> {
+    return this.http.get<GenericResponse>(`${ENVIRONMENTS.GET_TEACHER_BY_PERSON_ID}/${personId}`);
   }
 
 }
