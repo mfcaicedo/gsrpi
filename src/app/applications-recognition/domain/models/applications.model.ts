@@ -44,3 +44,34 @@ export interface ApplicationRequest {
     applicationTempId: number;
     productionFiles: FileRequest[];
 }
+
+export interface Application {
+    applicationId: number;
+    description: string;
+    numberOfAuthors: number;
+    termsAndConditions: boolean;
+    applicationTypeCatId: number;
+    createAt: string;
+    production: Partial<Production>;
+    applicationStatus: Partial<StatusApplication>;
+}
+
+export interface Production {
+
+    productionType: Partial<ProductionType>;
+
+}
+
+export interface ProductionType {
+    typeProductionId: number;
+    name: string;
+    jsonStructure: string;
+    alias: string;
+    catalogsIds: string;
+}
+
+export interface StatusApplication {
+    statusApplicationId: number;
+    name: string;
+    description: string;
+}
