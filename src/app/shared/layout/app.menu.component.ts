@@ -89,6 +89,15 @@ export class AppMenuComponent implements OnInit {
                     },
                 ]
             },
+            {
+                label: 'Producción académica',
+                items: [
+                    {
+                        label: 'Listar solicitudes', icon: 'pi pi-fw pi-cog',
+                        routerLink: ['/revision-solicitudes/listar-solicitudes-revision']
+                    },
+                ]
+            },
             // {
             //     label: 'Prime Blocks',
             //     items: [
