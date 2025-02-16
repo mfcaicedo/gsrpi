@@ -193,7 +193,15 @@ export class AuthService {
   }
 
   getUserDataSession() {
+
+    if (Object.keys(this.userDataSession.value).length === 0) {
+      const userDataSession = localStorage.getItem('userDataSession');
+      if (userDataSession) {
+        this.userDataSession.next(JSON.parse(userDataSession));
+      }
+    }
     return this.userDataSession.asObservable();
+    
   }
 
   removeAccents(str: any) {
