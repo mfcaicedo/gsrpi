@@ -76,7 +76,7 @@ export class TermsAndConditionsComponent {
 
   async getPersonByUserId() {
     return new Promise((resolve) => {
-      this.applicationTempManagementUsecase.getPersonByUserId(this.userId).subscribe({
+      this.userManagementUseCase.getPersonByUserId(this.userId).subscribe({
         next: (response: any) => {
           this.personId = response.personId;
           this.nameMainApplicant = `${response.firstName} ${response.secondName} ${response.firstLastName} ${response.secondLastName ?? ''}`;
@@ -93,7 +93,7 @@ export class TermsAndConditionsComponent {
   async getTeacherByPersonId() {
 
     return new Promise((resolve) => {
-      this.applicationTempManagementUsecase.getTeacherByPersonId(this.personId).subscribe({
+      this.userManagementUseCase.getTeacherByPersonId(this.personId).subscribe({
         next: (response: any) => {
           this.teacherId = response.teacherId;
           resolve(true);

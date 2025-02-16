@@ -20,6 +20,7 @@ import { UserManagementUseCase } from '../../../../user-management/domain/usecas
 import { ApplicationTempManagementUsecase } from '../../../domain/usecase/application-temp-management-usecase';
 import { TeacherResponse } from '../../../domain/models/teacher.model';
 import { ApplicationRecognized, ApplicationTemp } from '../../../domain/models/applications.model';
+import { ApplicationManagementUseCase } from '../../../domain/usecase/application-management-usecase';
 
 @Component({
   selector: 'app-register-related-works',
@@ -49,6 +50,7 @@ export class RegisterRelatedWorksComponent {
   private readonly authService = inject(AuthService);
   private readonly userManagementUseCase = inject(UserManagementUseCase);
   private readonly applicationTempManagementUsecase = inject(ApplicationTempManagementUsecase);
+  private readonly applicationManagementUseCase = inject(ApplicationManagementUseCase);
 
   async ngOnInit() {
 
@@ -93,7 +95,7 @@ export class RegisterRelatedWorksComponent {
 
   async getPersonByUserId() {
     return new Promise((resolve) => {
-      this.applicationTempManagementUsecase.getPersonByUserId(this.userId).subscribe({
+      this.userManagementUseCase.getPersonByUserId(this.userId).subscribe({
         next: (response: any) => {
           this.personId = response.personId;
           resolve(true);
@@ -108,7 +110,7 @@ export class RegisterRelatedWorksComponent {
 
   async getTeacherByPersonId() {
     return new Promise((resolve) => {
-      this.applicationTempManagementUsecase.getTeacherByPersonId(this.personId).subscribe({
+      this.userManagementUseCase.getTeacherByPersonId(this.personId).subscribe({
         next: (response: any) => {
           this.teacherResponse = response;
           this.teacherId = response.teacherId;
@@ -150,7 +152,7 @@ export class RegisterRelatedWorksComponent {
   async getApplicationRecognizedByApplicationId() {
 
     return new Promise((resolve) => {
-      this.applicationTempManagementUsecase.getApplicationRecognizedByApplicationId(this.applicationTempId).subscribe({
+      this.applicationManagementUseCase.getApplicationRecognizedByApplicationId(this.applicationTempId).subscribe({
         next: (response: any) => {
           if (response !== null) {
             this.applicationRecognizedResponse = response;
@@ -236,7 +238,7 @@ export class RegisterRelatedWorksComponent {
     };
 
     return new Promise((resolve) => {
-      this.applicationTempManagementUsecase.createApplicationRecognized(bodyRequest).subscribe({
+      this.applicationManagementUseCase.createApplicationRecognized(bodyRequest).subscribe({
         next: (response: any) => {
           //Activo el boton siguiente 
           this.isDisabledNextStep = false;
@@ -277,7 +279,7 @@ export class RegisterRelatedWorksComponent {
     };
 
     return new Promise((resolve) => {
-      this.applicationTempManagementUsecase.updateApplicationRecognized(bodyRequest).subscribe({
+      this.applicationManagementUseCase.updateApplicationRecognized(bodyRequest).subscribe({
         next: (response: any) => {
           //Activo el boton siguiente 
           this.isDisabledNextStep = false;

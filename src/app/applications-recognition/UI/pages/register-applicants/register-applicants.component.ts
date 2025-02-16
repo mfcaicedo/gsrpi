@@ -102,7 +102,7 @@ export class RegisterApplicantsComponent implements OnInit {
 
   async getPersonByUserId() {
     return new Promise((resolve) => {
-      this.applicationTempManagementUsecase.getPersonByUserId(this.userId).subscribe({
+      this.userManagementUseCase.getPersonByUserId(this.userId).subscribe({
         next: (response: any) => {
           this.teacherResponse.person = response;
           resolve(true);
@@ -118,7 +118,7 @@ export class RegisterApplicantsComponent implements OnInit {
   async getTeacherByPersonId() {
 
     return new Promise((resolve) => {
-      this.applicationTempManagementUsecase.getTeacherByPersonId(this.teacherResponse.person.personId).subscribe({
+      this.userManagementUseCase.getTeacherByPersonId(this.teacherResponse.person.personId).subscribe({
         next: (response: any) => {
           this.teacherResponse.teacher = response;
           resolve(true);

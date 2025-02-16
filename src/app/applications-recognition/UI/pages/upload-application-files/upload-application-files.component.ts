@@ -13,6 +13,7 @@ import { UserManagementUseCase } from '../../../../user-management/domain/usecas
 import { ApplicationTempManagementUsecase } from '../../../domain/usecase/application-temp-management-usecase';
 import { FileMetadataRequest } from '../../../domain/models/file.model';
 import { getCurrentDate } from '../../../../shared/utils/management-date';
+import { ApplicationManagementUseCase } from '../../../domain/usecase/application-management-usecase';
 
 @Component({
   selector: 'app-upload-application-files',
@@ -41,6 +42,7 @@ export class UploadApplicationFilesComponent {
   private readonly authService = inject(AuthService);
   private readonly userManagementUseCase = inject(UserManagementUseCase);
   private readonly applicationTempManagementUsecase = inject(ApplicationTempManagementUsecase);
+  private readonly applicationManagementUseCase = inject(ApplicationManagementUseCase);
 
   async ngOnInit() {
 
@@ -72,7 +74,7 @@ export class UploadApplicationFilesComponent {
 
   async getPersonByUserId() {
     return new Promise((resolve) => {
-      this.applicationTempManagementUsecase.getPersonByUserId(this.userId).subscribe({
+      this.userManagementUseCase.getPersonByUserId(this.userId).subscribe({
         next: (response: any) => {
           this.personId = response.personId;
           resolve(true);
@@ -88,7 +90,7 @@ export class UploadApplicationFilesComponent {
   async getTeacherByPersonId() {
 
     return new Promise((resolve) => {
-      this.applicationTempManagementUsecase.getTeacherByPersonId(this.personId).subscribe({
+      this.userManagementUseCase.getTeacherByPersonId(this.personId).subscribe({
         next: (response: any) => {
           this.teacherId = response.teacherId;
           resolve(true);
@@ -151,7 +153,7 @@ export class UploadApplicationFilesComponent {
   }
 
   saveApplication() {
-    this.applicationTempManagementUsecase.createApplication(this.applicationRequest).subscribe({
+    this.applicationManagementUseCase.createApplication(this.applicationRequest).subscribe({
       next: (response: any) => {
         this.messageService.add(
           {
@@ -257,7 +259,7 @@ export class UploadApplicationFilesComponent {
 
   saveMetadataFile(metadataFile: FileMetadataRequest) {
     return new Promise((resolve) => {
-      this.applicationTempManagementUsecase.saveMetadataFile(metadataFile).subscribe({
+      this.applicationManagementUseCase.saveMetadataFile(metadataFile).subscribe({
         next: (response: any) => {
           this.filesIds.push(response.fileId);
           resolve(true);

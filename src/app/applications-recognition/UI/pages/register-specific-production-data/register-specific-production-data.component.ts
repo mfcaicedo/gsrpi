@@ -19,6 +19,7 @@ import { AuthService } from '../../../../auth/auth.service';
 import { UserManagementUseCase } from '../../../../user-management/domain/usecase/user-management-usecase';
 import { ApplicationTempManagementUsecase } from '../../../domain/usecase/application-temp-management-usecase';
 import { ApplicationTypeJsonStructureResponse } from '../../../domain/models/applications.model';
+import { ApplicationManagementUseCase } from '../../../domain/usecase/application-management-usecase';
 
 @Component({
   selector: 'app-register-specific-production-data',
@@ -68,6 +69,7 @@ export class RegisterSpecificProductionDataComponent {
   private readonly authService = inject(AuthService);
   private readonly userManagementUseCase = inject(UserManagementUseCase);
   private readonly applicationTempManagementUsecase = inject(ApplicationTempManagementUsecase);
+  private readonly applicationManagementUseCase = inject(ApplicationManagementUseCase);
 
   async ngOnInit() {
 
@@ -116,7 +118,7 @@ export class RegisterSpecificProductionDataComponent {
 
   async getPersonByUserId() {
     return new Promise((resolve) => {
-      this.applicationTempManagementUsecase.getPersonByUserId(this.userId).subscribe({
+      this.userManagementUseCase.getPersonByUserId(this.userId).subscribe({
         next: (response: any) => {
           this.personId = response.personId;
           resolve(true);
@@ -131,7 +133,7 @@ export class RegisterSpecificProductionDataComponent {
 
   async getTeacherByPersonId() {
     return new Promise((resolve) => {
-      this.applicationTempManagementUsecase.getTeacherByPersonId(this.personId).subscribe({
+      this.userManagementUseCase.getTeacherByPersonId(this.personId).subscribe({
         next: (response: any) => {
           this.teacherId = response.teacherId;
           resolve(true);
@@ -173,7 +175,7 @@ export class RegisterSpecificProductionDataComponent {
 
   async getProductionTypeById() {
     return new Promise((resolve) => {
-      this.applicationTempManagementUsecase.getProductionTypeJsonStructureById(this.productionTypeId).subscribe({
+      this.applicationManagementUseCase.getProductionTypeJsonStructureById(this.productionTypeId).subscribe({
         next: (response: any) => {
           this.applicationTypeJsonStructureResponse.jsonStructure = response.jsonStructure;
           resolve(true);

@@ -78,7 +78,7 @@ export class RegisterProductionTypeComponent {
 
   async getPersonByUserId() {
     return new Promise((resolve) => {
-      this.applicationTempManagementUsecase.getPersonByUserId(this.userId).subscribe({
+      this.userManagementUseCase.getPersonByUserId(this.userId).subscribe({
         next: (response: any) => {
           this.personId = response.personId;
           resolve(true);
@@ -93,7 +93,7 @@ export class RegisterProductionTypeComponent {
 
   async getTeacherByPersonId() {
     return new Promise((resolve) => {
-      this.applicationTempManagementUsecase.getTeacherByPersonId(this.personId).subscribe({
+      this.userManagementUseCase.getTeacherByPersonId(this.personId).subscribe({
         next: (response: any) => {
           this.teacherId = response.teacherId;
           resolve(true);
