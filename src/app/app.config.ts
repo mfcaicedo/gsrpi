@@ -52,12 +52,6 @@ export const appConfig: ApplicationConfig = {
     //   deps: [AuthService]
     // },
 
-    DatePipe,
-    {
-      provide: LOCALE_ID,
-      useValue: 'es-CO',
-    },
-
     //Configuracion de la inyeccion de dependencias para el desacoplamiento de la capa de infraestructura
     { provide: UserGateway, useClass: UserManagementService },
     { provide: SystemConfigurationGateway, useClass: SystemConfigService },
