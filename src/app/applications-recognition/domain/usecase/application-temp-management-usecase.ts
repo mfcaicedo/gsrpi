@@ -22,36 +22,4 @@ export class ApplicationTempManagementUsecase {
         return this.applicationRecognitionGateway.getApplicationTempByTeacherId(teacherId);
     }
 
-    getPersonByUserId(userId: number) {
-        return this.applicationRecognitionGateway.getPersonByUserId(userId);
-    }
-
-    getTeacherByPersonId(personId: number) {
-        return this.applicationRecognitionGateway.getTeacherByPersonId(personId);
-    }
-
-    getProductionTypeJsonStructureById(productionTypeId: number) {
-        return this.applicationRecognitionGateway.getProductionTypeJsonStructureById(productionTypeId);
-    }
-
-    createApplicationRecognized(applicationRecognized: ApplicationRecognized) {
-        return this.applicationRecognitionGateway.createApplicationRecognized(applicationRecognized);
-    }
-
-    updateApplicationRecognized(applicationRecognized: Partial<ApplicationRecognized>) {
-        return this.applicationRecognitionGateway.updateApplicationRecognized(applicationRecognized);
-    }
-
-    getApplicationRecognizedByApplicationId(applicationId: number) {
-        return this.applicationRecognitionGateway.getApplicationRecognizedByApplicationId(applicationId);
-    }
-
-    saveMetadataFile(fileMetadataRequest: FileMetadataRequest) {
-        return this.applicationRecognitionGateway.saveMetadataFile(fileMetadataRequest);
-    }
-
-    createApplication(applicationRequest: ApplicationRequest) {
-        return this.applicationRecognitionGateway.createApplication(applicationRequest);
-    }
-
 }
