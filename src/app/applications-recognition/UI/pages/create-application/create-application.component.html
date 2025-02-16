@@ -16,7 +16,7 @@
                 <label for="selectedDepartment" class="block text-primary text-lg font-medium mb-2">
                     Tipo de solicitud <span class="text-orange-500">*</span>
                 </label>
-                <p-select class="p-3" [options]="departments" [required]="true" [showClear]="true"
+                <p-select class="p-3" [options]="applicationTypes" [required]="true" [showClear]="true"
                     formControlName="applicationType" optionLabel="value" [filter]="true" filterBy="value"
                     placeholder="Seleccione el tipo de solicitud" class="w-full md:w-56" />
                 @if (this.registerForm.get('applicationType')?.hasError('required') &&

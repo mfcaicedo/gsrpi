@@ -15,4 +15,5 @@ export abstract class ApplicationsRecognitionGateway {
     abstract getApplicationRecognizedByApplicationId(applicationId: number): Observable<GenericResponse>;
     abstract saveMetadataFile(fileMetadataRequest: FileMetadataRequest): Observable<GenericResponse>;
     abstract createApplication(applicationRequest: ApplicationRequest): Observable<GenericResponse>;
+    abstract getAllAppicationsByTeacherId(teacherId: number): Observable<GenericResponse>;
 }

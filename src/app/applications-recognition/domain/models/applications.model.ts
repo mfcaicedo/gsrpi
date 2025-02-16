@@ -51,15 +51,16 @@ export interface Application {
     numberOfAuthors: number;
     termsAndConditions: boolean;
     applicationTypeCatId: number;
+    applicationTypeName: string;
     createAt: string;
     production: Partial<Production>;
     applicationStatus: Partial<StatusApplication>;
 }
 
 export interface Production {
-
+    productionId: number;
+    workTitle: string;
     productionType: Partial<ProductionType>;
-
 }
 
 export interface ProductionType {

@@ -23,8 +23,11 @@
                 <th class="text-primary" pSortableColumn="applicationId">
                     Id <p-sortIcon field="applicationId" />
                 </th>
-                <th class="text-primary" pSortableColumn="applicationTypeCatId">
-                    Reconocimiento <p-sortIcon field="applicationTypeCatId" />
+                <th class="text-primary" pSortableColumn="production.workTitle">
+                    Título <p-sortIcon field="production.workTitle" />
+                </th>
+                <th class="text-primary" pSortableColumn="applicationTypeName">
+                    Reconocimiento <p-sortIcon field="applicationTypeName" />
                 </th>
                 <th class="text-primary" pSortableColumn="production.productionType.name">
                     Tipo producción <p-sortIcon field="production.productionType.name" />
@@ -41,9 +44,10 @@
         <ng-template #body let-application>
             <tr>
                 <td>{{ application.applicationId }}</td>
-                <td>{{ application.applicationTypeCatId }}</td>
+                <td>{{ application.production.workTitle }}</td>
+                <td>{{ application.applicationTypeName }}</td>
                 <td>{{ application.production.productionType.name }}</td>
-                <td>{{ application.createAt }}</td>
+                <td>{{ application.createAt | date: 'dd/MM/yyyy HH:mm' }}</td>
                 <td>{{ application.applicationStatus.name }}</td>
                 <td>
                     <div class="flex justify-between">

@@ -14,6 +14,7 @@ import { ApplicationTempManagementUsecase } from '../../../domain/usecase/applic
 import { ApplicationTemp } from '../../../domain/models/applications.model';
 import { UserManagementUseCase } from '../../../../user-management/domain/usecase/user-management-usecase';
 import { AuthService } from '../../../../auth/auth.service';
+import { ApplicationManagementUseCase } from '../../../domain/usecase/application-management-usecase';
 
 @Component({
   selector: 'app-create-application',
@@ -25,7 +26,7 @@ import { AuthService } from '../../../../auth/auth.service';
 })
 export class CreateApplicationComponent {
 
-  departments: KeyValueOption[] = [
+  applicationTypes: KeyValueOption[] = [
     { key: 1, value: 'Base salarial - PM-FO-4-FOR-4' },
     { key: 2, value: 'Bonificación - PM-FO-4-FOR-3' },
   ];
@@ -49,14 +50,20 @@ export class CreateApplicationComponent {
 
   async ngOnInit() {
 
+    this.authService.getUserDataSession().subscribe(data => {
+      this.userId = data.userId as number;
+      this.personId = data.personId as number;
+      this.teacherId = data.teacherId as number;
+    });
+
     this.registerForm = this.formBuilder.group({
       applicationType: [undefined, [Validators.required]]
     });
 
     //Consulto el docente que hace la solicitud
-    await this.getUserByUid();
-    await this.getPersonByUserId();
-    await this.getTeacherByPersonId();
+    if (this.userId) await this.getUserByUid();
+    if (this.personId) await this.getPersonByUserId();
+    if (this.teacherId) await this.getTeacherByPersonId();
 
     await this.getApplicationTempByTeacherId();
 
@@ -102,7 +109,7 @@ export class CreateApplicationComponent {
 
   async getPersonByUserId() {
     return new Promise((resolve) => {
-      this.applicationTempManagementUseCase.getPersonByUserId(this.userId).subscribe({
+      this.userManagementUseCase.getPersonByUserId(this.userId).subscribe({
         next: (response: any) => {
           this.personId = response.personId;
           resolve(true);
@@ -117,7 +124,7 @@ export class CreateApplicationComponent {
 
   async getTeacherByPersonId() {
     return new Promise((resolve) => {
-      this.applicationTempManagementUseCase.getTeacherByPersonId(this.personId).subscribe({
+      this.userManagementUseCase.getTeacherByPersonId(this.personId).subscribe({
         next: (response: any) => {
           this.teacherId = response.teacherId;
           resolve(true);
@@ -160,7 +167,7 @@ export class CreateApplicationComponent {
   autoCompleteForm(applicationTypeCatId: number) {
 
     this.registerForm.patchValue({
-      applicationType: this.departments.find(x => x.key === applicationTypeCatId)
+      applicationType: this.applicationTypes.find(x => x.key === applicationTypeCatId)
     });
     this.isDisabledNextStep = true;
 

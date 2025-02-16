@@ -62,4 +62,8 @@ export class ApplicationManagementService extends ApplicationsRecognitionGateway
     return this.http.post<GenericResponse>(ENVIRONMENTS.CREATE_APPLICATION, applicationRequest);
   }
 
+  override getAllAppicationsByTeacherId(teacherId: number): Observable<GenericResponse> {
+    return this.http.get<GenericResponse>(`${ENVIRONMENTS.GET_ALL_APPLICATIONS_BY_TEACHER_ID}/${teacherId}`);
+  }
+
 }
