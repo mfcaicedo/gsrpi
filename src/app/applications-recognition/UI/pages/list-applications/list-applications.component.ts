@@ -1,18 +1,18 @@
-import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject, LOCALE_ID, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, inject, ViewChild } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Table, TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
-import { Application } from '../../../domain/models/applications.model';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../../../auth/auth.service';
 import { ApplicationManagementUseCase } from '../../../domain/usecase/application-management-usecase';
 import { KeyValueOption } from '../../../../shared/utils/models/form-builder.model';
+import { Application } from '../../../../shared/utils/models/applications-common.model';
 
 @Component({
   selector: 'app-list-applications',
@@ -27,7 +27,7 @@ export class ListApplicationsComponent {
   @ViewChild('dt1') dt1!: Table;
 
   first = 0;
-  rows = 10;
+  rows = 5;
 
   teacherId: number = 0;
 

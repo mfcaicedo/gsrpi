@@ -18,9 +18,9 @@ import { KeyValueOption } from '../../../../shared/utils/models/form-builder.mod
 import { AuthService } from '../../../../auth/auth.service';
 import { UserManagementUseCase } from '../../../../user-management/domain/usecase/user-management-usecase';
 import { ApplicationTempManagementUsecase } from '../../../domain/usecase/application-temp-management-usecase';
-import { TeacherResponse } from '../../../domain/models/teacher.model';
 import { ApplicationRecognized, ApplicationTemp } from '../../../domain/models/applications.model';
 import { ApplicationManagementUseCase } from '../../../domain/usecase/application-management-usecase';
+import { Teacher } from '../../../../shared/utils/models/teacher-common.model';
 
 @Component({
   selector: 'app-register-related-works',
@@ -41,7 +41,7 @@ export class RegisterRelatedWorksComponent {
   applicationTempId: number = 0;
   isUpdate: boolean = false;
 
-  teacherResponse: TeacherResponse = {} as TeacherResponse;
+  teacherResponse: Teacher = {} as Teacher;
   applicationRecognizedResponse: ApplicationRecognized = {} as ApplicationRecognized;
 
   private readonly formBuilder = inject(FormBuilder);
