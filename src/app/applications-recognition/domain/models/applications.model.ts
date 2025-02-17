@@ -1,6 +1,6 @@
 import { FileRequest } from "./file.model";
-import { Person } from "./person.model";
-import { TeacherResponse } from "./teacher.model";
+import { Person } from "../../../shared/utils/models/person.model";
+import { Teacher } from "../../../shared/utils/models/teacher-common.model";
 
 export interface ApplicationTemp {
     applicationTempId?: number;
@@ -23,7 +23,7 @@ export interface ApplicationTemp {
 
 export interface TeacherPersonUnifiedResponse {
     person: Person;
-    teacher: TeacherResponse;
+    teacher: Teacher;
 }
 
 export interface ApplicationTypeJsonStructureResponse {
@@ -37,42 +37,10 @@ export interface ApplicationRecognized {
     date: string;
     authors: string;
     applicationId: number;
-    teacher: TeacherResponse;
+    teacher: Teacher;
 }
 
 export interface ApplicationRequest {
     applicationTempId: number;
     productionFiles: FileRequest[];
-}
-
-export interface Application {
-    applicationId: number;
-    description: string;
-    numberOfAuthors: number;
-    termsAndConditions: boolean;
-    applicationTypeCatId: number;
-    applicationTypeName: string;
-    createAt: string;
-    production: Partial<Production>;
-    applicationStatus: Partial<StatusApplication>;
-}
-
-export interface Production {
-    productionId: number;
-    workTitle: string;
-    productionType: Partial<ProductionType>;
-}
-
-export interface ProductionType {
-    typeProductionId: number;
-    name: string;
-    jsonStructure: string;
-    alias: string;
-    catalogsIds: string;
-}
-
-export interface StatusApplication {
-    statusApplicationId: number;
-    name: string;
-    description: string;
 }

@@ -29,6 +29,10 @@ export const routes: Routes = [
             {
                 path: 'solicitudes-reconocimiento',
                 loadChildren: () => import('./applications-recognition/applications-recognition.routes').then(m => m.routes)
+            },
+            {
+                path: 'revision-solicitudes',
+                loadChildren: () => import('./review-applications/review-applications.routes').then(m => m.routes)
             }
         ]
 
