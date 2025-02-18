@@ -55,11 +55,11 @@ export class AuthService {
 
   }
 
-  saveConfigurationsId(id: number) {
+  saveConfigurationId(id: number) {
     this.configurationId.next(id);
   }
 
-  getConfigurationsId() {
+  getConfigurationId() {
     return this.configurationId.asObservable();
   }
 

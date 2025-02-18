@@ -12,6 +12,7 @@ export interface Application {
     production: Partial<Production>;
     applicationStatus: Partial<StatusApplication>;
     teacherApplications: Partial<TeacherApplication>[];
+    nombresSolicitante: string;
 }
 
 export interface Department {

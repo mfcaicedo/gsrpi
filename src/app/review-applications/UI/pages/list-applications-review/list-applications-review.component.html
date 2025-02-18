@@ -26,8 +26,8 @@
                 <th class="text-primary" pSortableColumn="production.workTitle">
                     Título <p-sortIcon field="production.workTitle" />
                 </th>
-                <th class="text-primary" pSortableColumn="production.workTitle">
-                    Solicitante <p-sortIcon field="production.workTitle" />
+                <th class="text-primary" pSortableColumn="nombresSolicitante">
+                    Solicitante <p-sortIcon field="nombresSolicitante" />
                 </th>
                 <th class="text-primary" pSortableColumn="applicationTypeName">
                     Reconocimiento <p-sortIcon field="applicationTypeName" />
@@ -51,8 +51,7 @@
             <tr>
                 <td>{{ application.applicationId }}</td>
                 <td>{{ application.production.workTitle }}</td>
-                <td>{{ application.teacherApplications[0].teacher.person.firstName + ' ' + application.teacherApplications[0].teacher.person.firstLastName
-                    }}</td>
+                <td>{{ application.nombresSolicitante }}</td>
                 <td>{{ application.applicationTypeName }}</td>
                 <td>{{ application.production.productionType.name }}</td>
                 <td>{{ application.createAt | date: 'dd/MM/yyyy HH:mm' }}</td>
@@ -60,7 +59,7 @@
                 <td>{{ application.applicationStatus.name }}</td>
                 <td>
                     <div class="flex justify-between">
-                        <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text"
+                        <button pButton pRipple icon="pi pi-file-check" class="p-button-rounded p-button-text"
                             (click)="viewApplication(application)">
                             Revisar
                         </button>

@@ -79,7 +79,7 @@ export class RegisterFacultyComponent implements OnInit {
       next: (response: any) => {
         console.log("response, ", response);
         //Guardo el id de la configuración inicial 
-        this.authService.saveConfigurationsId(response?.configurationId);
+        this.authService.saveConfigurationId(response?.configurationId);
         //Alerta de que se guardo correctamente
         this.messageService.add(
           {

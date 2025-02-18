@@ -13,6 +13,7 @@ import { KeyValueOption } from '../../../../shared/utils/models/form-builder.mod
 import { Application } from '../../../../shared/utils/models/applications-common.model';
 import { AuthService } from '../../../../auth/auth.service';
 import { ReviewApplicationsManagementUseCase } from '../../../domain/usecase/review-applications-management-usecase';
+import { CreateInitialConfigurationUsecase } from '../../../../system-configuration/domain/usecase/create-initial-configuration-usecase';
 
 @Component({
   selector: 'app-list-applications-review',
@@ -29,7 +30,8 @@ export class ListApplicationsReviewComponent {
   first = 0;
   rows = 5;
 
-  facultyId: number = 1;
+  configurationId: number = 0;
+  facultyId: number = 0;
 
   applications: Partial<Application>[] = [];
 
@@ -43,22 +45,44 @@ export class ListApplicationsReviewComponent {
   private readonly messageService = inject(MessageService);
   private readonly authService = inject(AuthService);
   private readonly reviewApplicationsManagementUseCase = inject(ReviewApplicationsManagementUseCase);
+  private readonly configurationUseCase = inject(CreateInitialConfigurationUsecase);
 
   async ngOnInit() {
 
-    // this.authService.getUserDataSession().subscribe(data => {
-    //   this.facultyId = data.teacherId || 0;
-    // });
+    this.authService.getConfigurationId().subscribe((id: number) => {
+      this.configurationId = id;
+    });
+
+    await this.getConfigurationById();
 
     await this.getAllApplicationsByFacultyId();
 
+  }
+
+  async getConfigurationById() {
+    return new Promise<void>((resolve, reject) => {
+      this.configurationUseCase.getConfigurationById(this.configurationId).subscribe({
+        next: (response: any) => {
+          this.facultyId = response.faculty.facultyId;
+          resolve();
+        },
+        error: (error) => {
+          this.messageService.add(
+            {
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Ocurrió un error al obtener la configuración'
+            });
+          resolve();
+        }
+      });
+    });
   }
 
   async getAllApplicationsByFacultyId() {
     return new Promise<void>((resolve, reject) => {
       this.reviewApplicationsManagementUseCase.getAllApplicationsByFacultyId(this.facultyId).subscribe({
         next: (response: any) => {
-          console.log("response", response);
           if (response) {
             response.forEach((application: any) => {
               this.applications.push({
@@ -69,9 +93,12 @@ export class ListApplicationsReviewComponent {
                 department: application.department,
                 production: application.production,
                 applicationStatus: application.applicationStatus,
-                teacherApplications: application.teacherApplications
+                teacherApplications: application.teacherApplications,
+                nombresSolicitante: application.teacherApplications[0].teacher.person.firstName + ' ' +
+                  application.teacherApplications[0].teacher.person.secondName +
+                  ' ' + application.teacherApplications[0].teacher.person.firstLastName + ' ' +
+                  application.teacherApplications[0].teacher.person.secondLastName,
               });
-              console.log("this.applications", this.applications);
             });
           }
           resolve();
