@@ -77,7 +77,6 @@ export class RegisterFacultyComponent implements OnInit {
     }
     this.createConfigurationInitialUseCase.createInitialConfiguration(configurationRequest).subscribe({
       next: (response: any) => {
-        console.log("response, ", response);
         //Guardo el id de la configuración inicial 
         this.authService.saveConfigurationId(response?.configurationId);
         //Alerta de que se guardo correctamente
