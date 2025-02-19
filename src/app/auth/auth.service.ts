@@ -45,7 +45,12 @@ export class AuthService {
   }
 
   getSession() {
+
+    if (this.session.value === null) {
+      this.updateAuthStatus();
+    }
     return this.session.asObservable();
+
   }
 
   get user(): WritableSignal<User | null> {
@@ -201,7 +206,7 @@ export class AuthService {
       }
     }
     return this.userDataSession.asObservable();
-    
+
   }
 
   removeAccents(str: any) {
