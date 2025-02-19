@@ -5,7 +5,8 @@
         </h2>
     </div>
     <p-table #dt1 [value]="applications" [paginator]="true" [rows]="5" [first]="first" [showCurrentPageReport]="true"
-        [tableStyle]="{ 'min-width': '50rem' }" selectionMode="single" dataKey="id" [globalFilterFields]="['applicationId', 'applicationTypeCatId', 'production.productionType.name', 
+        [tableStyle]="{ 'min-width': '50rem' }" selectionMode="single" dataKey="id" 
+        [globalFilterFields]="['applicationId','production.workTitle', 'applicationTypeName', 'production.productionType.name', 
         'createAt','applicationStatus.name']"
         currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} solicitudes"
         (onPage)="pageChange($event)" [rowsPerPageOptions]="[5, 10, 15, 20, 25]" dataKey="id">
