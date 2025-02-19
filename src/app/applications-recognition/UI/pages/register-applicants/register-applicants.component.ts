@@ -15,11 +15,13 @@ import { AuthService } from '../../../../auth/auth.service';
 import { ApplicationTempManagementUsecase } from '../../../domain/usecase/application-temp-management-usecase';
 import { UserManagementUseCase } from '../../../../user-management/domain/usecase/user-management-usecase';
 import { ApplicationTemp, TeacherPersonUnifiedResponse } from '../../../domain/models/applications.model';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { filter, firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-register-applicants',
   imports: [CommonModule, ButtonModule, ProgressBarModule, SelectModule, FormsModule, InputTextModule,
-    ReactiveFormsModule, InputNumberModule, RouterModule, ToastModule, ConfirmDialogModule],
+    ReactiveFormsModule, InputNumberModule, RouterModule, ToastModule, ConfirmDialogModule, RadioButtonModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './register-applicants.component.html',
   styleUrl: './register-applicants.component.css'
@@ -41,9 +43,16 @@ export class RegisterApplicantsComponent implements OnInit {
     { key: 4, value: 'Telemática' }
   ];
 
+  typeOfLinkageDataList: KeyValueOption[] = [
+    { key: 1, value: 'Planta' },
+    { key: 2, value: 'Ocasional' },
+    // { key: 3, value: 'Catedra' },
+  ];
+
   isDisabledNextStep = true;
   registerApplicantForm!: FormGroup;
-  userId: number = 0;
+  userUid = '';
+  userId = 0;
   teacherResponse: TeacherPersonUnifiedResponse = {} as TeacherPersonUnifiedResponse;
   applicationTempId: number = 0;
 
@@ -57,6 +66,8 @@ export class RegisterApplicantsComponent implements OnInit {
   async ngOnInit() {
 
     this.buildFormRegisterApplicant();
+
+    this.userUid = (await firstValueFrom(this.authService.getSession().pipe(filter(data => !!data)))).user.id as string;
 
     //1. Consultar usuario por uid 
     await this.getUserByUid();
@@ -81,13 +92,14 @@ export class RegisterApplicantsComponent implements OnInit {
       cellphone: [undefined, [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       departmentFaculty: [undefined, [Validators.required]],
+      typeOfLinkage: [undefined, [Validators.required]],
 
     });
   }
 
   async getUserByUid() {
     return new Promise((resolve) => {
-      this.userManagementUseCase.getUserByUid(this.authService.getDecodeToken()).subscribe({
+      this.userManagementUseCase.getUserByUid(this.userUid).subscribe({
         next: (response: any) => {
           this.userId = response.userId;
           resolve(true);
@@ -170,7 +182,8 @@ export class RegisterApplicantsComponent implements OnInit {
       cellphone: this.teacherResponse.person.phone,
       email: this.teacherResponse.person.email,
       departmentFaculty: this.teacherResponse.teacher.departmentId,
-      totalNumberAuthors: numberOfAuthors,
+      typeOfLinkage: this.teacherResponse.teacher.typeOfLinkage,
+      totalNumberAuthors: numberOfAuthors !== 0 ? numberOfAuthors : undefined,
     });
 
     this.registerApplicantForm.disable();

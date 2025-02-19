@@ -148,6 +148,28 @@
                     </div>
                     }
                 </div>
+                <div class="col-12 sm:col-6 md:col-4">
+                    <label for="typeOfLinkage" class="block text-primary text-md font-medium mb-2">
+                        Tipo vinculación <span class="text-orange-500">*</span>
+                    </label>
+                    <div class="flex flex-row gap-2">
+                        @for (item of typeOfLinkageDataList; track $index) {
+                        <div class="field-checkbox">
+                            <p-radiobutton [value]="item.key" formControlName="typeOfLinkage" [styleClass]="
+                                (registerApplicantForm.get('typeOfLinkage')?.hasError('required') && 
+                                registerApplicantForm.get('typeOfLinkage')?.touched ? 'ng-invalid' : '') + 
+                                'ng-dirty'" />
+                            <label [for]="item.key" class="ml-2"> {{ item.value }} </label>
+                        </div>
+                        }
+                    </div>
+                    @if (this.registerApplicantForm.get('typeOfLinkage')?.hasError('required') &&
+                    this.registerApplicantForm.get('typeOfLinkage')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        Debe seleccionar el tipo de vinculación
+                    </div>
+                    }
+                </div>
             </div>
             <div class="">
                 <p class="mb-3">
