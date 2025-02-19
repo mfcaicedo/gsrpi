@@ -60,7 +60,7 @@
                 <td>
                     <div class="flex justify-between">
                         <button pButton pRipple icon="pi pi-file-check" class="p-button-rounded p-button-text"
-                            (click)="viewApplication(application)">
+                            [routerLink]="['../revisar-solicitud', application.applicationId]">
                             Revisar
                         </button>
                         <!-- <button pButton pRipple icon="pi pi-pen-to-square" class="p-button-rounded p-button-text"

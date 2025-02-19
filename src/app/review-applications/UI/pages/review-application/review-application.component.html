@@ -1,0 +1,78 @@
+<div class="container">
+    <div class="">
+        <h2>
+            Revisión de la solicitud de reconocimiento de producción intelectual
+        </h2>
+        <p class="mb-3">
+            <span class="font-normal">
+                Por favor, revisa la información del docente solicitante y agrega tu visto bueno junto con cualquier
+                observación que consideres necesaria.
+            </span>
+        </p>
+    </div>
+    <div class="container-form row">
+        <form action="" [formGroup]="registerForm" (submit)="onSubmit()">
+            @if(currentStep === StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT){
+            <div class="">
+                <h5 class="">
+                    Datos del docente solicitante
+                </h5>
+            </div>
+            <app-form-body-applicant-teacher [formGroup]="registerForm"
+                [identificationTypeDataList]="identificationTypeDataList" [departmentDataList]="departmentDataList"
+                [typeOfLinkageDataList]="typeOfLinkageDataList">
+            </app-form-body-applicant-teacher>
+            }
+        </form>
+        <div class="">
+            <h5 class="">
+                Visto bueno y observaciones
+            </h5>
+            <form action="" [formGroup]="validationForm" (submit)="onSubmit()">
+                <div class="col-12 sm:col-6 md:col-4">
+                    <label for="approval" class="block text-primary text-md font-medium mb-2">
+                        La información es <span class="text-orange-500">*</span>
+                    </label>
+                    <div class="flex flex-row gap-2">
+                        @for (item of approvalDataList; track $index) {
+                        <div class="field-checkbox">
+                            <p-radiobutton [value]="item.key" formControlName="approval" [styleClass]="
+                                (validationForm.get('approval')?.hasError('required') && 
+                                validationForm.get('approval')?.touched ? 'ng-invalid' : '') + 
+                                'ng-dirty'" />
+                            <label [for]="item.key" class="ml-2"> {{ item.value }} </label>
+                        </div>
+                        }
+                    </div>
+                    @if (this.validationForm.get('approval')?.hasError('required') &&
+                    this.validationForm.get('approval')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        Debe seleccionar el tipo de vinculación
+                    </div>
+                    }
+                </div>
+                <div class="col-12 sm:col-6 md:col-4">
+                    <label for="observations" class="block text-primary text-md font-medium mb-2">
+                        Observaciones
+                    </label>
+                    <textarea rows="4" placeholder="Sus observaciones ..." cols="31" pTextarea [autoResize]="true"
+                        formControlName="observations">
+                    </textarea>
+                </div>
+            </form>
+        </div>
+        <div class="col-12 sm:col-6 flex flex-row gap-2 pl-0">
+            <button pButton severity="secondary" pRipple label="Anterior" [disabled]="true" class="w-full border-round">
+            </button>
+            <button pButton pRipple label="Guardar" type="submit" [disabled]="!registerForm.valid"
+                class="w-full border-round">
+            </button>
+            <button pButton pRipple label="Siguiente" type="button" [disabled]="!isDisabledNextStep"
+                class="w-full border-round" [routerLink]="['../registrar-solicitantes/step-2']">
+            </button>
+        </div>
+    </div>
+    <!-- Dialog alert -->
+    <p-toast />
+    <p-confirmdialog />
+</div>
