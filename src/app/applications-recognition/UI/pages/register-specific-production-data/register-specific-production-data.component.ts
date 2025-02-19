@@ -20,6 +20,7 @@ import { UserManagementUseCase } from '../../../../user-management/domain/usecas
 import { ApplicationTempManagementUsecase } from '../../../domain/usecase/application-temp-management-usecase';
 import { ApplicationTypeJsonStructureResponse } from '../../../domain/models/applications.model';
 import { ApplicationManagementUseCase } from '../../../domain/usecase/application-management-usecase';
+import { filter, firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-register-specific-production-data',
@@ -55,11 +56,12 @@ export class RegisterSpecificProductionDataComponent {
 
   isDisabledNextStep = true;
   registerSpecificProductionDataForm!: FormGroup;
-  userId: number = 0;
-  personId: number = 0;
-  teacherId: number = 0;
-  applicationTempId: number = 0;
-  productionTypeId: number = 0;
+  userUid = '';
+  userId = 0;
+  personId = 0;
+  teacherId = 0;
+  applicationTempId = 0;
+  productionTypeId = 0;
 
   applicationTypeJsonStructureResponse: ApplicationTypeJsonStructureResponse = {} as ApplicationTypeJsonStructureResponse;
 
@@ -75,7 +77,7 @@ export class RegisterSpecificProductionDataComponent {
 
     this.buildRegisterSpecificProductionDataForm();
 
-
+    this.userUid = (await firstValueFrom(this.authService.getSession().pipe(filter(data => !!data)))).user.id as string;
     //1. Consultar usuario por uid 
     await this.getUserByUid();
     //2. Consultar persona por id de usuario
@@ -103,7 +105,7 @@ export class RegisterSpecificProductionDataComponent {
 
   async getUserByUid() {
     return new Promise((resolve) => {
-      this.userManagementUseCase.getUserByUid(this.authService.getDecodeToken()).subscribe({
+      this.userManagementUseCase.getUserByUid(this.userUid).subscribe({
         next: (response: any) => {
           this.userId = response.userId;
           resolve(true);

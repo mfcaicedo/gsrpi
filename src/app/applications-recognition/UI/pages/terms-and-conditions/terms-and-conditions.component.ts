@@ -13,6 +13,7 @@ import { AuthService } from '../../../../auth/auth.service';
 import { UserManagementUseCase } from '../../../../user-management/domain/usecase/user-management-usecase';
 import { ApplicationTempManagementUsecase } from '../../../domain/usecase/application-temp-management-usecase';
 import { ApplicationTemp } from '../../../domain/models/applications.model';
+import { filter, firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-terms-and-conditions',
@@ -27,10 +28,11 @@ export class TermsAndConditionsComponent {
   //TODO: Obtener el nombre del solicitante principal por medio de token o servicio de autenticación
   nameMainApplicant = '';
 
-  userId: number = 0;
-  personId: number = 0;
-  teacherId: number = 0;
-  applicationTempId: number = 0;
+  userUid = '';
+  userId = 0;
+  personId = 0;
+  teacherId = 0;
+  applicationTempId = 0;
 
   isDisabledNextStep = true;
   termsAndConditionsForm!: FormGroup;
@@ -48,6 +50,7 @@ export class TermsAndConditionsComponent {
       termsAndConditions: [undefined, [Validators.required]],
     });
 
+    this.userUid = (await firstValueFrom(this.authService.getSession().pipe(filter(data => !!data)))).user.id as string;
     //1. Consultar usuario por uid 
     await this.getUserByUid();
     //2. Consultar persona por id de usuario
@@ -61,7 +64,7 @@ export class TermsAndConditionsComponent {
 
   async getUserByUid() {
     return new Promise((resolve) => {
-      this.userManagementUseCase.getUserByUid(this.authService.getDecodeToken()).subscribe({
+      this.userManagementUseCase.getUserByUid(this.userUid).subscribe({
         next: (response: any) => {
           this.userId = response.userId;
           resolve(true);

@@ -15,6 +15,7 @@ import { ApplicationTemp } from '../../../domain/models/applications.model';
 import { UserManagementUseCase } from '../../../../user-management/domain/usecase/user-management-usecase';
 import { AuthService } from '../../../../auth/auth.service';
 import { ApplicationManagementUseCase } from '../../../domain/usecase/application-management-usecase';
+import { filter, firstValueFrom, take } from 'rxjs';
 
 @Component({
   selector: 'app-create-application',
@@ -33,6 +34,7 @@ export class CreateApplicationComponent {
 
   registerForm!: FormGroup;
   isDisabledNextStep = false;
+  userUid: string = '';
   userId: number = 0;
   personId: number = 0;
   teacherId: number = 0;
@@ -50,20 +52,22 @@ export class CreateApplicationComponent {
 
   async ngOnInit() {
 
+    this.registerForm = this.formBuilder.group({
+      applicationType: [undefined, [Validators.required]]
+    });
+
     this.authService.getUserDataSession().subscribe(data => {
       this.userId = data.userId as number;
       this.personId = data.personId as number;
       this.teacherId = data.teacherId as number;
     });
 
-    this.registerForm = this.formBuilder.group({
-      applicationType: [undefined, [Validators.required]]
-    });
+    this.userUid = (await firstValueFrom(this.authService.getSession().pipe(filter(data => !!data)))).user.id as string;
 
     //Consulto el docente que hace la solicitud
-    if (this.userId) await this.getUserByUid();
-    if (this.personId) await this.getPersonByUserId();
-    if (this.teacherId) await this.getTeacherByPersonId();
+    if (this.userId === 0) await this.getUserByUid();
+    if (this.personId === 0) await this.getPersonByUserId();
+    if (this.teacherId === 0) await this.getTeacherByPersonId();
 
     await this.getApplicationTempByTeacherId();
 
@@ -93,9 +97,11 @@ export class CreateApplicationComponent {
   }
 
   async getUserByUid() {
+    console.log("this.suserUid hola 2 ", this.userUid);
     return new Promise((resolve) => {
-      this.userManagementUseCase.getUserByUid(this.authService.getDecodeToken()).subscribe({
+      this.userManagementUseCase.getUserByUid(this.userUid).subscribe({
         next: (response: any) => {
+          console.log("ver response", response);
           this.userId = response.userId;
           resolve(true);
         },

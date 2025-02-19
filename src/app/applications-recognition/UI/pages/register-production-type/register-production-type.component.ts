@@ -13,6 +13,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { AuthService } from '../../../../auth/auth.service';
 import { UserManagementUseCase } from '../../../../user-management/domain/usecase/user-management-usecase';
 import { ApplicationTempManagementUsecase } from '../../../domain/usecase/application-temp-management-usecase';
+import { filter, firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-register-production-type',
@@ -30,10 +31,11 @@ export class RegisterProductionTypeComponent {
   ];
 
   productionTypeRegisterForm!: FormGroup;
-  userId: number = 0;
-  personId: number = 0;
-  teacherId: number = 0;
-  applicationTempId: number = 0;
+  userUid: string = '';
+  userId = 0;
+  personId = 0;
+  teacherId = 0;
+  applicationTempId = 0;
 
   isDisabledNextStep: boolean = true;
 
@@ -50,6 +52,7 @@ export class RegisterProductionTypeComponent {
       productionType: [undefined, [Validators.required]]
     });
 
+    this.userUid = (await firstValueFrom(this.authService.getSession().pipe(filter(data => !!data)))).user.id as string;
     //1. Consultar usuario por uid 
     await this.getUserByUid();
     //2. Consultar persona por id de usuario
@@ -63,7 +66,7 @@ export class RegisterProductionTypeComponent {
 
   async getUserByUid() {
     return new Promise((resolve) => {
-      this.userManagementUseCase.getUserByUid(this.authService.getDecodeToken()).subscribe({
+      this.userManagementUseCase.getUserByUid(this.userUid).subscribe({
         next: (response: any) => {
           this.userId = response.userId;
           resolve(true);

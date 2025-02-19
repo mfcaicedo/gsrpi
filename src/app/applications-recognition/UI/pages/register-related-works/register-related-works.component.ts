@@ -21,6 +21,7 @@ import { ApplicationTempManagementUsecase } from '../../../domain/usecase/applic
 import { ApplicationRecognized, ApplicationTemp } from '../../../domain/models/applications.model';
 import { ApplicationManagementUseCase } from '../../../domain/usecase/application-management-usecase';
 import { Teacher } from '../../../../shared/utils/models/teacher-common.model';
+import { filter, firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-register-related-works',
@@ -35,10 +36,11 @@ export class RegisterRelatedWorksComponent {
 
   isDisabledNextStep = true;
   registerRelatedWorksForm!: FormGroup;
-  userId: number = 0;
-  personId: number = 0;
-  teacherId: number = 0;
-  applicationTempId: number = 0;
+  userUid = '';
+  userId = 0;
+  personId = 0;
+  teacherId = 0;
+  applicationTempId = 0;
   isUpdate: boolean = false;
 
   teacherResponse: Teacher = {} as Teacher;
@@ -56,6 +58,7 @@ export class RegisterRelatedWorksComponent {
 
     this.buildRegisterRelatedWorksForm();
 
+    this.userUid = (await firstValueFrom(this.authService.getSession().pipe(filter(data => !!data)))).user.id as string;
     //1. Consultar usuario por uid 
     await this.getUserByUid();
     //2. Consultar persona por id de usuario
@@ -80,7 +83,7 @@ export class RegisterRelatedWorksComponent {
 
   async getUserByUid() {
     return new Promise((resolve) => {
-      this.userManagementUseCase.getUserByUid(this.authService.getDecodeToken()).subscribe({
+      this.userManagementUseCase.getUserByUid(this.userUid).subscribe({
         next: (response: any) => {
           this.userId = response.userId;
           resolve(true);

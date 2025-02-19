@@ -14,6 +14,7 @@ import { ApplicationTempManagementUsecase } from '../../../domain/usecase/applic
 import { FileMetadataRequest } from '../../../domain/models/file.model';
 import { getCurrentDate } from '../../../../shared/utils/management-date';
 import { ApplicationManagementUseCase } from '../../../domain/usecase/application-management-usecase';
+import { filter, firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-upload-application-files',
@@ -25,9 +26,10 @@ import { ApplicationManagementUseCase } from '../../../domain/usecase/applicatio
 })
 export class UploadApplicationFilesComponent {
 
-  userId: number = 0;
-  personId: number = 0;
-  teacherId: number = 0;
+  userUid = '';
+  userId = 0;
+  personId = 0;
+  teacherId = 0;
 
   selectedFiles: File[] = [];
   filesIds: number[] = [];
@@ -46,6 +48,8 @@ export class UploadApplicationFilesComponent {
 
   async ngOnInit() {
 
+    this.userUid = (await firstValueFrom(this.authService.getSession().pipe(filter(data => !!data)))).user.id as string;
+
     //1. Consultar usuario por uid 
     await this.getUserByUid();
     //2. Consultar persona por id de usuario
@@ -59,7 +63,7 @@ export class UploadApplicationFilesComponent {
 
   async getUserByUid() {
     return new Promise((resolve) => {
-      this.userManagementUseCase.getUserByUid(this.authService.getDecodeToken()).subscribe({
+      this.userManagementUseCase.getUserByUid(this.userUid).subscribe({
         next: (response: any) => {
           this.userId = response.userId;
           resolve(true);
