@@ -1,0 +1,138 @@
+<div class="grid">
+    <!-- <div class="col-12 sm:col-6 md:col-4">
+        <label for="productionType" class="block text-primary text-lg font-medium mb-2">
+            Tipo producción y/o reconocimiento <span class="text-orange-500">*</span>
+        </label>
+        <p-select class="p-3" [options]="productionTypeDataList" [required]="true" [showClear]="true"
+            [formControl]="$any(formGroup.get('productionType'))" optionValue="key" optionLabel="value" [filter]="true"
+            filterBy="value" placeholder="Seleccione el tipo de producción" class="w-full md:w-56" />
+        @if (this.formGroup.get('productionType')?.hasError('required') &&
+        this.formGroup.get('productionType')?.touched){
+        <div class="text-error text-sm mt-1">
+            Debe seleccionar un tipo de producción y/o reconocimiento
+        </div>
+        }
+    </div> -->
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="magazineType" class="block text-primary text-md font-medium mb-2">
+            Tipo revista <span class="text-orange-500">*</span>
+        </label>
+        <div class="flex gap-3">
+            @for (item of magazineTypeDataList; track $index) {
+            <div class="field-checkbox">
+                <p-radiobutton [value]="item.key" [formControl]="$any(formGroup.get('magazineType'))" [styleClass]="
+                    (formGroup.get('magazineType')?.hasError('required') && 
+                    formGroup.get('magazineType')?.touched ? 'ng-invalid' : '') + 
+                    'ng-dirty'" />
+                <label [for]="item.key" class="ml-2"> {{ item.value }} </label>
+            </div>
+            }
+        </div>
+        @if (this.formGroup.get('magazineType')?.hasError('required') &&
+        this.formGroup.get('magazineType')?.touched){
+        <div class="text-error text-sm mt-1">
+            Debe seleccionar al menos un tipo de revista
+        </div>
+        }
+    </div>
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="doi" class="block text-primary text-md font-medium mb-2">
+            DOI
+        </label>
+        <input id="disciplinaryArea" type="text" [formControl]="$any(formGroup.get('doi'))"
+            placeholder="Digitar respuesta" pInputText class="w-full">
+        @if (this.formGroup.get('doi')?.hasError('required') &&
+        this.formGroup.get('doi')?.touched){
+        <div class="text-error text-sm mt-1">
+            El DOI es requerido
+        </div>
+        }
+    </div>
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="issn" class="block text-primary text-md font-medium mb-2">
+            ISSN <span class="text-orange-500">*</span>
+        </label>
+        <input id="disciplinaryArea" type="text" [formControl]="$any(formGroup.get('issn'))"
+            placeholder="Digitar respuesta" pInputText class="w-full">
+        @if (this.formGroup.get('issn')?.hasError('required') &&
+        this.formGroup.get('issn')?.touched){
+        <div class="text-error text-sm mt-1">
+            El ISSN es requerido
+        </div>
+        }
+    </div>
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="publindexCategory" class="block text-primary text-md font-medium mb-2">
+            Categoría publindex <span class="text-orange-500">*</span>
+        </label>
+        <div class="flex gap-3">
+            @for (item of publindexCategoryDataList; track $index) {
+            <div class="field-checkbox">
+                <p-radiobutton [value]="item.key" [formControl]="$any(formGroup.get('publindexCategory'))" [styleClass]="
+                    (formGroup.get('publindexCategory')?.hasError('required') && 
+                    formGroup.get('publindexCategory')?.touched ? 'ng-invalid' : '') + 
+                    'ng-dirty'" />
+                <label [for]="item.key" class="ml-2"> {{ item.value }} </label>
+            </div>
+            }
+        </div>
+        @if (this.formGroup.get('publindexCategory')?.hasError('required') &&
+        this.formGroup.get('publindexCategory')?.touched){
+        <div class="text-error text-sm mt-1">
+            Debe seleccionar al menos un tipo de revista
+        </div>
+        }
+    </div>
+
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="startDate" class="block text-primary text-md font-medium mb-2">
+            Fecha inicio <span class="text-orange-500">*</span>
+        </label>
+        <p-datepicker placeholder="Seleccione fecha inicio" [formControl]="$any(formGroup.get('startDate'))"
+            [style]="{'width': '500px'}" showIcon iconDisplay="input" />
+        @if (this.formGroup.get('startDate')?.hasError('required') &&
+        this.formGroup.get('startDate')?.touched){
+        <div class="text-error text-sm mt-1">
+            La fecha de inicio es requerida
+        </div>
+        }
+    </div>
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="endDate" class="block text-primary text-md font-medium mb-2">
+            Fecha fin <span class="text-orange-500">*</span>
+        </label>
+        <p-datepicker placeholder="Seleccione fecha fin" [formControl]="$any(formGroup.get('endDate'))"
+            [style]="{'width': '500px'}" showIcon iconDisplay="input" />
+        @if (this.formGroup.get('endDate')?.hasError('required') &&
+        this.formGroup.get('endDate')?.touched){
+        <div class="text-error text-sm mt-1">
+            La fecha fin es requerida
+        </div>
+        }
+    </div>
+</div>
+
+<div class="grid">
+    <div class="col-12 sm:col-6 md:col-12">
+        <label for="articleType" class="block text-primary text-md font-medium mb-2">
+            Tipo artículo <span class="text-orange-500">*</span>
+        </label>
+        <div class="md:flex md:flex-row gap-2">
+            @for (item of articleTypeDataList; track $index) {
+            <div class="field-checkbox">
+                <p-radiobutton [value]="item.key" [formControl]="$any(formGroup.get('articleType'))" [styleClass]="
+                    (formGroup.get('articleType')?.hasError('required') && 
+                    formGroup.get('articleType')?.touched ? 'ng-invalid' : '') + 
+                    'ng-dirty'" />
+                <label [for]="item.key" class="ml-2"> {{ item.value }} </label>
+            </div>
+            }
+        </div>
+        @if (this.formGroup.get('articleType')?.hasError('required') &&
+        this.formGroup.get('articleType')?.touched){
+        <div class="text-error text-sm mt-1">
+            Debe seleccionar al menos un tipo de artículo
+        </div>
+        }
+    </div>
+</div>
