@@ -1,0 +1,97 @@
+<div class="grid mb-2">
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="title" class="block text-primary text-md font-medium mb-2">
+            Título trabajo y/o reconocimiento <span class="text-orange-500">*</span>
+        </label>
+        <input id="title" type="text" [formControl]="$any(formGroup.get('title'))" placeholder="Tu nombre" pInputText
+            class="w-full">
+        @if (this.formGroup.get('title')?.hasError('required') &&
+        this.formGroup.get('title')?.touched){
+        <div class="text-error text-sm mt-1">
+            El título es requerido
+        </div>
+        }
+    </div>
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="disciplinaryArea" class="block text-primary text-md font-medium mb-2">
+            Área disciplinar <span class="text-orange-500">*</span>
+        </label>
+        <input id="disciplinaryArea" type="text" [formControl]="$any(formGroup.get('disciplinaryArea'))"
+            placeholder="Tu segundo nombre" pInputText class="w-full">
+    </div>
+
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="numberPages" class="block text-primary text-md font-medium mb-2">
+            Número de folios útiles <span class="text-orange-500">*</span>
+        </label>
+        <p-inputnumber inputId="integeronly" [formControl]="$any(formGroup.get('numberPages'))" class="w-full"
+            placeholder="Digitar respuesta" />
+        @if (this.formGroup.get('numberPages')?.hasError('required') &&
+        this.formGroup.get('numberPages')?.touched){
+        <div class="text-error text-sm mt-1">
+            El número de folios útiles es requerido
+        </div>
+        }
+    </div>
+
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="firstPage" class="block text-primary text-md font-medium mb-2">
+            Página de inicio <span class="text-orange-500">*</span>
+        </label>
+        <p-inputnumber inputId="integeronly" [formControl]="$any(formGroup.get('firstPage'))" class="w-full"
+            placeholder="Digitar respuesta" />
+        @if (this.formGroup.get('firstPage')?.hasError('required') &&
+        this.formGroup.get('firstPage')?.touched){
+        <div class="text-error text-sm mt-1">
+            La página de inicio es requerida
+        </div>
+        }
+    </div>
+
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="finalPage" class="block text-primary text-md font-medium mb-2">
+            Página final <span class="text-orange-500">*</span>
+        </label>
+        <p-inputnumber inputId="integeronly" [formControl]="$any(formGroup.get('finalPage'))" class="w-full"
+            placeholder="Digitar respuesta" />
+        @if (this.formGroup.get('finalPage')?.hasError('required') &&
+        this.formGroup.get('finalPage')?.touched){
+        <div class="text-error text-sm mt-1">
+            La página final es requerida
+        </div>
+        }
+    </div>
+</div>
+<div class="grid mb-3">
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="publicationMechanisms" class="block text-primary text-md font-medium mb-2">
+            Mecanismos de publicación <span class="text-orange-500">*</span>
+        </label>
+        <div class="flex flex-column gap-2">
+            @for (item of publicationMechanismsDataList; track $index) {
+            <div class="">
+                <p-checkbox name="groupPublicationMechanisms" [value]="item"
+                    [formControl]="$any(formGroup.get('publicationMechanisms'))" [binary]="false" [styleClass]="
+                    (formGroup.get('publicationMechanisms')?.hasError('required') && 
+                    formGroup.get('publicationMechanisms')?.touched ? 'ng-invalid' : '') + 
+                    'ng-dirty'" />
+                <label [for]="item.key" class="ml-2"> {{ item.value }} </label>
+            </div>
+            }
+        </div>
+        @if (this.formGroup.get('publicationMechanisms')?.hasError('required') &&
+        this.formGroup.get('publicationMechanisms')?.touched){
+        <div class="text-error text-sm mt-1">
+            Debe seleccionar al menos un mecanismo de publicación
+        </div>
+        }
+    </div>
+    <div class="col-12 sm:col-6 md:col-4">
+        <label for="observations" class="block text-primary text-md font-medium mb-2">
+            Observaciones
+        </label>
+        <textarea rows="4" placeholder="Sus observaciones ..." cols="31" pTextarea [autoResize]="true"
+            [formControl]="$any(formGroup.get('observations'))">
+        </textarea>
+    </div>
+</div>
