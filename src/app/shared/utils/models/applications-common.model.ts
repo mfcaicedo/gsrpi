@@ -1,3 +1,4 @@
+import { FileMetadata } from "./file-common.model";
 import { Teacher } from "./teacher-common.model";
 
 export interface Application {
@@ -8,6 +9,7 @@ export interface Application {
     applicationTypeCatId: number;
     applicationTypeName: string;
     createAt: string;
+    updateAt: string;
     department: Partial<Department>;
     production: Partial<Production>;
     applicationStatus: Partial<StatusApplication>;
@@ -16,7 +18,7 @@ export interface Application {
 }
 
 export interface Department {
-    odepartmentId: number;
+    departmentId: number;
     name: string;
     location: string;
     // faculty: Partial<Faculty>;
@@ -36,6 +38,14 @@ export interface Production {
     productionId: number;
     workTitle: string;
     productionType: Partial<ProductionType>;
+    dataJson: string;
+    disciplinaryArea: string;
+    endPage: number;
+    numberOfPages: number;
+    observations: string;
+    publicationMechanism: string;
+    startPage: number;
+    productionFiles: Partial<ProductionFile[]>;
 }
 
 export interface ProductionType {
@@ -56,4 +66,11 @@ export interface TeacherApplication {
     teacherApplicationId: number;
     typeOfRequestingTeacher: string;
     teacher: Partial<Teacher>;
+}
+
+export interface ProductionFile {
+    fileId: number;
+    name: string;
+    productionFileId: number;
+    fileMetadata: FileMetadata
 }

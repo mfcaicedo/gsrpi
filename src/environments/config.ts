@@ -37,9 +37,12 @@ const ENVIRONMENTS = {
     GET_TEMPORARY_APPLICATION_BY_TEACHER_ID: `${base_url_api_gsrpi}/obtener-solicitud-temporal-por-docente-id`,
     GET_ALL_APPLICATIONS_BY_TEACHER_ID: `${base_url_api_gsrpi}/obtener-listado-solicitudes-por-docente-id`,
     GET_ALL_APPLICATIONS_BY_FACULTY_ID: `${base_url_api_gsrpi}/obtener-listado-solicitudes-por-facultad-id`,
+    GET_APPLICATION_BY_ID: `${base_url_api_gsrpi}/obtener-solicitud-por-id`,
 
     //FILE MANAGEMENT
     CREATE_FILE: `${base_url_api_gsrpi}/subir-archivo`,
+    GET_FILE_BY_ID: `${base_url_api_gsrpi}/obtener-archivo-por-id`,
+    BUCKED_NAME: 'gsrpi-storage',
 }
 
 export default ENVIRONMENTS;

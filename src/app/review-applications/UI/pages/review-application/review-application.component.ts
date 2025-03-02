@@ -1,8 +1,8 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
 import { KeyValueOption } from '../../../../shared/utils/models/form-builder.model';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -24,13 +24,20 @@ import { FormBodySpecificProductionDataMagazineComponent } from '../../../../sha
 import { Table, TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { ApplicationManagementUseCase } from '../../../../applications-recognition/domain/usecase/application-management-usecase';
+import { Application } from '../../../../shared/utils/models/applications-common.model';
+import { ReviewApplicationsManagementUseCase } from '../../../domain/usecase/review-applications-management-usecase';
+import { DialogModule } from 'primeng/dialog';
+import ENVIRONMENTS from '../../../../../environments/config';
+import { lastValueFrom } from 'rxjs';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-review-application',
   imports: [CommonModule, ButtonModule, ProgressBarModule, SelectModule, FormsModule, InputTextModule,
     ReactiveFormsModule, RouterModule, ToastModule, ConfirmDialogModule, FormBodyApplicantTeacherComponent,
     RadioButtonModule, TextareaModule, FormBodyGeneralProductionDataComponent, InputNumberModule,
-    FormBodySpecificProductionDataMagazineComponent, TableModule, IconFieldModule, InputIconModule],
+    FormBodySpecificProductionDataMagazineComponent, TableModule, IconFieldModule, InputIconModule, DialogModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './review-application.component.html',
   styleUrl: './review-application.component.css'
@@ -112,30 +119,50 @@ export class ReviewApplicationComponent implements OnInit {
 
   registerForm!: FormGroup;
   isDisabledNextStep = true;
+  isValidFormInStep = false;
   userId: number = 0;
   personId: number = 0;
   teacherId: number = 0;
   isUpdate: boolean = false;
-  requestBody: Partial<ApplicationTemp> = {};
-  applicationTempId: number = 0;
+  responseBodyApplication: Partial<Application> = {};
+  applicationId: number = 0;
 
   validationForm!: FormGroup;
 
-  currentStep: StepsReviewApplication = StepsReviewApplication.STEP_5_DOCUMENTS;
+  stepMap = new Map([
+    [StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT, StepsReviewApplication.STEP_2_APPLICATION_RECOGNITION],
+    [StepsReviewApplication.STEP_2_APPLICATION_RECOGNITION, StepsReviewApplication.STEP_3_PRODUCTION_BY_TYPE],
+    [StepsReviewApplication.STEP_3_PRODUCTION_BY_TYPE, StepsReviewApplication.STEP_4_APPLICATON_RECOGNIZED],
+    [StepsReviewApplication.STEP_4_APPLICATON_RECOGNIZED, StepsReviewApplication.STEP_5_DOCUMENTS]
+  ]);
+  currentStep: StepsReviewApplication = StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT;
+
+  isDialogVisible = false;
+  pdfPath: SafeResourceUrl = '';
+  fileBlobProduct: any;
+  fileBlobHomologation: any;
+  pdfTitle = '';
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router)
+  private readonly activedRoute = inject(ActivatedRoute);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly messageService = inject(MessageService);
-  private readonly applicationTempManagementUseCase = inject(ApplicationTempManagementUsecase);
+  private readonly applicationManagementUseCase = inject(ApplicationManagementUseCase);
+  private readonly reviewApplicationsManagementUseCase = inject(ReviewApplicationsManagementUseCase);
   private readonly userManagementUseCase = inject(UserManagementUseCase);
   private readonly authService = inject(AuthService);
+  private readonly sanitizer = inject(DomSanitizer);
 
   get StepsReviewApplication() {
     return StepsReviewApplication;
   }
 
   async ngOnInit() {
+
+    this.activedRoute.params.subscribe(async params => {
+      this.applicationId = params['id'] ?? 0;
+    });
 
     this.registerForm = this.formBuilder.group({
       applicationType: [undefined, [Validators.required]],
@@ -173,23 +200,260 @@ export class ReviewApplicationComponent implements OnInit {
 
     });
 
-    //Visto bueno y observaciones
+    //Visto bueno y observaciones step 1 - applicant information
     this.validationForm = this.formBuilder.group({
-      approval: [undefined, [Validators.required]],
-      observations: ['', []],
+      approvalStep1: [undefined, [Validators.required]],
+      observationsStep1: ['', []],
+      approvalStep2: [undefined, [Validators.required]],
+      observationsStep2: ['', [Validators.required]],
+      approvalStep3: [undefined, [Validators.required]],
+      observationsStep3: ['', [Validators.required]],
+      approvalStep4: [undefined, [Validators.required]],
+      observationsStep4: ['', []],
+      approvalStep5: [undefined, [Validators.required]],
+      observationsStep5: ['', []],
+
+    });
+
+    //Subscripcion al formulario para validar si se puede habilitar el siguiente paso
+    this.validationForm.valueChanges.subscribe(() => {
+      //Segun en el paso que este se valida que el aprovado este seleccionado
+      switch (this.currentStep) {
+        case StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT:
+          // this.isDisabledNextStep = this.validationForm.get('approvalStep1')?.value ? false : true;
+          //Valido que si el aprovado es incorrecto se deba ingresar observaciones
+          if (this.validationForm.get('approvalStep1')?.value === 'false'
+            && this.validationForm.get('observationsStep1')?.value === '' ||
+            this.validationForm.get('approvalStep1')?.value === undefined) {
+            this.isValidFormInStep = false;
+          } else {
+            this.isValidFormInStep = true;
+          }
+          break;
+        case StepsReviewApplication.STEP_2_APPLICATION_RECOGNITION:
+
+          if (this.validationForm.get('approvalStep2')?.value === 'false'
+            && this.validationForm.get('observationsStep2')?.value === '' ||
+            this.validationForm.get('approvalStep2')?.value === undefined) {
+            this.isValidFormInStep = false;
+          } else {
+            this.isValidFormInStep = true;
+          }
+          break;
+        case StepsReviewApplication.STEP_3_PRODUCTION_BY_TYPE:
+
+          if (this.validationForm.get('approvalStep3')?.value === 'false'
+            && this.validationForm.get('observationsStep3')?.value === '' ||
+            this.validationForm.get('approvalStep3')?.value === undefined) {
+            this.isValidFormInStep = false;
+          } else {
+            this.isValidFormInStep = true;
+          }
+          break;
+        case StepsReviewApplication.STEP_4_APPLICATON_RECOGNIZED:
+
+          if (this.validationForm.get('approvalStep4')?.value === 'false'
+            && this.validationForm.get('observationsStep4')?.value === '' ||
+            this.validationForm.get('approvalStep4')?.value === undefined) {
+            this.isValidFormInStep = false;
+          } else {
+            this.isValidFormInStep = true;
+          }
+
+          break;
+        case StepsReviewApplication.STEP_5_DOCUMENTS:
+
+          if (this.validationForm.get('approvalStep5')?.value === 'false'
+            && this.validationForm.get('observationsStep5')?.value === '' ||
+            this.validationForm.get('approvalStep5')?.value === undefined) {
+            this.isValidFormInStep = false;
+          } else {
+            this.isValidFormInStep = true;
+          }
+          break;
+      }
+    });
+
+
+    //Cargamos informacion de la solicitud
+    await this.getApplicationReviewById(this.applicationId);
+    if (this.responseBodyApplication.production?.productionFiles?.[0]) {
+      this.responseBodyApplication.production.productionFiles[0].fileMetadata = await this.getFileById(this.responseBodyApplication.production.productionFiles[0].fileId ?? 0);
+    }
+    if (this.responseBodyApplication.production?.productionFiles?.[1]) {
+      this.responseBodyApplication.production.productionFiles[1].fileMetadata = await this.getFileById(this.responseBodyApplication.production.productionFiles[1].fileId ?? 0);
+    }
+
+    console.log("responseBodyApplication", this.responseBodyApplication);
+
+  }
+
+  async getApplicationReviewById(applicationId: number) {
+
+    return new Promise<void>((resolve, reject) => {
+      this.applicationManagementUseCase.getApplicationById(applicationId).subscribe({
+        next: (response: any) => {
+          this.responseBodyApplication = response;
+          console.log("veamos", this.responseBodyApplication);
+          this.autoCompleteFormApplication();
+          this.currentStep = StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT;
+
+          resolve();
+        },
+        error: (error) => {
+          console.error("error", error);
+          reject();
+        }
+      });
+    });
+
+  }
+
+  autoCompleteFormApplication() {
+
+    const jsonDataSpecificProductionData = JSON.parse(this.responseBodyApplication.production?.dataJson ?? '{}');
+
+    this.registerForm.patchValue({
+      applicationType: this.responseBodyApplication.applicationTypeCatId,
+      totalNumberAuthors: this.responseBodyApplication.numberOfAuthors,
+      //Applicant Information - step 1
+      firstName: this.responseBodyApplication.teacherApplications?.[0].teacher?.person?.firstName,
+      middleName: this.responseBodyApplication.teacherApplications?.[0].teacher?.person?.secondName,
+      firstLastName: this.responseBodyApplication.teacherApplications?.[0].teacher?.person?.firstLastName,
+      secondLastName: this.responseBodyApplication.teacherApplications?.[0].teacher?.person?.secondLastName,
+      identificationType: this.responseBodyApplication.teacherApplications?.[0].teacher?.person?.identificationTypeCatId,
+      identificationNumber: this.responseBodyApplication.teacherApplications?.[0].teacher?.person?.identificationNumber,
+      cellphone: this.responseBodyApplication.teacherApplications?.[0].teacher?.person?.phone,
+      email: this.responseBodyApplication.teacherApplications?.[0].teacher?.person?.email,
+      departmentFaculty: this.responseBodyApplication.department?.departmentId,
+      typeOfLinkage: this.responseBodyApplication.teacherApplications?.[0].teacher?.typeOfLinkage,
+
+      //General Production Data - step 2 
+      title: this.responseBodyApplication.production?.workTitle,
+      disciplinaryArea: this.responseBodyApplication.production?.disciplinaryArea,
+      numberPages: this.responseBodyApplication.production?.numberOfPages,
+      firstPage: this.responseBodyApplication.production?.startPage,
+      finalPage: this.responseBodyApplication.production?.endPage,
+      publicationMechanisms: this.responseBodyApplication.production?.publicationMechanism ?
+        JSON.parse(this.responseBodyApplication.production?.publicationMechanism) : [],
+      observations: this.responseBodyApplication.production?.observations,
+
+      //Specific Production Data - step 3
+      productionType: jsonDataSpecificProductionData.productionType,
+      magazineType: jsonDataSpecificProductionData.magazineType,
+      doi: jsonDataSpecificProductionData.doi,
+      issn: jsonDataSpecificProductionData.issn,
+      publindexCategory: jsonDataSpecificProductionData.publindexCategory,
+      startDate: new Date(jsonDataSpecificProductionData.startDate),
+      endDate: new Date(jsonDataSpecificProductionData.endDate),
+      articleType: jsonDataSpecificProductionData.articleType,
+    });
+
+    this.registerForm.disable();
+  }
+
+  async getFileById(fileId: number) {
+
+    return new Promise<any>((resolve, reject) => {
+      this.reviewApplicationsManagementUseCase.getFileById(fileId).subscribe({
+        next: (response: any) => {
+          console.log("file", response);
+          resolve(response);
+        },
+        error: (error) => {
+          console.error("error", error);
+          resolve({});
+        }
+      });
     });
 
   }
 
   async onSubmit() {
-    console.log("onSubmit");
+
+    //Guardo la validacion de los pasos 
+    
+
+
+
     this.isDisabledNextStep = false;
 
   }
 
   enableNextValidation() {
-    console.log("enableNextValidation");
-    this.currentStep = StepsReviewApplication.STEP_2_APPLICATION_RECOGNITION;
+
+    const nextStep = this.stepMap.get(this.currentStep);
+    if (nextStep) {
+      this.currentStep = nextStep;
+      //Deshabilito el boton de siguiente
+      this.isDisabledNextStep = true;
+      this.isValidFormInStep = false;
+    }
+
+  }
+
+  async viewDetailPdf(name: string) {
+
+    if (name === 'producto') {
+      //Consulto el pdf del producto
+      if (this.fileBlobProduct === undefined) {
+        this.fileBlobProduct = await lastValueFrom(this.authService.getFile(ENVIRONMENTS.BUCKED_NAME,
+          this.responseBodyApplication.production?.productionFiles?.[0]?.fileMetadata?.path ?? ''))
+      }
+      const url = URL.createObjectURL(this.fileBlobProduct.data ?? new Blob());
+      this.pdfPath = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+      this.pdfTitle = 'Producto';
+      //Muestro el pdf
+      this.isDialogVisible = true;
+
+    } else if (name === 'copia-homologacion') {
+      //Consulto el pdf de la copia de homologacion
+      if (this.fileBlobHomologation === undefined) {
+        this.fileBlobHomologation = await lastValueFrom(this.authService.getFile(ENVIRONMENTS.BUCKED_NAME,
+          this.responseBodyApplication.production?.productionFiles?.[1]?.fileMetadata?.path ?? ''))
+      }
+      const url = URL.createObjectURL(this.fileBlobHomologation.data ?? new Blob());
+      this.pdfPath = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+      this.pdfTitle = 'Copia de clasificación/homologación';
+      //Muestro el pdf 
+      this.isDialogVisible = true;
+
+    }
+
+  }
+
+  async downloadPdf(name: string) {
+
+    if (name === 'producto') {
+      //Validamos si el archivo existe 
+      if (this.fileBlobProduct === undefined) {
+        //consultamos el archivo
+        this.fileBlobProduct = await lastValueFrom(this.authService.getFile(ENVIRONMENTS.BUCKED_NAME,
+          this.responseBodyApplication.production?.productionFiles?.[0]?.fileMetadata?.path ?? ''));
+      }
+      const url = window.URL.createObjectURL(this.fileBlobProduct.data);
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.href = url;
+      a.download = this.responseBodyApplication.production?.productionFiles?.[0]?.fileMetadata?.name ?? 'producto.pdf';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } else if (name === 'copia-homologacion') {
+      //Validamos si el archivo existe
+      if (this.fileBlobHomologation === undefined) {
+        //consultamos el archivo
+        this.fileBlobHomologation = await lastValueFrom(this.authService.getFile(ENVIRONMENTS.BUCKED_NAME,
+          this.responseBodyApplication.production?.productionFiles?.[1]?.fileMetadata?.path ?? ''));
+      }
+      const url = window.URL.createObjectURL(this.fileBlobHomologation.data);
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.href = url;
+      a.download = this.responseBodyApplication.production?.productionFiles?.[1]?.fileMetadata?.name ?? 'copia-homologacion.pdf';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
+
   }
 
   pageChange(event: { first: number; rows: number; }) {
