@@ -12,4 +12,8 @@ export class ReviewApplicationsManagementUseCase {
         return this.reviewApplicationsGateway.getAllApplicationsByFacultyId(facultyId);
     }
 
+    getFileById(fileId: number) {
+        return this.reviewApplicationsGateway.getFileById(fileId);
+    }
+
 }

@@ -9,7 +9,7 @@ import ENVIRONMENTS from '../../../../../environments/config';
   providedIn: 'root'
 })
 export class ReviewApplicationsManagementService extends ReviewApplicationsGateway {
-
+  
   constructor(
     private readonly http: HttpClient
   ) {
@@ -18,6 +18,10 @@ export class ReviewApplicationsManagementService extends ReviewApplicationsGatew
 
   override getAllApplicationsByFacultyId(facultyId: number): Observable<GenericResponse> {
     return this.http.get<GenericResponse>(`${ENVIRONMENTS.GET_ALL_APPLICATIONS_BY_FACULTY_ID}/${facultyId}`);
+  }
+
+  override getFileById(fileId: number): Observable<GenericResponse> {
+    return this.http.get<GenericResponse>(`${ENVIRONMENTS.GET_FILE_BY_ID}/${fileId}`);
   }
 
 }
