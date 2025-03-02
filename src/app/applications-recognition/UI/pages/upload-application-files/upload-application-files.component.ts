@@ -11,10 +11,10 @@ import { AuthService } from '../../../../auth/auth.service';
 import { ApplicationRequest } from '../../../domain/models/applications.model';
 import { UserManagementUseCase } from '../../../../user-management/domain/usecase/user-management-usecase';
 import { ApplicationTempManagementUsecase } from '../../../domain/usecase/application-temp-management-usecase';
-import { FileMetadataRequest } from '../../../domain/models/file.model';
 import { getCurrentDate } from '../../../../shared/utils/management-date';
 import { ApplicationManagementUseCase } from '../../../domain/usecase/application-management-usecase';
 import { filter, firstValueFrom } from 'rxjs';
+import { FileMetadata } from '../../../../shared/utils/models/file-common.model';
 
 @Component({
   selector: 'app-upload-application-files',
@@ -214,7 +214,7 @@ export class UploadApplicationFilesComponent {
 
         //Se guradan los archivos a la tabla File de la base de datos (metadata)
         //y se obtiene el id de cada archivo
-        const metadataFiles: FileMetadataRequest[] = [
+        const metadataFiles: Partial<FileMetadata>[] = [
           {
             name: results[0].data.path.split('/')[1] ?? '',
             type: this.selectedFiles[0].type,
@@ -241,8 +241,8 @@ export class UploadApplicationFilesComponent {
 
         //Agrego los archivos a la solicitud request
         this.applicationRequest.productionFiles = [
-          { fileId: this.filesIds[0], name: metadataFiles[0].name },
-          { fileId: this.filesIds[1], name: metadataFiles[1].name }
+          { fileId: this.filesIds[0], name: metadataFiles[0].name ?? '' },
+          { fileId: this.filesIds[1], name: metadataFiles[1].name ?? '' }
         ];
 
         //Activo el boton enviar solicitud
@@ -261,7 +261,7 @@ export class UploadApplicationFilesComponent {
 
   }
 
-  saveMetadataFile(metadataFile: FileMetadataRequest) {
+  saveMetadataFile(metadataFile: Partial<FileMetadata>) {
     return new Promise((resolve) => {
       this.applicationManagementUseCase.saveMetadataFile(metadataFile).subscribe({
         next: (response: any) => {
