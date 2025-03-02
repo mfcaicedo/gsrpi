@@ -168,12 +168,12 @@ export class AuthService {
   }
 
   //Servicio para obtener archivo en supabase
-  getFile(fileName: string, bucket: string, folder: string) {
+  getFile(bucket: string, path: string) {
 
     return from(this.supabase
       .storage
       .from(bucket)
-      .download(`${folder}/${fileName}`))
+      .download(path))
 
   }
 
