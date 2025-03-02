@@ -41,8 +41,8 @@
                             Tipo de solicitud <span class="text-orange-500">*</span>
                         </label>
                         <p-select class="p-3" [options]="applicationTypes" [required]="true" [showClear]="true"
-                            formControlName="applicationType" optionLabel="value" [filter]="true" filterBy="value"
-                            placeholder="Seleccione el tipo de solicitud" class="w-full md:w-56" />
+                            formControlName="applicationType" optionValue="key" optionLabel="value" [filter]="true"
+                            filterBy="value" placeholder="Seleccione el tipo de solicitud" class="w-full md:w-56" />
                         @if (this.registerForm.get('applicationType')?.hasError('required') &&
                         this.registerForm.get('applicationType')?.touched){
                         <div class="text-error text-sm mt-1">
@@ -190,10 +190,12 @@
                         </h5>
                         <i class="pi pi-file-pdf" style="font-size: 2.5rem"></i>
                         <div class="flex flex-col gap-2 justify-content-center">
-                            <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text">
+                            <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text"
+                                (click)="viewDetailPdf('producto')" type="button">
                                 Ver detalle
                             </button>
-                            <button pButton pRipple icon="pi pi-download" class="p-button-rounded p-button-text">
+                            <button pButton pRipple icon="pi pi-download" class="p-button-rounded p-button-text"
+                                type="button" (click)="downloadPdf('producto')">
                                 Descargar
                             </button>
                         </div>
@@ -204,10 +206,12 @@
                         </h5>
                         <i class="pi pi-file-pdf" style="font-size: 2.5rem"></i>
                         <div class="flex flex-col justify-content-center gap-2">
-                            <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text">
+                            <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text"
+                                (click)="viewDetailPdf('copia-homologacion')" type="button">
                                 Ver detalle
                             </button>
-                            <button pButton pRipple icon="pi pi-download" class="p-button-rounded p-button-text">
+                            <button pButton pRipple icon="pi pi-download" class="p-button-rounded p-button-text"
+                                type="button" (click)="downloadPdf('copia-homologacion')">
                                 Descargar
                             </button>
                         </div>
@@ -222,37 +226,166 @@
             </h5>
             <form action="" [formGroup]="validationForm" (submit)="onSubmit()">
                 <div class="grid">
-
+                    @if (currentStep === StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT ) {
                     <div class="col-12 sm:col-12 md:col-12">
-                        <label for="approval" class="block text-primary text-md font-medium mb-2">
+                        <label for="approvalStep1" class="block text-primary text-md font-medium mb-2">
                             La información es <span class="text-orange-500">*</span>
                         </label>
                         <div class="flex flex-row gap-2">
                             @for (item of approvalDataList; track $index) {
                             <div class="field-checkbox">
-                                <p-radiobutton [value]="item.key" formControlName="approval" [styleClass]="
-                                (validationForm.get('approval')?.hasError('required') && 
-                                validationForm.get('approval')?.touched ? 'ng-invalid' : '') + 
+                                <p-radiobutton [value]="item.key" formControlName="approvalStep1" [styleClass]="
+                                (validationForm.get('approvalStep1')?.hasError('required') && 
+                                validationForm.get('approvalStep1')?.touched ? 'ng-invalid' : '') + 
                                 'ng-dirty'" />
                                 <label [for]="item.key" class="ml-2"> {{ item.value }} </label>
                             </div>
                             }
                         </div>
-                        @if (this.validationForm.get('approval')?.hasError('required') &&
-                        this.validationForm.get('approval')?.touched){
+                        @if (this.validationForm.get('approvalStep1')?.hasError('required') &&
+                        this.validationForm.get('approvalStep1')?.touched){
                         <div class="text-error text-sm mt-1">
                             Debe seleccionar el tipo de vinculación
                         </div>
                         }
                     </div>
                     <div class="col-12 sm:col-12 md:col-12">
-                        <label for="observations" class="block text-primary text-md font-medium mb-2">
-                            Observaciones
+                        <label for="observationsStep1" class="block text-primary text-md font-medium mb-2">
+                            Observaciones @if(!isValidFormInStep) {<span class="text-orange-500">*</span>}
                         </label>
-                        <textarea rows="4" placeholder="Sus observaciones ..." cols="31" pTextarea [autoResize]="true"
-                            formControlName="observations">
-                    </textarea>
+                        <textarea rows="4" placeholder="Sus observaciones ..." cols="50" pTextarea [autoResize]="true"
+                            formControlName="observationsStep1">
+                        </textarea>
                     </div>
+                    }
+                    @else if (currentStep === StepsReviewApplication.STEP_2_APPLICATION_RECOGNITION) {
+                    <div class="col-12 sm:col-12 md:col-12">
+                        <label for="approvalStep2" class="block text-primary text-md font-medium mb-2">
+                            La información es <span class="text-orange-500">*</span>
+                        </label>
+                        <div class="flex flex-row gap-2">
+                            @for (item of approvalDataList; track $index) {
+                            <div class="field-checkbox">
+                                <p-radiobutton [value]="item.key" formControlName="approvalStep2" [styleClass]="
+                                    (validationForm.get('approvalStep2')?.hasError('required') && 
+                                    validationForm.get('approvalStep2')?.touched ? 'ng-invalid' : '') + 
+                                    'ng-dirty'" />
+                                <label [for]="item.key" class="ml-2"> {{ item.value }} </label>
+                            </div>
+                            }
+                        </div>
+                        @if (this.validationForm.get('approvalStep2')?.hasError('required') &&
+                        this.validationForm.get('approvalStep2')?.touched){
+                        <div class="text-error text-sm mt-1">
+                            Debe seleccionar el tipo de vinculación
+                        </div>
+                        }
+                    </div>
+                    <div class="col-12 sm:col-12 md:col-12">
+                        <label for="observationsStep2" class="block text-primary text-md font-medium mb-2">
+                            Observaciones @if(!isValidFormInStep) {<span class="text-orange-500">*</span>}
+                        </label>
+                        <textarea rows="4" placeholder="Sus observaciones ..." cols="50" pTextarea [autoResize]="true"
+                            formControlName="observationsStep2">
+                            </textarea>
+                    </div>
+                    }
+                    @else if (currentStep === StepsReviewApplication.STEP_3_PRODUCTION_BY_TYPE) {
+                    <div class="col-12 sm:col-12 md:col-12">
+                        <label for="approvalStep3" class="block text-primary text-md font-medium mb-2">
+                            La información es <span class="text-orange-500">*</span>
+                        </label>
+                        <div class="flex flex-row gap-2">
+                            @for (item of approvalDataList; track $index) {
+                            <div class="field-checkbox">
+                                <p-radiobutton [value]="item.key" formControlName="approvalStep3" [styleClass]="
+                                    (validationForm.get('approvalStep3')?.hasError('required') && 
+                                    validationForm.get('approvalStep3')?.touched ? 'ng-invalid' : '') + 
+                                    'ng-dirty'" />
+                                <label [for]="item.key" class="ml-2"> {{ item.value }} </label>
+                            </div>
+                            }
+                        </div>
+                        @if (this.validationForm.get('approvalStep3')?.hasError('required') &&
+                        this.validationForm.get('approvalStep3')?.touched){
+                        <div class="text-error text-sm mt-1">
+                            Debe seleccionar el tipo de vinculación
+                        </div>
+                        }
+                    </div>
+                    <div class="col-12 sm:col-12 md:col-12">
+                        <label for="observationsStep3" class="block text-primary text-md font-medium mb-2">
+                            Observaciones @if(!isValidFormInStep) {<span class="text-orange-500">*</span>}
+                        </label>
+                        <textarea rows="4" placeholder="Sus observaciones ..." cols="50" pTextarea [autoResize]="true"
+                            formControlName="observationsStep3">
+                            </textarea>
+                    </div>
+                    }
+                    @else if (currentStep === StepsReviewApplication.STEP_4_APPLICATON_RECOGNIZED) {
+                    <div class="col-12 sm:col-12 md:col-12">
+                        <label for="approvalStep4" class="block text-primary text-md font-medium mb-2">
+                            La información es <span class="text-orange-500">*</span>
+                        </label>
+                        <div class="flex flex-row gap-2">
+                            @for (item of approvalDataList; track $index) {
+                            <div class="field-checkbox">
+                                <p-radiobutton [value]="item.key" formControlName="approvalStep4" [styleClass]="
+                                    (validationForm.get('approvalStep4')?.hasError('required') && 
+                                    validationForm.get('approvalStep4')?.touched ? 'ng-invalid' : '') + 
+                                    'ng-dirty'" />
+                                <label [for]="item.key" class="ml-2"> {{ item.value }} </label>
+                            </div>
+                            }
+                        </div>
+                        @if (this.validationForm.get('approvalStep4')?.hasError('required') &&
+                        this.validationForm.get('approvalStep4')?.touched){
+                        <div class="text-error text-sm mt-1">
+                            Debe seleccionar el tipo de vinculación
+                        </div>
+                        }
+                    </div>
+                    <div class="col-12 sm:col-12 md:col-12">
+                        <label for="observationsStep4" class="block text-primary text-md font-medium mb-2">
+                            Observaciones @if(!isValidFormInStep) {<span class="text-orange-500">*</span>}
+                        </label>
+                        <textarea rows="4" placeholder="Sus observaciones ..." cols="50" pTextarea [autoResize]="true"
+                            formControlName="observationsStep4">
+                            </textarea>
+                    </div>
+                    }
+                    @else if (currentStep === StepsReviewApplication.STEP_5_DOCUMENTS) {
+                    <div class="col-12 sm:col-12 md:col-12">
+                        <label for="approvalStep5" class="block text-primary text-md font-medium mb-2">
+                            La información es <span class="text-orange-500">*</span>
+                        </label>
+                        <div class="flex flex-row gap-2">
+                            @for (item of approvalDataList; track $index) {
+                            <div class="field-checkbox">
+                                <p-radiobutton [value]="item.key" formControlName="approvalStep5" [styleClass]="
+                                    (validationForm.get('approvalStep5')?.hasError('required') && 
+                                    validationForm.get('approvalStep5')?.touched ? 'ng-invalid' : '') + 
+                                    'ng-dirty'" />
+                                <label [for]="item.key" class="ml-2"> {{ item.value }} </label>
+                            </div>
+                            }
+                        </div>
+                        @if (this.validationForm.get('approvalStep5')?.hasError('required') &&
+                        this.validationForm.get('approvalStep5')?.touched){
+                        <div class="text-error text-sm mt-1">
+                            Debe seleccionar el tipo de vinculación
+                        </div>
+                        }
+                    </div>
+                    <div class="col-12 sm:col-12 md:col-12">
+                        <label for="observationsStep5" class="block text-primary text-md font-medium mb-2">
+                            Observaciones @if(!isValidFormInStep) {<span class="text-orange-500">*</span>}
+                        </label>
+                        <textarea rows="4" placeholder="Sus observaciones ..." cols="50" pTextarea [autoResize]="true"
+                            formControlName="observationsStep5">
+                            </textarea>
+                    </div>
+                    }
                 </div>
                 <div class="">
                     <p class="mb-3">
@@ -264,7 +397,7 @@
                     <button pButton severity="secondary" pRipple label="Anterior" [disabled]="true"
                         class="w-full border-round">
                     </button>
-                    <button pButton pRipple label="Guardar" type="submit" [disabled]="!validationForm.valid"
+                    <button pButton pRipple label="Guardar" type="submit" [disabled]="!isValidFormInStep"
                         class="w-full border-round">
                     </button>
                     <button pButton pRipple label="Siguiente" type="button" [disabled]="isDisabledNextStep"
@@ -277,4 +410,19 @@
     <!-- Dialog alert -->
     <p-toast />
     <p-confirmdialog />
+    <!-- Dialog pdf -->
+    <p-dialog header="Visualizador de PDF" [modal]="true" [(visible)]="isDialogVisible" [style]="{ width: '50rem' }"
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
+        <!-- Template para visualizar un pdf -->
+        <ng-template pTemplate="content">
+            <div class="flex flex-col gap-3">
+                <div class="card w-full text-center mb-0">
+                    <h5 class="">
+                        {{ pdfTitle }}
+                    </h5>
+                    <iframe [src]="pdfPath" width="100%" height="600px"></iframe>
+                </div>
+            </div>
+        </ng-template>
+    </p-dialog>
 </div>
