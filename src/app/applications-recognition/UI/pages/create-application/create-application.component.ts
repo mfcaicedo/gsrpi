@@ -97,11 +97,9 @@ export class CreateApplicationComponent {
   }
 
   async getUserByUid() {
-    console.log("this.suserUid hola 2 ", this.userUid);
     return new Promise((resolve) => {
       this.userManagementUseCase.getUserByUid(this.userUid).subscribe({
         next: (response: any) => {
-          console.log("ver response", response);
           this.userId = response.userId;
           resolve(true);
         },
