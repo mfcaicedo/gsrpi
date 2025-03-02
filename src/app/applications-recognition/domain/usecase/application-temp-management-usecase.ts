@@ -1,7 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { ApplicationsRecognitionGateway } from "../models/gateway/applications-recognition-gateway";
 import { ApplicationRecognized, ApplicationRequest, ApplicationTemp } from "../models/applications.model";
-import { FileMetadataRequest } from "../models/file.model";
 
 @Injectable({
     providedIn: 'root'

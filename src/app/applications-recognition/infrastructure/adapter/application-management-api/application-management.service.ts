@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { GenericResponse } from '../../../../shared/utils/models/request-response.model';
 import { ApplicationRecognized, ApplicationRequest, ApplicationTemp } from '../../../domain/models/applications.model';
 import ENVIRONMENTS from '../../../../../environments/config';
-import { FileMetadataRequest } from '../../../domain/models/file.model';
+import { FileMetadata } from '../../../../shared/utils/models/file-common.model';
 
 @Injectable({
   providedIn: 'root'
@@ -54,7 +54,7 @@ export class ApplicationManagementService extends ApplicationsRecognitionGateway
     return this.http.get<GenericResponse>(`${ENVIRONMENTS.GET_RECOGNIZED_APPLICATION_BY_APPLICATION_ID}/${applicationId}`);
   }
 
-  override saveMetadataFile(fileMetadataRequest: FileMetadataRequest): Observable<GenericResponse> {
+  override saveMetadataFile(fileMetadataRequest: FileMetadata): Observable<GenericResponse> {
     return this.http.post<GenericResponse>(ENVIRONMENTS.CREATE_FILE, fileMetadataRequest);
   }
 
@@ -64,6 +64,10 @@ export class ApplicationManagementService extends ApplicationsRecognitionGateway
 
   override getAllAppicationsByTeacherId(teacherId: number): Observable<GenericResponse> {
     return this.http.get<GenericResponse>(`${ENVIRONMENTS.GET_ALL_APPLICATIONS_BY_TEACHER_ID}/${teacherId}`);
+  }
+
+  override getApplicationById(applicationId: number): Observable<GenericResponse> {
+    return this.http.get<GenericResponse>(`${ENVIRONMENTS.GET_APPLICATION_BY_ID}/${applicationId}`);
   }
 
 }
