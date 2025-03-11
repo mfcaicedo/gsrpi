@@ -39,6 +39,10 @@ const ENVIRONMENTS = {
     GET_ALL_APPLICATIONS_BY_FACULTY_ID: `${base_url_api_gsrpi}/obtener-listado-solicitudes-por-facultad-id`,
     GET_APPLICATION_BY_ID: `${base_url_api_gsrpi}/obtener-solicitud-por-id`,
 
+    //REVIEW APPLICATIONS
+    SAVE_VALIDATION_OF_APPLICATION: `${base_url_api_gsrpi}/guardar-validacion`,
+    UPDATE_APPLICATION_STATE: `${base_url_api_gsrpi}/actualizar-estado-solicitud`,
+
     //FILE MANAGEMENT
     CREATE_FILE: `${base_url_api_gsrpi}/subir-archivo`,
     GET_FILE_BY_ID: `${base_url_api_gsrpi}/obtener-archivo-por-id`,
