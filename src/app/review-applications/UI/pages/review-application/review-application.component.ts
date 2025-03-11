@@ -14,7 +14,7 @@ import { ApplicationRecognized, ApplicationTemp } from '../../../../applications
 import { ApplicationTempManagementUsecase } from '../../../../applications-recognition/domain/usecase/application-temp-management-usecase';
 import { AuthService } from '../../../../auth/auth.service';
 import { UserManagementUseCase } from '../../../../user-management/domain/usecase/user-management-usecase';
-import { StepsReviewApplication } from '../../../../shared/utils/enums/review-applications.enum';
+import { ApplicationStatuses, StepsReviewApplication, ValidationTypes } from '../../../../shared/utils/enums/review-applications.enum';
 import { FormBodyApplicantTeacherComponent } from '../../../../shared/components/form-body-applicant-teacher/form-body-applicant-teacher.component';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { TextareaModule } from 'primeng/textarea';
@@ -31,6 +31,7 @@ import { DialogModule } from 'primeng/dialog';
 import ENVIRONMENTS from '../../../../../environments/config';
 import { lastValueFrom } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ValidationApplication } from '../../../domain/models/validation.model';
 
 @Component({
   selector: 'app-review-application',
@@ -113,6 +114,15 @@ export class ReviewApplicationComponent implements OnInit {
     { key: 4, value: 'C' },
   ];
 
+  //Consultar de la base de datos
+  validationTypesDataList: KeyValueOption[] = [
+    { key: 1, value: 'validacion_datos_personales_solicitante' },
+    { key: 2, value: 'validacion_solicitud_reconocimiento' },
+    { key: 3, value: 'validacion_produccion_dependiente_tipo' },
+    { key: 4, value: 'validacion_solicitudes_reconocidas_relacionadas_solicitud_actual' },
+    { key: 5, value: 'validacion_archivos_produccion' },
+  ];
+
   first = 0;
   rows = 5;
   applicationsRecognized: ApplicationRecognized[] = [];
@@ -128,6 +138,7 @@ export class ReviewApplicationComponent implements OnInit {
   applicationId: number = 0;
 
   validationForm!: FormGroup;
+  requestValidation: Partial<ValidationApplication> = {};
 
   stepMap = new Map([
     [StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT, StepsReviewApplication.STEP_2_APPLICATION_RECOGNITION],
@@ -142,6 +153,8 @@ export class ReviewApplicationComponent implements OnInit {
   fileBlobProduct: any;
   fileBlobHomologation: any;
   pdfTitle = '';
+
+  applicationStatus: ApplicationStatuses = ApplicationStatuses.NONE;
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router)
@@ -274,6 +287,9 @@ export class ReviewApplicationComponent implements OnInit {
       }
     });
 
+    this.authService.getUserDataSession().subscribe((response: any) => {
+      this.personId = response.personId;
+    });
 
     //Cargamos informacion de la solicitud
     await this.getApplicationReviewById(this.applicationId);
@@ -371,12 +387,161 @@ export class ReviewApplicationComponent implements OnInit {
 
   async onSubmit() {
 
-    //Guardo la validacion de los pasos 
-    
+    this.registerForm.markAllAsTouched();
+    if (this.registerForm.invalid) {
+      return;
+    }
 
+    //Modal de confirmación de guardar datos
+    this.modalConfirmationSaveData();
 
+  }
 
-    this.isDisabledNextStep = false;
+  modalConfirmationSaveData() {
+
+    this.confirmationService.confirm({
+      target: 'body' as unknown as EventTarget,
+      message: '¿Está seguro(a) de guardar el visto bueno y sus observaciones?',
+      header: 'Confirmación',
+      closable: true,
+      closeOnEscape: true,
+      icon: 'pi pi-info-circle',
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true,
+
+      },
+      acceptButtonProps: {
+        label: 'Aceptar',
+      },
+      accept: async () => {
+
+        await this.saveValidationOfApplicationDependentOnStep();
+
+      },
+    });
+
+  }
+
+  async saveValidationOfApplicationDependentOnStep() {
+
+    switch (this.currentStep) {
+      case StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT:
+
+        const validationTypeId = this.validationTypesDataList.find(
+          (item) => item.value === ValidationTypes.VALIDATION_PERSONAL_INFORMATION_APPLICANT)?.key ?? 0;
+
+        this.requestValidation = {
+          validationState: this.validationForm.get('approvalStep1')?.value,
+          observations: this.validationForm.get('observationsStep1')?.value,
+          application: { applicationId: this.applicationId },
+          validationType: { validationTypeId: Number(validationTypeId) },
+          person: { personId: this.personId }
+        }
+
+        await this.saveValidationOfApplication();
+
+        break;
+      case StepsReviewApplication.STEP_2_APPLICATION_RECOGNITION:
+        const validationTypeIdStep2 = this.validationTypesDataList.find(
+          (item) => item.value === ValidationTypes.VALIDATION_APPLICATION_RECOGNITION)?.key ?? 0;
+
+        this.requestValidation = {
+          validationState: this.validationForm.get('approvalStep2')?.value,
+          observations: this.validationForm.get('observationsStep2')?.value,
+          application: { applicationId: this.applicationId },
+          validationType: { validationTypeId: Number(validationTypeIdStep2) },
+          person: { personId: this.personId }
+        }
+
+        await this.saveValidationOfApplication();
+
+        break;
+      case StepsReviewApplication.STEP_3_PRODUCTION_BY_TYPE:
+
+        const validationTypeIdStep3 = this.validationTypesDataList.find(
+          (item) => item.value === ValidationTypes.VALIDATION_DEPENDENT_PRODUCTION_TYPE)?.key ?? 0;
+
+        this.requestValidation = {
+          validationState: this.validationForm.get('approvalStep3')?.value,
+          observations: this.validationForm.get('observationsStep3')?.value,
+          application: { applicationId: this.applicationId },
+          validationType: { validationTypeId: Number(validationTypeIdStep3) },
+          person: { personId: this.personId }
+        }
+
+        await this.saveValidationOfApplication();
+
+        break;
+      case StepsReviewApplication.STEP_4_APPLICATON_RECOGNIZED:
+
+        const validationTypeIdStep4 = this.validationTypesDataList.find(
+          (item) => item.value === ValidationTypes.VALIDATION_RECOGNIZED_APPLICATIONS_RELATED_TO_CURRENT_APPLICATION)?.key ?? 0;
+
+        this.requestValidation = {
+          validationState: this.validationForm.get('approvalStep4')?.value,
+          observations: this.validationForm.get('observationsStep4')?.value,
+          application: { applicationId: this.applicationId },
+          validationType: { validationTypeId: Number(validationTypeIdStep4) },
+          person: { personId: this.personId }
+        }
+
+        await this.saveValidationOfApplication();
+
+        break;
+      case StepsReviewApplication.STEP_5_DOCUMENTS:
+
+        const validationTypeIdStep5 = this.validationTypesDataList.find(
+          (item) => item.value === ValidationTypes.VALIDATION_PRODUCTION_FILES)?.key ?? 0;
+
+        this.requestValidation = {
+          validationState: this.validationForm.get('approvalStep5')?.value,
+          observations: this.validationForm.get('observationsStep5')?.value,
+          application: { applicationId: this.applicationId },
+          validationType: { validationTypeId: Number(validationTypeIdStep5) },
+          person: { personId: this.personId }
+        }
+
+        await this.saveValidationOfApplication();
+
+        //Consulto el estado de las validaciones si todas son correctas se habilita el boton de Aceptar solicitud 
+        //en caso contrario se habilita el boton de devolver solicitud 
+        // await this.getApplicationReviewByIdApplicationAndPersonId(this.applicationId, this.personId);
+
+        break;
+    }
+
+  }
+
+  async saveValidationOfApplication() {
+
+    return new Promise<void>((resolve, reject) => {
+
+      this.reviewApplicationsManagementUseCase.saveValidationOfApplication(this.requestValidation).subscribe({
+        next: (response: any) => {
+          //Mensaje de exito
+          this.messageService.add({
+            severity: 'success',
+            summary: '¡Registro exitoso!',
+            detail: 'Validación guardada exitosamente. Continua con la siguiente validación.'
+          });
+          // this.enableNextValidation();
+          resolve();
+        },
+        error: (error) => {
+          console.error("error", error);
+          //Mensaje de error
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ups, algo salió mal',
+            detail: 'Tuvimos un problema al guardar la validación. Inténtelo de nuevo en unos minutos.'
+          });
+          resolve();
+        }
+      });
+
+    });
 
   }
 
@@ -390,6 +555,62 @@ export class ReviewApplicationComponent implements OnInit {
       this.isValidFormInStep = false;
     }
 
+  }
+
+  acceptApplication() {
+
+    this.confirmationService.confirm({
+      target: 'body' as unknown as EventTarget,
+      message: '¿Está seguro(a) de aceptar/devolver la solicitud de reconocimiento?',
+      header: 'Confirmación',
+      closable: true,
+      closeOnEscape: true,
+      icon: 'pi pi-info-circle',
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true,
+
+      },
+      acceptButtonProps: {
+        label: 'Aceptar',
+      },
+      accept: async () => {
+
+        await this.updateApplicationState();
+
+      },
+    });
+  }
+
+  async updateApplicationState() {
+
+    return new Promise<void>((resolve, reject) => {
+
+      this.reviewApplicationsManagementUseCase.updateApplicationState(this.applicationId,
+        this.applicationStatus).subscribe({
+          next: (response: any) => {
+            //Mensaje de exito
+            this.messageService.add({
+              severity: 'success',
+              summary: '¡Registro exitoso!',
+              detail: 'Solicitud de reconocimiento actualizada exitosamente.'
+            });
+            resolve();
+          },
+          error: (error) => {
+            console.error("error", error);
+            //Mensaje de error
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ups, algo salió mal',
+              detail: 'Tuvimos un problema al actualizar la solicitud de reconocimiento. Inténtelo de nuevo en unos minutos.'
+            });
+            resolve();
+          }
+        });
+
+    });
   }
 
   async viewDetailPdf(name: string) {
