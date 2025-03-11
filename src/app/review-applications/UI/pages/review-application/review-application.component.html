@@ -393,16 +393,23 @@
                         Las observaciones son obligatorias en caso de que la información sea incorrecta.
                     </p>
                 </div>
-                <div class="col-12 sm:col-6 flex flex-row gap-2 pl-0">
+                <div class="col-12 sm:col-7 flex flex-row gap-2 pl-0">
                     <button pButton severity="secondary" pRipple label="Anterior" [disabled]="true"
                         class="w-full border-round">
                     </button>
                     <button pButton pRipple label="Guardar" type="submit" [disabled]="!isValidFormInStep"
                         class="w-full border-round">
                     </button>
-                    <button pButton pRipple label="Siguiente" type="button" [disabled]="isDisabledNextStep"
-                        class="w-full border-round" (click)="enableNextValidation()">
+                    @if (currentStep === StepsReviewApplication.STEP_5_DOCUMENTS) {
+                    <button pButton pRipple label="Aceptar solicitud" type="button" class="w-full border-round"
+                        (click)="acceptApplication()">
                     </button>
+                    }
+                    @else {
+                    <button pButton pRipple label="Siguiente" type="button" class="w-full border-round"
+                        (click)="enableNextValidation()">
+                    </button>
+                    }
                 </div>
             </form>
         </div>
