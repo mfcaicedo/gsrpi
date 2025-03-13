@@ -1,3 +1,5 @@
+import { User } from "../../../auth/interfaces/models/user.model";
+
 export interface Person {
     personId: number;
     firstName: string;
@@ -10,4 +12,5 @@ export interface Person {
     email: string;
     address: string;
     configurationId: number;
+    user: Partial<User>;
 }

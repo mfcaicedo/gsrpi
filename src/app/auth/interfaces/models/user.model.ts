@@ -1,18 +1,23 @@
 export interface User {
-    userId?: string;
-    documentNumber: string;
-    username: string,
+    userId: number;
+    uid: string;
+    username: string;
     email: string;
-    firstName: string;
-    lastName?: string;
-    enabled: string;
-    roles: Rol[];
+    password: string;
+    userRoles: Partial<UserRole>[];
 }
 
-interface Rol {
-    rolId: number;
-    nombreRol: string;
-    privileges: Privilege[];
+export interface UserRole {
+    userRoleId: number;
+    role: Partial<Role>;
+    user: Partial<User>;
+}
+
+interface Role {
+    roleId: number;
+    name: string;
+    description: string;
+    userRoles: Partial<UserRole>[];
 }
 
 interface Privilege {
