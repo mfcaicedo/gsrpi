@@ -401,8 +401,9 @@
                         class="w-full border-round">
                     </button>
                     @if (currentStep === StepsReviewApplication.STEP_5_DOCUMENTS) {
-                    <button pButton pRipple label="Aceptar solicitud" type="button" class="w-full border-round"
-                        (click)="acceptApplication()">
+                    <button pButton pRipple
+                        [label]="this.isCorrectValidation ? 'Aceptar solicitud' : 'Devolver solicitud'" type="button"
+                        class="w-full border-round" (click)="acceptApplication()" [disabled]="disabledButtonAcceptApplication">
                     </button>
                     }
                     @else {

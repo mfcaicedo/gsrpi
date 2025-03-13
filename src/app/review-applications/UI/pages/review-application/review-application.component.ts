@@ -139,6 +139,7 @@ export class ReviewApplicationComponent implements OnInit {
 
   validationForm!: FormGroup;
   requestValidation: Partial<ValidationApplication> = {};
+  validationsResponse: Partial<ValidationApplication[]> = [];
 
   stepMap = new Map([
     [StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT, StepsReviewApplication.STEP_2_APPLICATION_RECOGNITION],
@@ -155,6 +156,8 @@ export class ReviewApplicationComponent implements OnInit {
   pdfTitle = '';
 
   applicationStatus: ApplicationStatuses = ApplicationStatuses.NONE;
+  isCorrectValidation = false;
+  disabledButtonAcceptApplication = true;
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router)
@@ -300,8 +303,6 @@ export class ReviewApplicationComponent implements OnInit {
       this.responseBodyApplication.production.productionFiles[1].fileMetadata = await this.getFileById(this.responseBodyApplication.production.productionFiles[1].fileId ?? 0);
     }
 
-    console.log("responseBodyApplication", this.responseBodyApplication);
-
   }
 
   async getApplicationReviewById(applicationId: number) {
@@ -310,7 +311,6 @@ export class ReviewApplicationComponent implements OnInit {
       this.applicationManagementUseCase.getApplicationById(applicationId).subscribe({
         next: (response: any) => {
           this.responseBodyApplication = response;
-          console.log("veamos", this.responseBodyApplication);
           this.autoCompleteFormApplication();
           this.currentStep = StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT;
 
@@ -373,7 +373,6 @@ export class ReviewApplicationComponent implements OnInit {
     return new Promise<any>((resolve, reject) => {
       this.reviewApplicationsManagementUseCase.getFileById(fileId).subscribe({
         next: (response: any) => {
-          console.log("file", response);
           resolve(response);
         },
         error: (error) => {
@@ -504,10 +503,9 @@ export class ReviewApplicationComponent implements OnInit {
         }
 
         await this.saveValidationOfApplication();
-
         //Consulto el estado de las validaciones si todas son correctas se habilita el boton de Aceptar solicitud 
         //en caso contrario se habilita el boton de devolver solicitud 
-        // await this.getApplicationReviewByIdApplicationAndPersonId(this.applicationId, this.personId);
+        await this.getApplicationReviewByApplicationIdAndPersonId();
 
         break;
     }
@@ -543,6 +541,28 @@ export class ReviewApplicationComponent implements OnInit {
 
     });
 
+  }
+
+  async getApplicationReviewByApplicationIdAndPersonId() {
+
+    return new Promise<void>((resolve, reject) => {
+      this.reviewApplicationsManagementUseCase.getApplicationReviewByApplicationIdAndPersonId(this.applicationId, this.personId).subscribe({
+        next: (response: any) => {
+
+          this.validationsResponse = response;
+
+          //Valido si todas las validaciones son correctas
+          this.isCorrectValidation = this.validationsResponse.every((item) => item?.validationState);
+          this.disabledButtonAcceptApplication = false;
+
+          resolve();
+        },
+        error: (error) => {
+          console.error("error", error);
+          reject();
+        }
+      });
+    });
   }
 
   enableNextValidation() {
@@ -585,6 +605,9 @@ export class ReviewApplicationComponent implements OnInit {
 
   async updateApplicationState() {
 
+    this.applicationStatus = this.isCorrectValidation ? ApplicationStatuses.REVIEWED_BY_CPD_SECRETARY :
+      ApplicationStatuses.RETURNED_IN_CPD;
+
     return new Promise<void>((resolve, reject) => {
 
       this.reviewApplicationsManagementUseCase.updateApplicationState(this.applicationId,
@@ -596,6 +619,9 @@ export class ReviewApplicationComponent implements OnInit {
               summary: '¡Registro exitoso!',
               detail: 'Solicitud de reconocimiento actualizada exitosamente.'
             });
+            setTimeout(() => {
+              this.router.navigate(['/revision-solicitudes/listar-solicitudes-revision']);
+            }, 3000);
             resolve();
           },
           error: (error) => {

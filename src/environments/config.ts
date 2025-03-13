@@ -42,6 +42,7 @@ const ENVIRONMENTS = {
     //REVIEW APPLICATIONS
     SAVE_VALIDATION_OF_APPLICATION: `${base_url_api_gsrpi}/guardar-validacion`,
     UPDATE_APPLICATION_STATE: `${base_url_api_gsrpi}/actualizar-estado-solicitud`,
+    GET_ALL_VALIDATIONS_BY_APPLICATION_ID_AND_PERSON_ID: `${base_url_api_gsrpi}/obtener-listado-validaciones-por-solicitud-id-y-persona-id`,
 
     //FILE MANAGEMENT
     CREATE_FILE: `${base_url_api_gsrpi}/subir-archivo`,
