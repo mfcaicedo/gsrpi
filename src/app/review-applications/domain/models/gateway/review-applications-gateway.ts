@@ -8,4 +8,5 @@ export abstract class ReviewApplicationsGateway {
     abstract getFileById(fileId: number): Observable<GenericResponse>;
     abstract saveValidationOfApplication(validation: Partial<ValidationApplication>): Observable<GenericResponse>;
     abstract updateApplicationState(applicationId: number, state: ApplicationStatuses): Observable<GenericResponse>;
+    abstract getApplicationReviewByApplicationIdAndPersonId(applicationId: number, personId: number): Observable<GenericResponse>;
 }

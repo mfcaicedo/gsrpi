@@ -3,7 +3,7 @@ import { Person } from "../../../shared/utils/models/person.model";
 
 export interface ValidationApplication {
     validationId: number;
-    validationState: string;
+    validationState: boolean;
     observations: string;
     application: Partial<Application>;
     validationType: Partial<ValidationType>;

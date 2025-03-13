@@ -26,4 +26,8 @@ export class ReviewApplicationsManagementUseCase {
         return this.reviewApplicationsGateway.updateApplicationState(applicationId, state);
     }
 
+    getApplicationReviewByApplicationIdAndPersonId(applicationId: number, personId: number) {
+        return this.reviewApplicationsGateway.getApplicationReviewByApplicationIdAndPersonId(applicationId, personId);
+    }
+
 }

@@ -41,4 +41,8 @@ export class ReviewApplicationsManagementService extends ReviewApplicationsGatew
     return this.http.put<GenericResponse>(`${ENVIRONMENTS.UPDATE_APPLICATION_STATE}`, bodyRequest);
   }
 
+  override getApplicationReviewByApplicationIdAndPersonId(applicationId: number, personId: number): Observable<GenericResponse> {
+    return this.http.get<GenericResponse>(`${ENVIRONMENTS.GET_ALL_VALIDATIONS_BY_APPLICATION_ID_AND_PERSON_ID}/${applicationId}/${personId}`);
+  }
+
 }
