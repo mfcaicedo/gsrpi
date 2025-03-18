@@ -1,0 +1,87 @@
+<div class="">
+    <div class="">
+        <h2>
+            Solicitudes de reconocimiento de producción intelectual FIET
+        </h2>
+        <p class="">
+            <span class="font-normal">
+                Listado de solicitudes de reconocimiento de producción intelectual para revisión por
+                parte de los miembros del comité de personal docente (CPD).
+            </span>
+        </p>
+    </div>
+    <p-table #dt1 [value]="applications" [paginator]="true" [rows]="5" [first]="first" [showCurrentPageReport]="true"
+        [tableStyle]="{ 'min-width': '50rem' }" selectionMode="single" dataKey="id" [globalFilterFields]="['applicationId', 'applicationTypeCatId', 'production.productionType.name', 
+        'createAt','applicationStatus.name']"
+        currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} solicitudes"
+        (onPage)="pageChange($event)" [rowsPerPageOptions]="[5, 10, 15, 20, 25]" dataKey="id">
+        <ng-template #caption>
+            <p-iconfield iconPosition="left">
+                <p-inputicon>
+                    <i class="pi pi-search"></i>
+                </p-inputicon>
+                <input pInputText type="text" [ngStyle]="{ 'width': '70%' }" (input)="search($event)"
+                    placeholder="Buscar..." />
+            </p-iconfield>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th class="text-primary" pSortableColumn="applicationId">
+                    Id <p-sortIcon field="applicationId" />
+                </th>
+                <th class="text-primary" pSortableColumn="production.workTitle">
+                    Título <p-sortIcon field="production.workTitle" />
+                </th>
+                <th class="text-primary" pSortableColumn="nombresSolicitante">
+                    Solicitante <p-sortIcon field="nombresSolicitante" />
+                </th>
+                <th class="text-primary" pSortableColumn="applicationTypeName">
+                    Reconocimiento <p-sortIcon field="applicationTypeName" />
+                </th>
+                <th class="text-primary" pSortableColumn="production.productionType.name">
+                    Tipo producción <p-sortIcon field="production.productionType.name" />
+                </th>
+                <th class="text-primary" pSortableColumn="createAt">
+                    Fecha creación <p-sortIcon field="createAt" />
+                </th>
+                <th class="text-primary" pSortableColumn="department">
+                    Departamento <p-sortIcon field="department" />
+                </th>
+                <th class="text-primary" pSortableColumn="applicationStatus.name">
+                    Estado <p-sortIcon field="applicationStatus.name" />
+                </th>
+                <th class="text-primary">Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-application>
+            <tr>
+                <td>{{ application.applicationId }}</td>
+                <td>{{ application.production.workTitle }}</td>
+                <td>{{ application.nombresSolicitante }}</td>
+                <td>{{ application.applicationTypeName }}</td>
+                <td>{{ application.production.productionType.name }}</td>
+                <td>{{ application.createAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                <td>{{ application.department.name }}</td>
+                <td>{{ application.applicationStatus.name }}</td>
+                <td>
+                    <div class="flex justify-between">
+                        <button pButton pRipple icon="pi pi-file-check" class="p-button-rounded p-button-text"
+                            [routerLink]="['../revisar-solicitud', application.applicationId]">
+                            Revisar
+                        </button>
+                        <!-- <button pButton pRipple icon="pi pi-pen-to-square" class="p-button-rounded p-button-text"
+                            (click)="editApplication(application)">
+                        </button>
+                        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text text-red-500"
+                            (click)="deleteApplication(application)">
+                        </button> -->
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+    <!-- Dialog alert -->
+    <p-toast />
+    <p-confirmdialog />
+</div>
