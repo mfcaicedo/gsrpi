@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import ENVIRONMENTS from '../../../../../environments/config';
 import { ValidationApplication } from '../../../domain/models/validation.model';
 import { ApplicationStatuses } from '../../../../shared/utils/enums/review-applications.enum';
-import { Application } from '../../../../shared/utils/models/applications-common.model';
+import { Application, TeacherApplication } from '../../../../shared/utils/models/applications-common.model';
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +43,14 @@ export class ReviewApplicationsManagementService extends ReviewApplicationsGatew
 
   override getApplicationReviewByApplicationIdAndPersonId(applicationId: number, personId: number): Observable<GenericResponse> {
     return this.http.get<GenericResponse>(`${ENVIRONMENTS.GET_ALL_VALIDATIONS_BY_APPLICATION_ID_AND_PERSON_ID}/${applicationId}/${personId}`);
+  }
+
+  override getAllApplicationsByFacultyIdAndSpecificStatus(facultyId: number, status: ApplicationStatuses): Observable<GenericResponse> {
+    return this.http.get<GenericResponse>(`${ENVIRONMENTS.GET_ALL_APPLICATIONS_BY_FACULTY_ID_AND_SPECIFIC_STATUS}/${facultyId}/${status}`);
+  }
+
+  override savePointsApplicationRecognition(teacherApplication: Partial<TeacherApplication>): Observable<GenericResponse> {
+    return this.http.post<GenericResponse>(ENVIRONMENTS.SAVE_POINTS_APPLICATION_RECOGNITION, teacherApplication)
   }
 
 }

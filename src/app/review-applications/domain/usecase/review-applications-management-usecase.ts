@@ -2,6 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { ReviewApplicationsGateway } from "../models/gateway/review-applications-gateway";
 import { ValidationApplication } from "../models/validation.model";
 import { ApplicationStatuses } from "../../../shared/utils/enums/review-applications.enum";
+import { TeacherApplication } from "../../../shared/utils/models/applications-common.model";
 
 @Injectable({
     providedIn: 'root'
@@ -12,6 +13,10 @@ export class ReviewApplicationsManagementUseCase {
 
     getAllApplicationsByFacultyId(facultyId: number) {
         return this.reviewApplicationsGateway.getAllApplicationsByFacultyId(facultyId);
+    }
+
+    getAllApplicationsByFacultyIdAndSpecificStatus(facultyId: number, status: ApplicationStatuses) {
+        return this.reviewApplicationsGateway.getAllApplicationsByFacultyIdAndSpecificStatus(facultyId, status);
     }
 
     getFileById(fileId: number) {
@@ -28,6 +33,10 @@ export class ReviewApplicationsManagementUseCase {
 
     getApplicationReviewByApplicationIdAndPersonId(applicationId: number, personId: number) {
         return this.reviewApplicationsGateway.getApplicationReviewByApplicationIdAndPersonId(applicationId, personId);
+    }
+
+    savePointsApplicationRecognition(teacherApplication: Partial<TeacherApplication>){
+        return this.reviewApplicationsGateway.savePointsApplicationRecognition(teacherApplication);
     }
 
 }

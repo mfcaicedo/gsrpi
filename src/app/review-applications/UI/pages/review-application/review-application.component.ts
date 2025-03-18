@@ -159,6 +159,8 @@ export class ReviewApplicationComponent implements OnInit {
   isCorrectValidation = false;
   disabledButtonAcceptApplication = true;
 
+  isCommittedMember = true; //Cambiar por implementación de roles de usuario
+
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router)
   private readonly activedRoute = inject(ActivatedRoute);
@@ -701,6 +703,12 @@ export class ReviewApplicationComponent implements OnInit {
       window.URL.revokeObjectURL(url);
     }
 
+  }
+
+  recommendPoints() {
+    console.log("recomendar puntos");
+    this.router.navigate(['/revision-solicitudes/recomendar-puntos',
+      this.responseBodyApplication.teacherApplications?.[0].teacherApplicationId]);
   }
 
   pageChange(event: { first: number; rows: number; }) {

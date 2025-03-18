@@ -96,6 +96,10 @@ export class AppMenuComponent implements OnInit {
                         label: 'Listar solicitudes', icon: 'pi pi-fw pi-cog',
                         routerLink: ['/revision-solicitudes/listar-solicitudes-revision']
                     },
+                    {
+                        label: 'Solicitudes comite', icon: 'pi pi-fw pi-cog',
+                        routerLink: ['/revision-solicitudes/listar-solicitudes-revision-comite']
+                    }
                 ]
             },
             // {

@@ -65,6 +65,8 @@ export interface StatusApplication {
 export interface TeacherApplication {
     teacherApplicationId: number;
     typeOfRequestingTeacher: string;
+    recommendedPoints: number;
+    assignedPoints: number;
     teacher: Partial<Teacher>;
 }
 

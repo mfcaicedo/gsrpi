@@ -401,10 +401,18 @@
                         class="w-full border-round">
                     </button>
                     @if (currentStep === StepsReviewApplication.STEP_5_DOCUMENTS) {
+                    @if (!isCommittedMember) {
                     <button pButton pRipple
                         [label]="this.isCorrectValidation ? 'Aceptar solicitud' : 'Devolver solicitud'" type="button"
-                        class="w-full border-round" (click)="acceptApplication()" [disabled]="disabledButtonAcceptApplication">
+                        class="w-full border-round" (click)="acceptApplication()"
+                        [disabled]="disabledButtonAcceptApplication">
                     </button>
+                    }
+                    @else {
+                    <button pButton pRipple label="Recomendar puntos" type="button" class="w-full border-round"
+                        (click)="recommendPoints()" [disabled]="!disabledButtonAcceptApplication">
+                    </button>
+                    }
                     }
                     @else {
                     <button pButton pRipple label="Siguiente" type="button" class="w-full border-round"
