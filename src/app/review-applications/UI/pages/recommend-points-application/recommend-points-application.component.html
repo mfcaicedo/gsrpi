@@ -1,0 +1,71 @@
+<div class="">
+    <div class="">
+        <h2>
+            Recomendación de puntos a la solicitud de reconocimiento de producción intelectual
+        </h2>
+
+        <h4>
+            Elige la opción que desees..
+        </h4>
+
+    </div>
+    <div class="grid">
+        <div class="col-12 md:col-6">
+            <p class="text-primary text-md font-medium mb-0">
+                Recomendación de puntos
+            </p>
+            <div class="col-12 sm:col-6 md:col-8 xl:col-6 pl-0">
+                <button pButton pRipple label="Calcular automáticamente" type="button" class="w-full border-round"
+                    (click)="automaticCalculationPoints()">
+                </button>
+            </div>
+
+            <div class="col-12 sm:col-12 md:col-12 pl-0">
+                <form action="" [formGroup]="formGroupPoints" (submit)="onSubmit()">
+                    <label for="points" class="block text-primary text-md font-medium mb-2">
+                        Asignación de puntos manual <span class="text-orange-500">*</span>
+                    </label>
+                    <input id="points" type="number" formControlName="points" placeholder="Digita la cantidad de puntos"
+                        pInputText class="w-full">
+                    @if (this.formGroupPoints.get('points')?.hasError('required') &&
+                    this.formGroupPoints.get('points')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        Este campo es requerido
+                    </div>
+                    }
+                    @if (this.formGroupPoints.get('points')?.hasError('min') &&
+                    this.formGroupPoints.get('points')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        El valor mínimo es 1 punto
+                    </div>
+                    }
+                    @if (this.formGroupPoints.get('points')?.hasError('max') &&
+                    this.formGroupPoints.get('points')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        El valor máximo es 100 puntos
+                    </div>
+                    }
+                </form>
+            </div>
+
+        </div>
+        <div class="col-12 md:col-6">
+            <p class="text-primary text-md font-medium">
+                Proceso de cálculo de puntos automático
+            </p>
+
+        </div>
+    </div>
+
+    <div class="col-12 sm:col-7 flex flex-row gap-2 pl-0">
+        <button pButton severity="secondary" pRipple label="Anterior" [disabled]="true" class="w-full border-round">
+        </button>
+        <button pButton pRipple label="Guardar" type="button" [disabled]="!this.formGroupPoints.valid"
+            class="w-full border-round" (click)="onSubmit()">
+        </button>
+    </div>
+
+    <!-- Dialog alert -->
+    <p-toast />
+    <p-confirmdialog />
+</div>
