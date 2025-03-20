@@ -706,8 +706,7 @@ export class ReviewApplicationComponent implements OnInit {
   }
 
   recommendPoints() {
-    console.log("recomendar puntos");
-    this.router.navigate(['/revision-solicitudes/recomendar-puntos',
+    this.router.navigate(['/revision-solicitudes/recomendar-puntos', this.applicationId,
       this.responseBodyApplication.teacherApplications?.[0].teacherApplicationId]);
   }
 

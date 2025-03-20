@@ -34,6 +34,7 @@ export class RecommendPointsApplicationComponent implements OnInit {
 
   formGroupPoints!: FormGroup;
 
+  applicationId: number = 0;
   teacherApplicationId: number = 0;
 
   private readonly confirmationService = inject(ConfirmationService);
@@ -46,7 +47,8 @@ export class RecommendPointsApplicationComponent implements OnInit {
   ngOnInit(): void {
 
     this.activedRoute.params.subscribe(async params => {
-      this.teacherApplicationId = params['id'] ?? 0;
+      this.applicationId = params['applicationId'] ?? 0;  
+      this.teacherApplicationId = params['teacherApplicationId'] ?? 0;
     });
 
     this.formGroupPoints = this.formBuilder.group({
