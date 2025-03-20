@@ -112,6 +112,12 @@ export class RecommendPointsApplicationComponent implements OnInit {
             detail: 'La recomendación de puntos fue guardada exitosamente.'
           });
           resolve();
+
+          //Redireccionar a la lista de solicitudes
+          setTimeout(() => {
+            this.router.navigate(['revision-solicitudes/listar-solicitudes-revision-comite']);
+          }, 3000);
+
         },
         error: (error) => {
           console.error("error", error);

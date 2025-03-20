@@ -58,7 +58,8 @@
     </div>
 
     <div class="col-12 sm:col-7 flex flex-row gap-2 pl-0">
-        <button pButton severity="secondary" pRipple label="Anterior" [disabled]="true" class="w-full border-round">
+        <button pButton severity="secondary" pRipple label="Anterior" [disabled]="false" class="w-full border-round"
+            [routerLink]="['../../revisar-solicitud', teacherApplicationId]">
         </button>
         <button pButton pRipple label="Guardar" type="button" [disabled]="!this.formGroupPoints.valid"
             class="w-full border-round" (click)="onSubmit()">
