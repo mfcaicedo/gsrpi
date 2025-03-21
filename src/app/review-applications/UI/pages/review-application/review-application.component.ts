@@ -504,6 +504,12 @@ export class ReviewApplicationComponent implements OnInit {
           person: { personId: this.personId }
         }
 
+        //Roles y privilegios 
+        //TODO: si es la secretaria de CPD se habilita el boton de aceptar solicitud o devolver solicitud 
+        //2. Si es un miembro de CPD se habilita el boton de recomendar puntos
+        //3. Si es el presidente de CPD se habilita el boton de avalar solicitud
+
+
         await this.saveValidationOfApplication();
         //Consulto el estado de las validaciones si todas son correctas se habilita el boton de Aceptar solicitud 
         //en caso contrario se habilita el boton de devolver solicitud 

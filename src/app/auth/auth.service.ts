@@ -41,7 +41,16 @@ export class AuthService {
 
   constructor() {
     this.supabase = createClient(ENVIRONMENTS.BASE_URL_SUPABASE,
-      ENVIRONMENTS.PUBLIC_API_KEY_SUPABASE);
+      ENVIRONMENTS.PUBLIC_API_KEY_SUPABASE, 
+      // {
+      // auth: {
+      //   storage: sessionStorage, //Se almacena la sesión en el almacenamiento de sesión del navegador y no en el localstorage
+      //   autoRefreshToken: true,
+      //   persistSession: true,
+      //   detectSessionInUrl: true, // Detectar la sesión en la URL (por ejemplo, para autenticación de proveedores externos)
+      // }
+      // }
+    );
   }
 
   getSession() {
@@ -55,7 +64,7 @@ export class AuthService {
 
   get user(): WritableSignal<User | null> {
 
-    const token = localStorage.getItem('accessToken');
+    const token = sessionStorage.getItem('accessToken');
     return signal(token ? this.jwtHelper.decodeToken(token) : null);
 
   }
@@ -74,7 +83,7 @@ export class AuthService {
 
   getDecodeToken() {
 
-    const token = localStorage.getItem('accessToken') ?? '';
+    const token = sessionStorage.getItem('accessToken') ?? '';
     //Al decodificar el token obtenemos los datos del usuario, roles y privilegios
     //Pero por el momento solo se obtiene el uid del usuario
     return this.jwtHelper.decodeToken(token).sub
@@ -103,7 +112,7 @@ export class AuthService {
     this.supabase.auth.signOut().then(() => {
       this.session.next(null);
       this.userDataSession.next({});
-      localStorage.removeItem('userDataSession');
+      sessionStorage.removeItem('userDataSession');
       this.router.navigate(['/login']);
     });
 
@@ -194,13 +203,13 @@ export class AuthService {
 
   setUserDataSession(userData: Partial<UserDataSession>) {
     this.userDataSession.next(userData);
-    localStorage.setItem('userDataSession', JSON.stringify(userData));
+    sessionStorage.setItem('userDataSession', JSON.stringify(userData));
   }
 
   getUserDataSession() {
 
     if (Object.keys(this.userDataSession.value).length === 0) {
-      const userDataSession = localStorage.getItem('userDataSession');
+      const userDataSession = sessionStorage.getItem('userDataSession');
       if (userDataSession) {
         this.userDataSession.next(JSON.parse(userDataSession));
       }

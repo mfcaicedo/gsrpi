@@ -106,6 +106,8 @@ export class LoginComponent implements OnInit {
       this.userManagementUseCase.getUserByUid(uid).subscribe({
         next: (response: any) => {
           this.userDataSession.userId = response.userId;
+          this.userDataSession.email = response.email;
+          this.userDataSession.userRoles = response.userRoles;
           resolve(true);
         },
         error: (error) => {
@@ -120,7 +122,9 @@ export class LoginComponent implements OnInit {
     return new Promise((resolve) => {
       this.userManagementUseCase.getPersonByUserId(this.userDataSession.userId ?? 0).subscribe({
         next: (response: any) => {
+          console.log("response getPersonByUserId", response);
           this.userDataSession.personId = response.personId;
+          this.userDataSession.configurationId = response.configurationId;
           resolve(true);
         },
         error: (error) => {
@@ -136,6 +140,7 @@ export class LoginComponent implements OnInit {
     return new Promise((resolve) => {
       this.userManagementUseCase.getTeacherByPersonId(this.userDataSession.personId ?? 0).subscribe({
         next: (response: any) => {
+          console.log("response getTeacherByPersonId", response);
           if (response !== null) {
             this.userDataSession.teacherId = response.teacherId;
           }
