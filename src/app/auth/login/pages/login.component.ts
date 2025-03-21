@@ -122,8 +122,9 @@ export class LoginComponent implements OnInit {
     return new Promise((resolve) => {
       this.userManagementUseCase.getPersonByUserId(this.userDataSession.userId ?? 0).subscribe({
         next: (response: any) => {
-          console.log("response getPersonByUserId", response);
           this.userDataSession.personId = response.personId;
+          this.userDataSession.nombres = `${response.firstName ?? ''} ${response.secondName ?? ''}`.trim();
+          this.userDataSession.apellidos = `${response.firstLastName ?? ''} ${response.secondLastName ?? ''}`.trim();
           this.userDataSession.configurationId = response.configurationId;
           resolve(true);
         },

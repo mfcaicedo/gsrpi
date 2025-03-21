@@ -10,6 +10,7 @@ import { AuthService } from '../../auth/auth.service';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
+import { UserDataSession } from '../../auth/login/interfaces/models/user-data-session.model';
 
 @Component({
     selector: 'app-topbar',
@@ -30,6 +31,8 @@ export class AppTopBarComponent implements OnInit {
 
     @ViewChild('topbarmenu') menu!: ElementRef;
 
+    userDataSession: Partial<UserDataSession> = {};
+
     constructor(
         public layoutService: LayoutService,
         private readonly authService: AuthService,
@@ -38,13 +41,15 @@ export class AppTopBarComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+
+        //consulto el usuario logueado 
+        this.authService.getUserDataSession().subscribe((data: any) => {
+            this.userDataSession = data;
+        });
+
         this.itemsMenuProfile = [
             {
-                label: '<div class="text-primary">' +
-                    '<h5 class="text-primary mb-0">' +
-                    'Milthon Caicedo' +
-                    '</h5>' +
-                    '<span>Administrador</span></div>',
+                label: this.getUserLabel(),
                 icon: 'pi pi-user',
                 iconStyle: { 'font-size': '2rem', 'color': 'var(--primary-color)' },
                 items: [
@@ -67,6 +72,22 @@ export class AppTopBarComponent implements OnInit {
             },
         ]
 
+    }
+
+    // Método para generar la etiqueta del usuario
+    getUserLabel(): string {
+        let rolesHtml = '';
+
+        if (this.userDataSession.userRoles?.length) {
+            rolesHtml = this.userDataSession.userRoles
+                .map(role => `<span class="badge badge-primary">${role.role?.name}</span>`)
+                .join(' ');
+        }
+
+        return `<div class="text-primary">
+              <h5 class="text-primary mb-0">${this.userDataSession.nombres} ${this.userDataSession.apellidos}</h5>
+              ${rolesHtml}
+            </div>`;
     }
 
     onClickProfile() {
