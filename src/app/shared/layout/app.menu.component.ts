@@ -4,6 +4,9 @@ import { LayoutService } from './service/app.layout.service';
 import { AppMenuitemComponent } from './app.menuitem.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../auth/auth.service';
+import { UserRole } from '../../auth/interfaces/models/user.model';
+import { RoleNames } from '../../auth/enums/roles.enum';
 
 @Component({
     selector: 'app-menu',
@@ -13,10 +16,28 @@ import { RouterModule } from '@angular/router';
 export class AppMenuComponent implements OnInit {
 
     model: any[] = [];
+    roles: Partial<UserRole>[] = [];
 
-    constructor(public layoutService: LayoutService) { }
+    constructor(
+        public layoutService: LayoutService,
+        private readonly authService: AuthService
+    ) { }
 
     ngOnInit() {
+
+        //Dependiendo del rol del usuario se construye el menú
+        this.authService.getUserDataSession().subscribe(data => {
+            this.roles = data.userRoles ?? [];
+        });
+
+        this.buildMenu();
+    }
+
+    private buildMenu() {
+        if (this.roles.length === 0) {
+            return;
+        }
+        //La opcion inicio es comun para todos los roles
         this.model = [
             {
                 label: 'Principal',
@@ -24,203 +45,144 @@ export class AppMenuComponent implements OnInit {
                     { label: 'Inicio', icon: 'pi pi-fw pi-home', routerLink: ['/'] }
                 ]
             },
-            {
-                label: 'Configuración inicial',
-                items: [
-                    {
-                        label: 'Configuración CPD', icon: 'pi pi-fw pi-cog',
-                        items: [
-                            {
-                                label: 'Registrar facultad', icon: 'pi pi-fw pi-cog',
-                                routerLink: ['/configuracion-sistema/registrar-facultad']
-                            },
-                            {
-                                label: 'Registrar miembros CPD', icon: 'pi pi-fw pi-cog',
-                                routerLink: ['/configuracion-sistema/registrar-cpd']
-                            },
-                            {
-                                label: 'Registrar secretaria CPD', icon: 'pi pi-fw pi-cog',
-                                routerLink: ['/configuracion-sistema/registrar-secretaria-cpd']
-                            }
-                        ],
-                        // routerLink: ['/configuracion-sistema/registrar-facultad']
-                    },
-                    {
-                        label: 'Configuración CIARP', icon: 'pi pi-fw pi-cog',
-                        items: [
-                            {
-                                label: 'Registrar miembros CIARP', icon: 'pi pi-fw pi-cog',
-                                routerLink: ['/configuracion-sistema/registrar-ciarp']
-                            },
-                            {
-                                label: 'Registrar secretaria CIARP', icon: 'pi pi-fw pi-cog',
-                                routerLink: ['/configuracion-sistema/registrar-secretaria-ciarp']
-                            }
-                        ],
-                        // routerLink: ['/configuracion-sistema/registrar-ciarp'] 
-                    },
-                    // { label: 'Input', icon: 'pi pi-fw pi-check-square', routerLink: ['/uikit/input'] },
-                    // { label: 'Float Label', icon: 'pi pi-fw pi-bookmark', routerLink: ['/uikit/floatlabel'] },
-                    // { label: 'Invalid State', icon: 'pi pi-fw pi-exclamation-circle', routerLink: ['/uikit/invalidstate'] },
-                    // { label: 'Button', icon: 'pi pi-fw pi-box', routerLink: ['/uikit/button'] },
-                    // { label: 'Table', icon: 'pi pi-fw pi-table', routerLink: ['/uikit/table'] },
-                    // { label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/uikit/list'] },
-                    // { label: 'Tree', icon: 'pi pi-fw pi-share-alt', routerLink: ['/uikit/tree'] },
-                    // { label: 'Panel', icon: 'pi pi-fw pi-tablet', routerLink: ['/uikit/panel'] },
-                    // { label: 'Overlay', icon: 'pi pi-fw pi-clone', routerLink: ['/uikit/overlay'] },
-                    // { label: 'Media', icon: 'pi pi-fw pi-image', routerLink: ['/uikit/media'] },
-                    // { label: 'Menu', icon: 'pi pi-fw pi-bars', routerLink: ['/uikit/menu'], routerLinkActiveOptions: { paths: 'subset', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' } },
-                    // { label: 'Message', icon: 'pi pi-fw pi-comment', routerLink: ['/uikit/message'] },
-                    // { label: 'File', icon: 'pi pi-fw pi-file', routerLink: ['/uikit/file'] },
-                    // { label: 'Chart', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/uikit/charts'] },
-                    // { label: 'Misc', icon: 'pi pi-fw pi-circle', routerLink: ['/uikit/misc'] }
-                ]
-            },
-            {
-                label: 'Solicitudes de producción',
-                items: [
-                    {
-                        label: 'Crear solicitud', icon: 'pi pi-fw pi-cog',
-                        routerLink: ['/solicitudes-reconocimiento/crear-solicitud']
-                    },
-                    {
-                        label: 'Listar solicitudes', icon: 'pi pi-fw pi-cog',
-                        routerLink: ['/solicitudes-reconocimiento/listar-solicitudes']
-                    },
-                ]
-            },
-            {
-                label: 'Producción académica',
-                items: [
-                    {
-                        label: 'Listar solicitudes', icon: 'pi pi-fw pi-cog',
-                        routerLink: ['/revision-solicitudes/listar-solicitudes-revision']
-                    },
-                    {
-                        label: 'Solicitudes comite', icon: 'pi pi-fw pi-cog',
-                        routerLink: ['/revision-solicitudes/listar-solicitudes-revision-comite']
-                    }
-                ]
-            },
-            // {
-            //     label: 'Prime Blocks',
-            //     items: [
-            //         { label: 'Free Blocks', icon: 'pi pi-fw pi-eye', routerLink: ['/blocks'], badge: 'NEW' },
-            //         { label: 'All Blocks', icon: 'pi pi-fw pi-globe', url: ['https://www.primefaces.org/primeblocks-ng'], target: '_blank' },
-            //     ]
-            // },
-            // {
-            //     label: 'Utilities',
-            //     items: [
-            //         { label: 'PrimeIcons', icon: 'pi pi-fw pi-prime', routerLink: ['/utilities/icons'] },
-            //         { label: 'PrimeFlex', icon: 'pi pi-fw pi-desktop', url: ['https://www.primefaces.org/primeflex/'], target: '_blank' },
-            //     ]
-            // },
-            // {
-            //     label: 'Pages',
-            //     icon: 'pi pi-fw pi-briefcase',
-            //     items: [
-            //         {
-            //             label: 'Landing',
-            //             icon: 'pi pi-fw pi-globe',
-            //             routerLink: ['/landing']
-            //         },
-            //         {
-            //             label: 'Auth',
-            //             icon: 'pi pi-fw pi-user',
-            //             items: [
-            //                 {
-            //                     label: 'Login',
-            //                     icon: 'pi pi-fw pi-sign-in',
-            //                     routerLink: ['/auth/login']
-            //                 },
-            //                 {
-            //                     label: 'Error',
-            //                     icon: 'pi pi-fw pi-times-circle',
-            //                     routerLink: ['/auth/error']
-            //                 },
-            //                 {
-            //                     label: 'Access Denied',
-            //                     icon: 'pi pi-fw pi-lock',
-            //                     routerLink: ['/auth/access']
-            //                 }
-            //             ]
-            //         },
-            //         {
-            //             label: 'Crud',
-            //             icon: 'pi pi-fw pi-pencil',
-            //             routerLink: ['/pages/crud']
-            //         },
-            //         {
-            //             label: 'Timeline',
-            //             icon: 'pi pi-fw pi-calendar',
-            //             routerLink: ['/pages/timeline']
-            //         },
-            //         {
-            //             label: 'Not Found',
-            //             icon: 'pi pi-fw pi-exclamation-circle',
-            //             routerLink: ['/notfound']
-            //         },
-            //         {
-            //             label: 'Empty',
-            //             icon: 'pi pi-fw pi-circle-off',
-            //             routerLink: ['/pages/empty']
-            //         },
-            //     ]
-            // },
-            // {
-            //     label: 'Hierarchy',
-            //     items: [
-            //         {
-            //             label: 'Submenu 1', icon: 'pi pi-fw pi-bookmark',
-            //             items: [
-            //                 {
-            //                     label: 'Submenu 1.1', icon: 'pi pi-fw pi-bookmark',
-            //                     items: [
-            //                         { label: 'Submenu 1.1.1', icon: 'pi pi-fw pi-bookmark' },
-            //                         { label: 'Submenu 1.1.2', icon: 'pi pi-fw pi-bookmark' },
-            //                         { label: 'Submenu 1.1.3', icon: 'pi pi-fw pi-bookmark' },
-            //                     ]
-            //                 },
-            //                 {
-            //                     label: 'Submenu 1.2', icon: 'pi pi-fw pi-bookmark',
-            //                     items: [
-            //                         { label: 'Submenu 1.2.1', icon: 'pi pi-fw pi-bookmark' }
-            //                     ]
-            //                 },
-            //             ]
-            //         },
-            //         {
-            //             label: 'Submenu 2', icon: 'pi pi-fw pi-bookmark',
-            //             items: [
-            //                 {
-            //                     label: 'Submenu 2.1', icon: 'pi pi-fw pi-bookmark',
-            //                     items: [
-            //                         { label: 'Submenu 2.1.1', icon: 'pi pi-fw pi-bookmark' },
-            //                         { label: 'Submenu 2.1.2', icon: 'pi pi-fw pi-bookmark' },
-            //                     ]
-            //                 },
-            //                 {
-            //                     label: 'Submenu 2.2', icon: 'pi pi-fw pi-bookmark',
-            //                     items: [
-            //                         { label: 'Submenu 2.2.1', icon: 'pi pi-fw pi-bookmark' },
-            //                     ]
-            //                 },
-            //             ]
-            //         }
-            //     ]
-            // },
-            // {
-            //     label: 'Get Started',
-            //     items: [
-            //         {
-            //             label: 'Documentation', icon: 'pi pi-fw pi-question', routerLink: ['/documentation']
-            //         },
-            //         {
-            //             label: 'View Source', icon: 'pi pi-fw pi-search', url: ['https://github.com/primefaces/sakai-ng'], target: '_blank'
-            //         }
-            //     ]
-            // }
         ];
+        //Se obtine el menú por cada rol que tenga el usuario
+        this.roles.forEach(role => {
+            this.model = [...this.model,
+            this.getMenuByRole(role.role?.name ?? '')[0]
+            ]
+        });
     }
+
+    private getMenuByRole(roleName: string) {
+        switch (roleName) {
+            case RoleNames.ADMIN:
+                return [
+                    {
+                        label: 'Configuración',
+                        items: [
+                            {
+                                label: 'Configuración CPD', icon: 'pi pi-fw pi-cog',
+                                items: [
+                                    {
+                                        label: 'Registrar facultad', icon: 'pi pi-fw pi-cog',
+                                        routerLink: ['/configuracion-sistema/registrar-facultad']
+                                    },
+                                    {
+                                        label: 'Registrar miembros CPD', icon: 'pi pi-fw pi-cog',
+                                        routerLink: ['/configuracion-sistema/registrar-cpd']
+                                    },
+                                    {
+                                        label: 'Registrar secretaria CPD', icon: 'pi pi-fw pi-cog',
+                                        routerLink: ['/configuracion-sistema/registrar-secretaria-cpd']
+                                    }
+                                ],
+                            },
+                        ]
+                    },
+                ]
+            case RoleNames.ADMIN_CIARP:
+                return [
+                    {
+                        label: 'Configuración CIARP',
+                        items: [
+                            {
+                                label: 'Configuración CIARP', icon: 'pi pi-fw pi-cog',
+                                items: [
+                                    {
+                                        label: 'Registrar miembros CIARP', icon: 'pi pi-fw pi-cog',
+                                        routerLink: ['/configuracion-sistema/registrar-ciarp']
+                                    },
+                                    {
+                                        label: 'Registrar secretaria CIARP', icon: 'pi pi-fw pi-cog',
+                                        routerLink: ['/configuracion-sistema/registrar-secretaria-ciarp']
+                                    }
+                                ],
+                            },
+                        ]
+                    },
+                ]
+
+            case RoleNames.TEACHER:
+                return [{
+                    label: 'Solicitudes de producción',
+                    items: [
+                        {
+                            label: 'Crear solicitud', icon: 'pi pi-fw pi-cog',
+                            routerLink: ['/solicitudes-reconocimiento/crear-solicitud']
+                        },
+                        {
+                            label: 'Listar solicitudes', icon: 'pi pi-fw pi-cog',
+                            routerLink: ['/solicitudes-reconocimiento/listar-solicitudes']
+                        },
+                    ]
+                }
+                ]
+
+            case RoleNames.CPD_SECRETARY:
+                return [
+                    {
+                        label: 'Producción académica',
+                        items: [
+                            {
+                                label: 'Listar solicitudes', icon: 'pi pi-fw pi-cog',
+                                routerLink: ['/revision-solicitudes/listar-solicitudes-revision']
+                            },
+                        ]
+                    },
+                ]
+            case RoleNames.CPD_PRESIDENT:
+                return [
+                    {
+                        label: 'Producción académica',
+                        items: [
+                            {
+                                label: 'Listar solicitudes', icon: 'pi pi-fw pi-cog',
+                                routerLink: ['/revision-solicitudes/listar-solicitudes-revision-comite']
+                            }
+                        ]
+                    },
+                ]
+            case RoleNames.CPD_MEMBER:
+                return [
+                    {
+                        label: 'Producción académica',
+                        items: [
+                            {
+                                label: 'Listar solicitudes', icon: 'pi pi-fw pi-cog',
+                                routerLink: ['/revision-solicitudes/listar-solicitudes-revision-comite']
+                            }
+                        ]
+                    },
+                ]
+            case RoleNames.CIARP_SECRETARY:
+                return [
+                    {
+                        label: 'Producción académica',
+                        items: [
+                            {
+                                label: 'Listar solicitudes', icon: 'pi pi-fw pi-cog',
+                                routerLink: ['/revision-solicitudes/listar-solicitudes-revision-ciarp']
+                            }
+                        ]
+                    },
+                ]
+            case RoleNames.CIARP_MEMBER:
+                return [
+                    {
+                        label: 'Producción académica',
+                        items: [
+                            {
+                                label: 'Listar solicitudes', icon: 'pi pi-fw pi-cog',
+                                routerLink: ['/revision-solicitudes/listar-solicitudes-revision-comite-ciarp']
+                            }
+                        ]
+                    },
+                ]
+            default:
+                return [];
+        }
+
+    }
+
 }
