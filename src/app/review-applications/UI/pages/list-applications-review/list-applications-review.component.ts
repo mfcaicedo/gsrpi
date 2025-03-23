@@ -14,6 +14,7 @@ import { Application } from '../../../../shared/utils/models/applications-common
 import { AuthService } from '../../../../auth/auth.service';
 import { ReviewApplicationsManagementUseCase } from '../../../domain/usecase/review-applications-management-usecase';
 import { CreateInitialConfigurationUsecase } from '../../../../system-configuration/domain/usecase/create-initial-configuration-usecase';
+import { ApplicationStatuses } from '../../../../shared/utils/enums/review-applications.enum';
 
 @Component({
   selector: 'app-list-applications-review',
@@ -57,6 +58,10 @@ export class ListApplicationsReviewComponent {
 
     await this.getAllApplicationsByFacultyId();
 
+  }
+
+  get ApplicationStatus() {
+    return ApplicationStatuses;
   }
 
   async getConfigurationById() {

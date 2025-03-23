@@ -59,16 +59,18 @@
                 <td>{{ application.applicationStatus.name }}</td>
                 <td>
                     <div class="flex justify-between">
+                        @if (application.applicationStatus.name === ApplicationStatus.SENT_TO_CPD) {
                         <button pButton pRipple icon="pi pi-file-check" class="p-button-rounded p-button-text"
                             [routerLink]="['../revisar-solicitud', application.applicationId]">
                             Revisar
                         </button>
-                        <!-- <button pButton pRipple icon="pi pi-pen-to-square" class="p-button-rounded p-button-text"
-                            (click)="editApplication(application)">
+                        }
+                        @if (application.applicationStatus.name === ApplicationStatus.REVIEWED_BY_CPD_SECRETARY) {
+                        <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text"
+                            [routerLink]="['../revisar-solicitud', application.applicationId]">
+                            Ver detalle
                         </button>
-                        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text text-red-500"
-                            (click)="deleteApplication(application)">
-                        </button> -->
+                        }
                     </div>
                 </td>
             </tr>
