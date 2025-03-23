@@ -2,17 +2,20 @@ import { Routes } from '@angular/router';
 import { AppLayoutComponent } from './shared/layout/app.layout.component';
 import { WelcomeComponent } from './shared/components/welcome/welcome.component';
 import { accountGuard, authGuard } from './auth/guards';
+import { AuthorizedGuard } from './auth/guards/authorized.guard';
+import { RoleNames } from './auth/enums/roles.enum';
+import { AccessDeniedComponent } from './auth/pages/access-denied/access-denied.component';
 
 export const routes: Routes = [
     {
         path: 'login',
+        canActivate: [accountGuard],
         loadComponent: () => import('./auth/login/pages/login.component').then(m => m.LoginComponent),
-        // canActivate: [accountGuard],
     },
     {
         path: '',
         component: AppLayoutComponent,
-        // canActivate: [authGuard],
+        canActivate: [authGuard],
         children: [
             {
                 path: '',
@@ -24,16 +27,31 @@ export const routes: Routes = [
             },
             {
                 path: 'configuracion-sistema',
+                canActivate: [AuthorizedGuard],
+                data: { roles: [RoleNames.ADMIN, RoleNames.ADMIN_CIARP] },
                 loadChildren: () => import('./system-configuration/system-configuration.routes').then(m => m.routes)
             },
             {
                 path: 'solicitudes-reconocimiento',
+                canActivate: [AuthorizedGuard],
+                data: { roles: [RoleNames.CPD_SECRETARY, RoleNames.CPD_PRESIDENT, RoleNames.CPD_MEMBER, RoleNames.TEACHER] },
                 loadChildren: () => import('./applications-recognition/applications-recognition.routes').then(m => m.routes)
             },
             {
                 path: 'revision-solicitudes',
+                canActivate: [AuthorizedGuard],
+                data: { roles: [RoleNames.CPD_SECRETARY, RoleNames.CPD_PRESIDENT, RoleNames.CPD_MEMBER] },
                 loadChildren: () => import('./review-applications/review-applications.routes').then(m => m.routes)
             }
         ]
-
-    }];
+    },
+    {
+        path: 'acceso-denegado',
+        canActivate: [authGuard],
+        component: AccessDeniedComponent,
+    },
+    {
+        path: '**',
+        redirectTo: '/acceso-denegado'
+    }
+];
