@@ -25,7 +25,7 @@ export class AuthService {
   private session = new BehaviorSubject<Session | null>(null);
 
   //Guardo el id de la configuración inicial en un BehaviorSubject
-  configurationId: BehaviorSubject<number> = new BehaviorSubject<number>(12); //Por defecto será la FIET 
+  configurationId: BehaviorSubject<number> = new BehaviorSubject<number>(0); //Por defecto será la FIET 
 
   //UserDataSession
   userDataSession: BehaviorSubject<Partial<UserDataSession>> = new BehaviorSubject<Partial<UserDataSession>>({});
@@ -41,7 +41,7 @@ export class AuthService {
 
   constructor() {
     this.supabase = createClient(ENVIRONMENTS.BASE_URL_SUPABASE,
-      ENVIRONMENTS.PUBLIC_API_KEY_SUPABASE, 
+      ENVIRONMENTS.PUBLIC_API_KEY_SUPABASE,
       // {
       // auth: {
       //   storage: sessionStorage, //Se almacena la sesión en el almacenamiento de sesión del navegador y no en el localstorage
@@ -74,6 +74,15 @@ export class AuthService {
   }
 
   getConfigurationId() {
+    if (this.configurationId.value === 0) {
+      const userDataSession = sessionStorage.getItem('userDataSession');
+      //lo convierto a objeto para sacar la configuración 
+      const userData = JSON.parse(userDataSession ?? '');
+      const configurationId = userData.configurationId;
+      if (configurationId) {
+        this.configurationId.next(parseInt(configurationId));
+      }
+    }
     return this.configurationId.asObservable();
   }
 
