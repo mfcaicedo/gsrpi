@@ -32,6 +32,7 @@ import ENVIRONMENTS from '../../../../../environments/config';
 import { lastValueFrom } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ValidationApplication } from '../../../domain/models/validation.model';
+import { RoleNames } from '../../../../auth/enums/roles.enum';
 
 @Component({
   selector: 'app-review-application',
@@ -159,7 +160,7 @@ export class ReviewApplicationComponent implements OnInit {
   isCorrectValidation = false;
   disabledButtonAcceptApplication = true;
 
-  isCommittedMember = true; //Cambiar por implementación de roles de usuario
+  isCommittedMember = false;
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router)
@@ -180,6 +181,18 @@ export class ReviewApplicationComponent implements OnInit {
 
     this.activedRoute.params.subscribe(async params => {
       this.applicationId = params['id'] ?? 0;
+    });
+
+    //Datos de session 
+    this.authService.getUserDataSession().subscribe((data: any) => {
+      const roles = data.userRoles;
+        roles.forEach((role: any) => {
+          if (role.name === RoleNames.CPD_MEMBER){
+            this.isCommittedMember = true;
+            return;
+          }
+        });
+
     });
 
     this.registerForm = this.formBuilder.group({
