@@ -148,6 +148,12 @@ export class ReviewApplicationComponent implements OnInit {
     [StepsReviewApplication.STEP_3_PRODUCTION_BY_TYPE, StepsReviewApplication.STEP_4_APPLICATON_RECOGNIZED],
     [StepsReviewApplication.STEP_4_APPLICATON_RECOGNIZED, StepsReviewApplication.STEP_5_DOCUMENTS]
   ]);
+  beforeStepMap = new Map([
+    [StepsReviewApplication.STEP_2_APPLICATION_RECOGNITION, StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT],
+    [StepsReviewApplication.STEP_3_PRODUCTION_BY_TYPE, StepsReviewApplication.STEP_2_APPLICATION_RECOGNITION],
+    [StepsReviewApplication.STEP_4_APPLICATON_RECOGNIZED, StepsReviewApplication.STEP_3_PRODUCTION_BY_TYPE],
+    [StepsReviewApplication.STEP_5_DOCUMENTS, StepsReviewApplication.STEP_4_APPLICATON_RECOGNIZED]
+  ]);
   currentStep: StepsReviewApplication = StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT;
 
   isDialogVisible = false;
@@ -181,18 +187,6 @@ export class ReviewApplicationComponent implements OnInit {
 
     this.activedRoute.params.subscribe(async params => {
       this.applicationId = params['id'] ?? 0;
-    });
-
-    //Datos de session 
-    this.authService.getUserDataSession().subscribe((data: any) => {
-      const roles = data.userRoles;
-        roles.forEach((role: any) => {
-          if (role.name === RoleNames.CPD_MEMBER){
-            this.isCommittedMember = true;
-            return;
-          }
-        });
-
     });
 
     this.registerForm = this.formBuilder.group({
@@ -248,6 +242,7 @@ export class ReviewApplicationComponent implements OnInit {
 
     //Subscripcion al formulario para validar si se puede habilitar el siguiente paso
     this.validationForm.valueChanges.subscribe(() => {
+      console.log("entra 1");
       //Segun en el paso que este se valida que el aprovado este seleccionado
       switch (this.currentStep) {
         case StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT:
@@ -259,16 +254,18 @@ export class ReviewApplicationComponent implements OnInit {
             this.isValidFormInStep = false;
           } else {
             this.isValidFormInStep = true;
+            this.isDisabledNextStep = false;
           }
           break;
         case StepsReviewApplication.STEP_2_APPLICATION_RECOGNITION:
-
+          console.log("si entra");
           if (this.validationForm.get('approvalStep2')?.value === 'false'
             && this.validationForm.get('observationsStep2')?.value === '' ||
             this.validationForm.get('approvalStep2')?.value === undefined) {
             this.isValidFormInStep = false;
           } else {
             this.isValidFormInStep = true;
+            this.isDisabledNextStep = false;
           }
           break;
         case StepsReviewApplication.STEP_3_PRODUCTION_BY_TYPE:
@@ -279,6 +276,7 @@ export class ReviewApplicationComponent implements OnInit {
             this.isValidFormInStep = false;
           } else {
             this.isValidFormInStep = true;
+            this.isDisabledNextStep = false;
           }
           break;
         case StepsReviewApplication.STEP_4_APPLICATON_RECOGNIZED:
@@ -289,6 +287,7 @@ export class ReviewApplicationComponent implements OnInit {
             this.isValidFormInStep = false;
           } else {
             this.isValidFormInStep = true;
+            this.isDisabledNextStep = false;
           }
 
           break;
@@ -300,13 +299,21 @@ export class ReviewApplicationComponent implements OnInit {
             this.isValidFormInStep = false;
           } else {
             this.isValidFormInStep = true;
+            this.isDisabledNextStep = false;
           }
           break;
       }
     });
 
-    this.authService.getUserDataSession().subscribe((response: any) => {
-      this.personId = response.personId;
+    this.authService.getUserDataSession().subscribe((data: any) => {
+      this.personId = data.personId;
+      const roles = data.userRoles;
+      roles.forEach((role: any) => {
+        if (role.role.name == RoleNames.CPD_MEMBER) {
+          this.isCommittedMember = true;
+          return;
+        }
+      });
     });
 
     //Cargamos informacion de la solicitud
@@ -317,6 +324,10 @@ export class ReviewApplicationComponent implements OnInit {
     if (this.responseBodyApplication.production?.productionFiles?.[1]) {
       this.responseBodyApplication.production.productionFiles[1].fileMetadata = await this.getFileById(this.responseBodyApplication.production.productionFiles[1].fileId ?? 0);
     }
+
+    //Cargar validaciones de la solicitud si ya existen
+    await this.getApplicationReviewByApplicationIdAndPersonId();
+    this.autoCompleteFormValidation();
 
   }
 
@@ -338,6 +349,32 @@ export class ReviewApplicationComponent implements OnInit {
       });
     });
 
+  }
+
+  autoCompleteFormValidation() {
+
+    this.validationForm.patchValue({
+      approvalStep1: this.validationsResponse.find(
+        (item) => item?.validationType?.validationTypeName === ValidationTypes.VALIDATION_PERSONAL_INFORMATION_APPLICANT)?.validationState.toString(),
+      observationsStep1: this.validationsResponse.find(
+        (item) => item?.validationType?.validationTypeName === ValidationTypes.VALIDATION_PERSONAL_INFORMATION_APPLICANT)?.observations,
+      approvalStep2: this.validationsResponse.find(
+        (item) => item?.validationType?.validationTypeName === ValidationTypes.VALIDATION_APPLICATION_RECOGNITION)?.validationState.toString(),
+      observationsStep2: this.validationsResponse.find(
+        (item) => item?.validationType?.validationTypeName === ValidationTypes.VALIDATION_APPLICATION_RECOGNITION)?.observations,
+      approvalStep3: this.validationsResponse.find(
+        (item) => item?.validationType?.validationTypeName === ValidationTypes.VALIDATION_DEPENDENT_PRODUCTION_TYPE)?.validationState.toString(),
+      observationsStep3: this.validationsResponse.find(
+        (item) => item?.validationType?.validationTypeName === ValidationTypes.VALIDATION_DEPENDENT_PRODUCTION_TYPE)?.observations,
+      approvalStep4: this.validationsResponse.find(
+        (item) => item?.validationType?.validationTypeName === ValidationTypes.VALIDATION_RECOGNIZED_APPLICATIONS_RELATED_TO_CURRENT_APPLICATION)?.validationState.toString(),
+      observationsStep4: this.validationsResponse.find(
+        (item) => item?.validationType?.validationTypeName === ValidationTypes.VALIDATION_RECOGNIZED_APPLICATIONS_RELATED_TO_CURRENT_APPLICATION)?.observations,
+      approvalStep5: this.validationsResponse.find(
+        (item) => item?.validationType?.validationTypeName === ValidationTypes.VALIDATION_PRODUCTION_FILES)?.validationState.toString(),
+      observationsStep5: this.validationsResponse.find(
+        (item) => item?.validationType?.validationTypeName === ValidationTypes.VALIDATION_PRODUCTION_FILES)?.observations,
+    });
   }
 
   autoCompleteFormApplication() {
@@ -430,9 +467,7 @@ export class ReviewApplicationComponent implements OnInit {
         label: 'Aceptar',
       },
       accept: async () => {
-
         await this.saveValidationOfApplicationDependentOnStep();
-
       },
     });
 
@@ -447,6 +482,8 @@ export class ReviewApplicationComponent implements OnInit {
           (item) => item.value === ValidationTypes.VALIDATION_PERSONAL_INFORMATION_APPLICANT)?.key ?? 0;
 
         this.requestValidation = {
+          validationId: this.validationsResponse.find(
+            (item) => item?.validationType?.validationTypeName === ValidationTypes.VALIDATION_PERSONAL_INFORMATION_APPLICANT)?.validationId ?? 0,
           validationState: this.validationForm.get('approvalStep1')?.value,
           observations: this.validationForm.get('observationsStep1')?.value,
           application: { applicationId: this.applicationId },
@@ -455,13 +492,14 @@ export class ReviewApplicationComponent implements OnInit {
         }
 
         await this.saveValidationOfApplication();
-
         break;
       case StepsReviewApplication.STEP_2_APPLICATION_RECOGNITION:
         const validationTypeIdStep2 = this.validationTypesDataList.find(
           (item) => item.value === ValidationTypes.VALIDATION_APPLICATION_RECOGNITION)?.key ?? 0;
 
         this.requestValidation = {
+          validationId: this.validationsResponse.find(
+            (item) => item?.validationType?.validationTypeName === ValidationTypes.VALIDATION_APPLICATION_RECOGNITION)?.validationId ?? 0,
           validationState: this.validationForm.get('approvalStep2')?.value,
           observations: this.validationForm.get('observationsStep2')?.value,
           application: { applicationId: this.applicationId },
@@ -470,7 +508,6 @@ export class ReviewApplicationComponent implements OnInit {
         }
 
         await this.saveValidationOfApplication();
-
         break;
       case StepsReviewApplication.STEP_3_PRODUCTION_BY_TYPE:
 
@@ -478,6 +515,8 @@ export class ReviewApplicationComponent implements OnInit {
           (item) => item.value === ValidationTypes.VALIDATION_DEPENDENT_PRODUCTION_TYPE)?.key ?? 0;
 
         this.requestValidation = {
+          validationId: this.validationsResponse.find(
+            (item) => item?.validationType?.validationTypeName === ValidationTypes.VALIDATION_DEPENDENT_PRODUCTION_TYPE)?.validationId ?? 0,
           validationState: this.validationForm.get('approvalStep3')?.value,
           observations: this.validationForm.get('observationsStep3')?.value,
           application: { applicationId: this.applicationId },
@@ -486,7 +525,6 @@ export class ReviewApplicationComponent implements OnInit {
         }
 
         await this.saveValidationOfApplication();
-
         break;
       case StepsReviewApplication.STEP_4_APPLICATON_RECOGNIZED:
 
@@ -494,6 +532,8 @@ export class ReviewApplicationComponent implements OnInit {
           (item) => item.value === ValidationTypes.VALIDATION_RECOGNIZED_APPLICATIONS_RELATED_TO_CURRENT_APPLICATION)?.key ?? 0;
 
         this.requestValidation = {
+          validationId: this.validationsResponse.find(
+            (item) => item?.validationType?.validationTypeName === ValidationTypes.VALIDATION_RECOGNIZED_APPLICATIONS_RELATED_TO_CURRENT_APPLICATION)?.validationId ?? 0,
           validationState: this.validationForm.get('approvalStep4')?.value,
           observations: this.validationForm.get('observationsStep4')?.value,
           application: { applicationId: this.applicationId },
@@ -502,7 +542,6 @@ export class ReviewApplicationComponent implements OnInit {
         }
 
         await this.saveValidationOfApplication();
-
         break;
       case StepsReviewApplication.STEP_5_DOCUMENTS:
 
@@ -510,6 +549,8 @@ export class ReviewApplicationComponent implements OnInit {
           (item) => item.value === ValidationTypes.VALIDATION_PRODUCTION_FILES)?.key ?? 0;
 
         this.requestValidation = {
+          validationId: this.validationsResponse.find(
+            (item) => item?.validationType?.validationTypeName === ValidationTypes.VALIDATION_PRODUCTION_FILES)?.validationId ?? 0,
           validationState: this.validationForm.get('approvalStep5')?.value,
           observations: this.validationForm.get('observationsStep5')?.value,
           application: { applicationId: this.applicationId },
@@ -517,17 +558,10 @@ export class ReviewApplicationComponent implements OnInit {
           person: { personId: this.personId }
         }
 
-        //Roles y privilegios 
-        //TODO: si es la secretaria de CPD se habilita el boton de aceptar solicitud o devolver solicitud 
-        //2. Si es un miembro de CPD se habilita el boton de recomendar puntos
-        //3. Si es el presidente de CPD se habilita el boton de avalar solicitud
-
-
         await this.saveValidationOfApplication();
         //Consulto el estado de las validaciones si todas son correctas se habilita el boton de Aceptar solicitud 
         //en caso contrario se habilita el boton de devolver solicitud 
         await this.getApplicationReviewByApplicationIdAndPersonId();
-
         break;
     }
 
@@ -571,8 +605,9 @@ export class ReviewApplicationComponent implements OnInit {
         next: (response: any) => {
 
           this.validationsResponse = response;
+          console.log("validationResponse", this.validationsResponse);
 
-          //Valido si todas las validaciones son correctas
+          //Valido si todas las validaciones son correctas para habilitar boton de aceptar solicitud y recomendar puntos
           this.isCorrectValidation = this.validationsResponse.every((item) => item?.validationState);
           this.disabledButtonAcceptApplication = false;
 
@@ -589,11 +624,46 @@ export class ReviewApplicationComponent implements OnInit {
   enableNextValidation() {
 
     const nextStep = this.stepMap.get(this.currentStep);
+
     if (nextStep) {
       this.currentStep = nextStep;
-      //Deshabilito el boton de siguiente
-      this.isDisabledNextStep = true;
-      this.isValidFormInStep = false;
+      //Si se ha caragado la validacion de la solicitud isValidFormInStep es true y isDisabledNextStep es false
+      if (this.isValidFormInStepMethod()) {
+        this.isDisabledNextStep = false;
+        this.isValidFormInStep = true;
+      } else {
+        //Deshabilito el boton de siguiente
+        this.isDisabledNextStep = true;
+        this.isValidFormInStep = false;
+      }
+    }
+
+  }
+
+  isValidFormInStepMethod(): boolean {
+
+    console.log("current steppp ", this.currentStep);
+    switch (this.currentStep) {
+      case StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT:
+        return this.validationForm.get('approvalStep1')?.value ? true : false;
+      case StepsReviewApplication.STEP_2_APPLICATION_RECOGNITION:
+        console.log("veamos el form ", this.validationForm.get('approvalStep2')?.value);
+        return this.validationForm.get('approvalStep2')?.value ? true : false;
+      case StepsReviewApplication.STEP_3_PRODUCTION_BY_TYPE:
+        return this.validationForm.get('approvalStep3')?.value ? true : false;
+      case StepsReviewApplication.STEP_4_APPLICATON_RECOGNIZED:
+        return this.validationForm.get('approvalStep4')?.value ? true : false;
+      case StepsReviewApplication.STEP_5_DOCUMENTS:
+        return this.validationForm.get('approvalStep5')?.value ? true : false;
+    }
+  }
+
+  enableBeforeValidation() {
+
+    const beforeStep = this.beforeStepMap.get(this.currentStep);
+
+    if (beforeStep) {
+      this.currentStep = beforeStep;
     }
 
   }

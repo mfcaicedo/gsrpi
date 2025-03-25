@@ -394,8 +394,9 @@
                     </p>
                 </div>
                 <div class="col-12 flex-column sm:col-10 xl:10 flex sm:flex-row gap-2 pl-0">
-                    <button pButton severity="secondary" pRipple label="Anterior" [disabled]="true"
-                        class="w-full border-round">
+                    <button pButton type="button" severity="secondary" pRipple label="Anterior"
+                        [disabled]="currentStep === StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT"
+                        class="w-full border-round" (click)="enableBeforeValidation()">
                     </button>
                     <button pButton pRipple label="Guardar" type="submit" [disabled]="!isValidFormInStep"
                         class="w-full border-round">
@@ -410,13 +411,13 @@
                     }
                     @else {
                     <button pButton pRipple label="Recomendar puntos" type="button" class="w-full border-round"
-                        (click)="recommendPoints()" [disabled]="!disabledButtonAcceptApplication">
+                        (click)="recommendPoints()" [disabled]="disabledButtonAcceptApplication">
                     </button>
                     }
                     }
                     @else {
                     <button pButton pRipple label="Siguiente" type="button" class="w-full border-round"
-                        (click)="enableNextValidation()">
+                        (click)="enableNextValidation()" [disabled]="isDisabledNextStep">
                     </button>
                     }
                 </div>
