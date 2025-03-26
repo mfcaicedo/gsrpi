@@ -15,6 +15,7 @@ import { KeyValueOption } from '../../../../shared/utils/models/form-builder.mod
 import { CreateInitialConfigurationUsecase } from '../../../../system-configuration/domain/usecase/create-initial-configuration-usecase';
 import { ReviewApplicationsManagementUseCase } from '../../../domain/usecase/review-applications-management-usecase';
 import { ApplicationStatuses } from '../../../../shared/utils/enums/review-applications.enum';
+import { RoleNames } from '../../../../auth/enums/roles.enum';
 
 @Component({
   selector: 'app-list-applications-review-cpd-members',
@@ -31,8 +32,8 @@ export class ListApplicationsReviewCpdMembersComponent {
   first = 0;
   rows = 5;
 
-  configurationId: number = 0;
-  facultyId: number = 0;
+  configurationId = 0;
+  facultyId = 0;
 
   applications: Partial<Application>[] = [];
 
@@ -40,6 +41,9 @@ export class ListApplicationsReviewCpdMembersComponent {
     { key: 1, value: 'Base salarial - PM-FO-4-FOR-4' },
     { key: 2, value: 'Bonificación - PM-FO-4-FOR-3' },
   ];
+
+  isCommitteeChairman = false;
+  personId = 0;
 
   private readonly confirmationService = inject(ConfirmationService);
   private readonly router = inject(Router);
@@ -56,8 +60,27 @@ export class ListApplicationsReviewCpdMembersComponent {
 
     await this.getConfigurationById();
 
-    await this.getAllApplicationsByFacultyId();
+    this.authService.getUserDataSession().subscribe((data: any) => {
+      this.personId = data.personId;
+      const roles = data.userRoles;
+      roles.forEach((role: any) => {
+        if (role.role.name == RoleNames.CPD_PRESIDENT) {
+          this.isCommitteeChairman = true;
+          return;
+        }
+      });
+    });
 
+    if (this.isCommitteeChairman) {
+      await this.getAllApplicationsByFacultyId(ApplicationStatuses.REVIEWED_BY_CPD_MEMBER);
+    } else {
+      await this.getAllApplicationsByFacultyId(ApplicationStatuses.REVIEWED_BY_CPD_SECRETARY);
+    }
+
+  }
+
+  get ApplicationStatuses() {
+    return ApplicationStatuses;
   }
 
   async getConfigurationById() {
@@ -80,10 +103,10 @@ export class ListApplicationsReviewCpdMembersComponent {
     });
   }
 
-  async getAllApplicationsByFacultyId() {
+  async getAllApplicationsByFacultyId(applicationStatus: ApplicationStatuses) {
     return new Promise<void>((resolve, reject) => {
       this.reviewApplicationsManagementUseCase.getAllApplicationsByFacultyIdAndSpecificStatus(this.facultyId,
-        ApplicationStatuses.REVIEWED_BY_CPD_SECRETARY).subscribe({
+        applicationStatus).subscribe({
           next: (response: any) => {
             if (response) {
               response.forEach((application: any) => {

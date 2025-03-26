@@ -4,10 +4,19 @@
             Solicitudes de reconocimiento de producción intelectual FIET
         </h2>
         <p class="">
+            @if (!isCommitteeChairman) {
             <span class="font-normal">
                 Listado de solicitudes de reconocimiento de producción intelectual para revisión por
                 parte de los miembros del comité de personal docente (CPD).
             </span>
+            }
+            @else {
+            <span class="font-normal">
+                Listado de solicitudes de reconocimiento de producción intelectual ya revisadas por la/el Secreataria(o)
+                y un miembro del comité de personal docente (CPD) y que están pendientes de ser <span
+                    class="font-bold">avaladas</span>.
+            </span>
+            }
         </p>
     </div>
     <p-table #dt1 [value]="applications" [paginator]="true" [rows]="5" [first]="first" [showCurrentPageReport]="true"
@@ -65,16 +74,26 @@
                 <td>{{ application.applicationStatus.name }}</td>
                 <td>
                     <div class="flex justify-between">
+                        @if (isCommitteeChairman && application.applicationStatus.name ===
+                        ApplicationStatuses.REVIEWED_BY_CPD_MEMBER) {
+                        <button pButton pRipple icon="pi pi-check-square" class="p-button-rounded p-button-text"
+                            [routerLink]="['../revisar-solicitud', application.applicationId]">
+                            Avalar
+                        </button>
+                        }
+                        @if (application.applicationStatus.name === ApplicationStatuses.REVIEWED_BY_CPD_SECRETARY) {
                         <button pButton pRipple icon="pi pi-file-check" class="p-button-rounded p-button-text"
                             [routerLink]="['../revisar-solicitud', application.applicationId]">
                             Revisar
                         </button>
-                        <!-- <button pButton pRipple icon="pi pi-pen-to-square" class="p-button-rounded p-button-text"
-                            (click)="editApplication(application)">
+                        }
+                        @if (!isCommitteeChairman && application.applicationStatus.name ===
+                        ApplicationStatuses.REVIEWED_BY_CPD_MEMBER) {
+                        <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text"
+                            [routerLink]="['../revisar-solicitud', application.applicationId]">
+                            Ver detalle
                         </button>
-                        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text text-red-500"
-                            (click)="deleteApplication(application)">
-                        </button> -->
+                        }
                     </div>
                 </td>
             </tr>
