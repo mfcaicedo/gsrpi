@@ -18,6 +18,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { ReviewApplicationsManagementUseCase } from '../../../domain/usecase/review-applications-management-usecase';
 import { TeacherApplication } from '../../../../shared/utils/models/applications-common.model';
+import { ApplicationStatuses } from '../../../../shared/utils/enums/review-applications.enum';
 
 @Component({
   selector: 'app-recommend-points-application',
@@ -47,7 +48,7 @@ export class RecommendPointsApplicationComponent implements OnInit {
   ngOnInit(): void {
 
     this.activedRoute.params.subscribe(async params => {
-      this.applicationId = params['applicationId'] ?? 0;  
+      this.applicationId = params['applicationId'] ?? 0;
       this.teacherApplicationId = params['teacherApplicationId'] ?? 0;
     });
 
@@ -88,14 +89,14 @@ export class RecommendPointsApplicationComponent implements OnInit {
       },
       accept: async () => {
 
-        await this.saveValidationOfApplication();
+        await this.saveRecommendedPointsOfApplication();
 
       },
     });
 
   }
 
-  async saveValidationOfApplication() {
+  async saveRecommendedPointsOfApplication() {
 
     const requestBody: Partial<TeacherApplication> = {
       teacherApplicationId: this.teacherApplicationId,
@@ -106,7 +107,7 @@ export class RecommendPointsApplicationComponent implements OnInit {
     return new Promise<void>((resolve, reject) => {
 
       this.reviewApplicationsManagementUseCase.savePointsApplicationRecognition(requestBody).subscribe({
-        next: (response: any) => {
+        next: async (response: any) => {
           //Mensaje de exito
           this.messageService.add({
             severity: 'success',
@@ -115,10 +116,8 @@ export class RecommendPointsApplicationComponent implements OnInit {
           });
           resolve();
 
-          //Redireccionar a la lista de solicitudes
-          setTimeout(() => {
-            this.router.navigate(['revision-solicitudes/listar-solicitudes-revision-comite']);
-          }, 3000);
+          //Se actualiza el estado de la solicitud a revisada por miembro del comité
+          await this.updateApplicationState();
 
         },
         error: (error) => {
@@ -137,7 +136,29 @@ export class RecommendPointsApplicationComponent implements OnInit {
 
   }
 
+  async updateApplicationState() {
+    return new Promise<void>((resolve, reject) => {
+      this.reviewApplicationsManagementUseCase.updateApplicationState(
+        this.applicationId,
+        ApplicationStatuses.REVIEWED_BY_CPD_MEMBER
+      ).subscribe({
+        next: async (response: any) => {
+          resolve();
+          //Redireccionar a la lista de solicitudes
+          setTimeout(() => {
+            this.router.navigate(['revision-solicitudes/listar-solicitudes-revision-comite']);
+          }, 3000);
+        },
+        error: (error) => {
+          console.error("error", error);
+          resolve();
+        }
+      });
+    });
+  }
+
   automaticCalculationPoints() {
+    //TODO: Lógica para calcular los puntos automáticamente y asignarlos al campo de puntos
     this.formGroupPoints.patchValue({
       points: 4
     });
