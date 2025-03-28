@@ -1,0 +1,266 @@
+<div class="container">
+    <div class="">
+        <h2>
+            Resumen del trámite de la solicitud de reconocimiento de producción intelectual
+        </h2>
+    </div>
+    <!-- Progreso -->
+    <div class="mb-3">
+        <app-dynamic-stepper [steps]="[]" [activeCurrentStep]="currentStep" [isLinear]="true"></app-dynamic-stepper>
+    </div>
+    <div class="container-form row">
+        <form action="" [formGroup]="registerForm" (submit)="onSubmit()">
+            @if(currentStep === StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT){
+            <div class="">
+                <h5 class="">
+                    Datos del docente solicitante
+                </h5>
+            </div>
+            <app-form-body-applicant-teacher [formGroup]="registerForm"
+                [identificationTypeDataList]="identificationTypeDataList" [departmentDataList]="departmentDataList"
+                [typeOfLinkageDataList]="typeOfLinkageDataList">
+            </app-form-body-applicant-teacher>
+            }
+            @else if (currentStep === StepsReviewApplication.STEP_2_APPLICATION_RECOGNITION){
+            <div class="">
+                <h5 class=" mt-0">
+                    Datos generales de la solicitud
+                </h5>
+                <div class="grid">
+                    <div class="col-12 sm:col-4 mb-3">
+                        <label for="applicationType" class="block text-primary text-lg font-medium mb-2">
+                            Tipo de solicitud <span class="text-orange-500">*</span>
+                        </label>
+                        <p-select class="p-3" [options]="applicationTypes" [required]="true" [showClear]="true"
+                            formControlName="applicationType" optionValue="key" optionLabel="value" [filter]="true"
+                            filterBy="value" placeholder="Seleccione el tipo de solicitud" class="w-full md:w-56" />
+                        @if (this.registerForm.get('applicationType')?.hasError('required') &&
+                        this.registerForm.get('applicationType')?.touched){
+                        <div class="text-error text-sm mt-1">
+                            Debe seleccionar un tipo de solicitud
+                        </div>
+                        }
+                    </div>
+                    <div class="col-12 sm:col-4 pl-0">
+                        <label for="totalNumberAuthors" class="block text-primary text-md font-medium mb-2">
+                            Número total de autores <span class="text-orange-500">*</span>
+                        </label>
+                        <p-inputnumber inputId="integeronly" formControlName="totalNumberAuthors" class="w-full"
+                            placeholder="Digitar respuesta" />
+                        @if (this.registerForm.get('totalNumberAuthors')?.hasError('required') &&
+                        this.registerForm.get('totalNumberAuthors')?.touched){
+                        <div class="text-error text-sm mt-1">
+                            El número total de autores es requerido
+                        </div>
+                        }
+                    </div>
+                </div>
+                <h5 class=" mt-0">
+                    Datos de la producción y/o reconocimiento
+                </h5>
+                <app-form-body-general-production-data [formGroup]="registerForm"
+                    [publicationMechanismsDataList]="publicationMechanismsDataList">
+                </app-form-body-general-production-data>
+            </div>
+            }
+            @else if (currentStep === StepsReviewApplication.STEP_3_PRODUCTION_BY_TYPE) {
+            <div class="">
+                <h5 class=" mt-0">
+                    Datos de la solicitud según el tipo de producción seleccionado
+                </h5>
+                <div class="grid">
+                    <div class="col-12 sm:col-6 md:col-4">
+                        <label for="productionType" class="block text-primary text-lg font-medium mb-2">
+                            Tipo producción y/o reconocimiento <span class="text-orange-500">*</span>
+                        </label>
+                        <p-select class="p-3" [options]="productionTypeDataList" [required]="true" [showClear]="true"
+                            formControlName="productionType" optionValue="key" optionLabel="value" [filter]="true"
+                            filterBy="value" placeholder="Seleccione el tipo de producción" class="w-full md:w-56" />
+                        @if (this.registerForm.get('productionType')?.hasError('required') &&
+                        this.registerForm.get('productionType')?.touched){
+                        <div class="text-error text-sm mt-1">
+                            Debe seleccionar un tipo de producción y/o reconocimiento
+                        </div>
+                        }
+                    </div>
+                </div>
+                <app-form-body-specific-production-data-magazine [formGroup]="registerForm"
+                    [articleTypeDataList]="articleTypeDataList" [magazineTypeDataList]="magazineTypeDataList"
+                    [publindexCategoryDataList]="publindexCategoryDataList">
+                </app-form-body-specific-production-data-magazine>
+            </div>
+            }
+            @else if (currentStep === StepsReviewApplication.STEP_4_APPLICATON_RECOGNIZED) {
+            <div class="">
+                <h5 class=" mt-0">
+                    Trabajos o publicaciones ya reconocidas relacionadas con la presente producción
+                </h5>
+                <p-table #dt1 [value]="applicationsRecognized" [paginator]="true" [rows]="5" [first]="first"
+                    [showCurrentPageReport]="true" [tableStyle]="{ 'min-width': '50rem' }" selectionMode="single"
+                    dataKey="id" [globalFilterFields]="['applicationId', 'applicationTypeCatId', 'production.productionType.name', 
+                'createAt','applicationStatus.name']"
+                    currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} solicitudes"
+                    (onPage)="pageChange($event)" [rowsPerPageOptions]="[5, 10, 15, 20, 25]" dataKey="id">
+                    <ng-template #caption>
+                        <p-iconfield iconPosition="left">
+                            <p-inputicon>
+                                <i class="pi pi-search"></i>
+                            </p-inputicon>
+                            <input pInputText type="text" [ngStyle]="{ 'width': '70%' }" (input)="search($event)"
+                                placeholder="Buscar..." />
+                        </p-iconfield>
+                    </ng-template>
+                    <ng-template #header>
+                        <tr>
+                            <th class="text-primary" pSortableColumn="applicationId">
+                                Id <p-sortIcon field="applicationId" />
+                            </th>
+                            <th class="text-primary" pSortableColumn="production.workTitle">
+                                Título <p-sortIcon field="production.workTitle" />
+                            </th>
+                            <th class="text-primary" pSortableColumn="production.workTitle">
+                                Resolución <p-sortIcon field="production.workTitle" />
+                            </th>
+                            <th class="text-primary" pSortableColumn="createAt">
+                                Fecha creación <p-sortIcon field="createAt" />
+                            </th>
+                            <th class="text-primary" pSortableColumn="production.workTitle">
+                                Autores <p-sortIcon field="production.workTitle" />
+                            </th>
+                            <th class="text-primary">Acciones</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template #body let-application>
+                        <tr>
+                            <td>{{ application.applicationRecognizedId }}</td>
+                            <td>{{ application.production.title }}</td>
+                            <td>{{ application.resolutionName }}</td>
+                            <td>{{ application.date | date: 'dd/MM/yyyy HH:mm' }}</td>
+                            <td>{{ application.authors }}</td>
+                            <td>
+                                <div class="flex justify-between">
+                                    <button pButton pRipple icon="pi pi-file-check"
+                                        class="p-button-rounded p-button-text">
+                                        Ver detalle
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+            }
+            @else if (currentStep === StepsReviewApplication.STEP_5_DOCUMENTS) {
+            <div class="mb-3">
+                <h5 class=" mt-0">
+                    Documentos adjuntos a la solicitud
+                </h5>
+                <div class="flex flex-column md:flex-row gap-3">
+                    <div class="card w-full text-center mb-0">
+                        <h5 class="">
+                            Producto
+                        </h5>
+                        <i class="pi pi-file-pdf" style="font-size: 2.5rem"></i>
+                        <div class="flex flex-col gap-2 justify-content-center">
+                            <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text"
+                                (click)="viewDetailPdf('producto')" type="button">
+                                Ver detalle
+                            </button>
+                            <button pButton pRipple icon="pi pi-download" class="p-button-rounded p-button-text"
+                                type="button" (click)="downloadPdf('producto')">
+                                Descargar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card w-full text-center">
+                        <h5 class="">
+                            Copia de clasificación/homologación
+                        </h5>
+                        <i class="pi pi-file-pdf" style="font-size: 2.5rem"></i>
+                        <div class="flex flex-col justify-content-center gap-2">
+                            <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text"
+                                (click)="viewDetailPdf('copia-homologacion')" type="button">
+                                Ver detalle
+                            </button>
+                            <button pButton pRipple icon="pi pi-download" class="p-button-rounded p-button-text"
+                                type="button" (click)="downloadPdf('copia-homologacion')">
+                                Descargar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+        </form>
+        <hr style="border: 1px dashed; border-radius: 5px;">
+        <div class="">
+            <h5 class="">
+                Visto bueno y observaciones realizadas
+            </h5>
+            <form action="" [formGroup]="validationForm" (submit)="onSubmit()">
+                <div class="grid gap-2 ml-0">
+                    @if (currentStep === StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT) {
+                    @for (validation of getValidationsStep(currentStep); track $index) {
+                    <app-view-validation-detail [validation]="validation ?? {}"></app-view-validation-detail>
+                    }
+                    }
+                    @else if (currentStep === StepsReviewApplication.STEP_2_APPLICATION_RECOGNITION) {
+                    @for (validation of getValidationsStep(currentStep); track $index) {
+                    <app-view-validation-detail [validation]="validation ?? {}"></app-view-validation-detail>
+                    }
+                    }
+                    @else if (currentStep === StepsReviewApplication.STEP_3_PRODUCTION_BY_TYPE) {
+                    @for (validation of getValidationsStep(currentStep); track $index) {
+                    <app-view-validation-detail [validation]="validation ?? {}"></app-view-validation-detail>
+                    }
+                    }
+                    @else if (currentStep === StepsReviewApplication.STEP_4_APPLICATON_RECOGNIZED) {
+                    @for (validation of getValidationsStep(currentStep); track $index) {
+                    <app-view-validation-detail [validation]="validation ?? {}"></app-view-validation-detail>
+                    }
+                    }
+                    @else if (currentStep === StepsReviewApplication.STEP_5_DOCUMENTS) {
+                    @for (validation of getValidationsStep(currentStep); track $index) {
+                    <app-view-validation-detail [validation]="validation ?? {}"></app-view-validation-detail>
+                    }
+                    }
+                </div>
+                <div class="col-12 flex-column sm:col-6 xl:10 flex sm:flex-row gap-2 pl-0">
+                    <button pButton type="button" severity="secondary" pRipple label="Anterior"
+                        class="w-full border-round" (click)="enableBeforeValidation()">
+                    </button>
+                    @if (currentStep === StepsReviewApplication.STEP_5_DOCUMENTS) {
+                    @if (isCommitteeChairman) {
+                    <button pButton pRipple label="Avalar solicitud" type="button" class="w-full border-round"
+                        (click)="endorseApplication()" [disabled]="false">
+                    </button>
+                    }
+                    }
+                    @else {
+                    <button pButton pRipple label="Siguiente" type="button" class="w-full border-round"
+                        (click)="enableNextValidation()" [disabled]="false">
+                    </button>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Dialog alert -->
+    <p-toast />
+    <p-confirmdialog />
+    <!-- Dialog pdf -->
+    <p-dialog header="Visualizador de PDF" [modal]="true" [(visible)]="isDialogVisible" [style]="{ width: '50rem' }"
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
+        <!-- Template para visualizar un pdf -->
+        <ng-template pTemplate="content">
+            <div class="flex flex-col gap-3">
+                <div class="card w-full text-center mb-0">
+                    <h5 class="">
+                        {{ pdfTitle }}
+                    </h5>
+                    <iframe [src]="pdfPath" width="100%" height="600px"></iframe>
+                </div>
+            </div>
+        </ng-template>
+    </p-dialog>
+</div>
