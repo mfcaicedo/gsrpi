@@ -71,6 +71,16 @@
                             Ver detalle
                         </button>
                         }
+                        @if (application.applicationStatus.name === ApplicationStatus.ENDORSED_BY_PRESIDENT_CPD) {
+                        <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text"
+                            [routerLink]="['../revisar-solicitud', application.applicationId]">
+                            Ver detalle
+                        </button>
+                        <button pButton pRipple icon="pi pi-eye" type="button" class="p-button-rounded p-button-text"
+                            (click)="viewPdfCertificate(application.applicationId)">
+                            Ver acta
+                        </button>
+                        }
                     </div>
                 </td>
             </tr>
