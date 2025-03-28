@@ -3,6 +3,7 @@ import { ListApplicationsReviewComponent } from "./UI/pages/list-applications-re
 import { ReviewApplicationComponent } from "./UI/pages/review-application/review-application.component";
 import { ListApplicationsReviewCpdMembersComponent } from "./UI/pages/list-applications-review-cpd-members/list-applications-review-cpd-members.component";
 import { RecommendPointsApplicationComponent } from "./UI/pages/recommend-points-application/recommend-points-application.component";
+import { ViewApplicationDetailComponent } from "./UI/pages/view-application-detail/view-application-detail.component";
 
 export const routes: Routes = [
     {
@@ -20,5 +21,9 @@ export const routes: Routes = [
     {
         path: 'recomendar-puntos/:applicationId/:teacherApplicationId',
         component: RecommendPointsApplicationComponent
+    },
+    {
+        path: 'ver-detalle-solicitud/:id',
+        component: ViewApplicationDetailComponent
     }
 ];
