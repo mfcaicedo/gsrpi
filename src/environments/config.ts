@@ -43,6 +43,7 @@ const ENVIRONMENTS = {
     SAVE_VALIDATION_OF_APPLICATION: `${base_url_api_gsrpi}/guardar-validacion`,
     UPDATE_APPLICATION_STATE: `${base_url_api_gsrpi}/actualizar-estado-solicitud`,
     GET_ALL_VALIDATIONS_BY_APPLICATION_ID_AND_PERSON_ID: `${base_url_api_gsrpi}/obtener-listado-validaciones-por-solicitud-id-y-persona-id`,
+    GET_ALL_VALIDATIONS_BY_APPLICATION_ID: `${base_url_api_gsrpi}/obtener-listado-validaciones-por-solicitud-id`,
     GET_ALL_APPLICATIONS_BY_FACULTY_ID_AND_SPECIFIC_STATUS: `${base_url_api_gsrpi}/obtener-listado-solicitudes-por-facultad-id-y-estado-especifico`,
     SAVE_POINTS_APPLICATION_RECOGNITION: `${base_url_api_gsrpi}/guardar-puntos-reconocimiento-solicitud`,
     UPDATE_POINTS_APPLICATION_RECOGNITION: `${base_url_api_gsrpi}/actualizar-puntos-reconocimiento-solicitud`,
