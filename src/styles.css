@@ -28,6 +28,7 @@
     --red-500: #ff3d32;
     --gray-500: #9E9E9E;
     --error-color: #FF6D0A;
+    --green-500: #5BAE40;
     --p-red-400: var(--error-color) !important;
     --p-red-600: var(--error-color) !important;
 
