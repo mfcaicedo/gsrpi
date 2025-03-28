@@ -35,6 +35,10 @@ export class ReviewApplicationsManagementUseCase {
         return this.reviewApplicationsGateway.getApplicationReviewByApplicationIdAndPersonId(applicationId, personId);
     }
 
+    getApplicationReviewByApplicationId(applicationId: number) {
+        return this.reviewApplicationsGateway.getApplicationReviewByApplicationId(applicationId);
+    }
+
     savePointsApplicationRecognition(teacherApplication: Partial<TeacherApplication>){
         return this.reviewApplicationsGateway.savePointsApplicationRecognition(teacherApplication);
     }

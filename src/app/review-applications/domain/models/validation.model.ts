@@ -8,6 +8,8 @@ export interface ValidationApplication {
     application: Partial<Application>;
     validationType: Partial<ValidationType>;
     person: Partial<Person>;
+    createAt: string;
+    updateAt: string;
 }
 
 export interface ValidationType {
