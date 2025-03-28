@@ -73,6 +73,8 @@ export class ListApplicationsReviewCpdMembersComponent {
 
     if (this.isCommitteeChairman) {
       await this.getAllApplicationsByFacultyId(ApplicationStatuses.REVIEWED_BY_CPD_MEMBER);
+      await this.getAllApplicationsByFacultyId(ApplicationStatuses.ENDORSED_BY_PRESIDENT_CPD);
+
     } else {
       await this.getAllApplicationsByFacultyId(ApplicationStatuses.REVIEWED_BY_CPD_SECRETARY);
     }
@@ -186,7 +188,7 @@ export class ListApplicationsReviewCpdMembersComponent {
 
   }
 
-  editApplication(applicationId: number) {
+  viewPdfCertificate(applicationId: number) {
 
     this.messageService.add(
       {
@@ -194,31 +196,6 @@ export class ListApplicationsReviewCpdMembersComponent {
         summary: 'Muy pronto estará disponible',
         detail: 'Esta funcionalidad estará disponible en la siguiente versión.'
       });
-
-  }
-
-  deleteApplication(applicationId: number) {
-
-    this.confirmationService.confirm({
-      target: 'body' as unknown as EventTarget,
-      message: '¿Está seguro(a) de eliminar la solicitud?',
-      header: 'Confirmación',
-      closable: true,
-      closeOnEscape: true,
-      icon: 'pi pi-info-circle',
-      rejectButtonProps: {
-        label: 'Cancelar',
-        severity: 'secondary',
-        outlined: true,
-
-      },
-      acceptButtonProps: {
-        label: 'Aceptar',
-      },
-      accept: async () => {
-        //Llamar al servicio para eliminar la solicitud
-      },
-    });
 
   }
 

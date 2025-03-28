@@ -77,8 +77,15 @@
                         @if (isCommitteeChairman && application.applicationStatus.name ===
                         ApplicationStatuses.REVIEWED_BY_CPD_MEMBER) {
                         <button pButton pRipple icon="pi pi-check-square" class="p-button-rounded p-button-text"
-                            [routerLink]="['../revisar-solicitud', application.applicationId]">
+                            [routerLink]="['../ver-detalle-solicitud', application.applicationId]">
                             Avalar
+                        </button>
+                        }
+                        @if (isCommitteeChairman && application.applicationStatus.name ===
+                        ApplicationStatuses.ENDORSED_BY_PRESIDENT_CPD) {
+                        <button pButton pRipple icon="pi pi-eye" type="button" class="p-button-rounded p-button-text"
+                            (click)="viewPdfCertificate(application.applicationId)">
+                            Ver acta
                         </button>
                         }
                         @if (application.applicationStatus.name === ApplicationStatuses.REVIEWED_BY_CPD_SECRETARY) {
