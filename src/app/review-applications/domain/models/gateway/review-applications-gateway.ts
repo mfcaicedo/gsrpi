@@ -11,5 +11,6 @@ export abstract class ReviewApplicationsGateway {
     abstract saveValidationOfApplication(validation: Partial<ValidationApplication>): Observable<GenericResponse>;
     abstract updateApplicationState(applicationId: number, state: ApplicationStatuses): Observable<GenericResponse>;
     abstract getApplicationReviewByApplicationIdAndPersonId(applicationId: number, personId: number): Observable<GenericResponse>;
+    abstract getApplicationReviewByApplicationId(applicationId: number): Observable<GenericResponse>;
     abstract savePointsApplicationRecognition(teacherApplication: Partial<TeacherApplication>): Observable<GenericResponse>;
 }
