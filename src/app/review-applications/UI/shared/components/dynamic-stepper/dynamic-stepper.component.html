@@ -1,0 +1,7 @@
+<p-stepper [value]="activeCurrentStep" class="basis-[50rem]" [linear]="isLinear">
+    <p-step-list>
+        @for (step of steps; track $index) {
+        <p-step [value]="step.key">{{step.value}}</p-step>
+        }
+    </p-step-list>
+</p-stepper>
