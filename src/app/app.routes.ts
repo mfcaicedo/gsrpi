@@ -45,13 +45,13 @@ export const routes: Routes = [
             }
         ]
     },
-    // {
-    //     path: 'acceso-denegado',
-    //     canActivate: [authGuard],
-    //     component: AccessDeniedComponent,
-    // },
-    // {
-    //     path: '**',
-    //     redirectTo: '/acceso-denegado'
-    // }
+    {
+        path: 'acceso-denegado',
+        canActivate: [authGuard],
+        component: AccessDeniedComponent,
+    },
+    {
+        path: '**',
+        redirectTo: '/acceso-denegado'
+    }
 ];

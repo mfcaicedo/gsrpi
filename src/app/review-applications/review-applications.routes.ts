@@ -4,6 +4,7 @@ import { ReviewApplicationComponent } from "./UI/pages/review-application/review
 import { ListApplicationsReviewCpdMembersComponent } from "./UI/pages/list-applications-review-cpd-members/list-applications-review-cpd-members.component";
 import { RecommendPointsApplicationComponent } from "./UI/pages/recommend-points-application/recommend-points-application.component";
 import { ViewApplicationDetailComponent } from "./UI/pages/view-application-detail/view-application-detail.component";
+import { ListApplicationsReviewCiarpMembersComponent } from "./UI/pages/ciarp/list-applications-review-ciarp-members/list-applications-review-ciarp-members.component";
 
 export const routes: Routes = [
     {
@@ -25,5 +26,9 @@ export const routes: Routes = [
     {
         path: 'ver-detalle-solicitud/:id',
         component: ViewApplicationDetailComponent
+    },
+    {
+        path: 'listar-solicitudes-revision-comite-ciarp',
+        component: ListApplicationsReviewCiarpMembersComponent
     }
 ];
