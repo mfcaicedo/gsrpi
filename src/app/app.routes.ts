@@ -40,7 +40,10 @@ export const routes: Routes = [
             {
                 path: 'revision-solicitudes',
                 canActivate: [AuthorizedGuard],
-                data: { roles: [RoleNames.CPD_SECRETARY, RoleNames.CPD_PRESIDENT, RoleNames.CPD_MEMBER, RoleNames.TEACHER] },
+                data: {
+                    roles: [RoleNames.CPD_SECRETARY, RoleNames.CPD_PRESIDENT, RoleNames.CPD_MEMBER, RoleNames.TEACHER,
+                    RoleNames.CIARP_SECRETARY, RoleNames.CIARP_MEMBER]
+                },
                 loadChildren: () => import('./review-applications/review-applications.routes').then(m => m.routes)
             }
         ]
