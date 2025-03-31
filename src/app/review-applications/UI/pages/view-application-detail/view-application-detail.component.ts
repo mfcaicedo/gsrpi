@@ -170,6 +170,8 @@ export class ViewApplicationDetailComponent {
   disabledButtonAcceptApplication = true;
 
   isCommitteeChairman = false;
+  isCpdSecretary = false;
+  isTeacher = false;
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router)
@@ -253,6 +255,14 @@ export class ViewApplicationDetailComponent {
       roles.forEach((role: any) => {
         if (role.role.name == RoleNames.CPD_PRESIDENT) {
           this.isCommitteeChairman = true;
+          return;
+        }
+        if (role.role.name == RoleNames.CPD_SECRETARY) {
+          this.isCpdSecretary = true;
+          return;
+        }
+        if (role.role.name == RoleNames.TEACHER) {
+          this.isTeacher = true;
           return;
         }
       });
@@ -468,6 +478,14 @@ export class ViewApplicationDetailComponent {
 
     //Si está en la validacion 1 de información personal del solicitante debe volver a la lista de solicitudes
     if (this.currentStep === StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT) {
+      if (this.isCpdSecretary) {
+        this.router.navigate(['/revision-solicitudes/listar-solicitudes-revision']);
+        return;
+      }
+      if(this.isTeacher) {
+        this.router.navigate(['/revision-solicitudes/listar-solicitudes']);
+        return;
+      }
       this.router.navigate(['/revision-solicitudes/listar-solicitudes-revision-comite']);
       return;
     }
