@@ -67,16 +67,32 @@
                         }
                         @if (application.applicationStatus.name === ApplicationStatus.REVIEWED_BY_CPD_SECRETARY) {
                         <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text"
-                            [routerLink]="['../revisar-solicitud', application.applicationId]">
+                            [routerLink]="['../ver-detalle-solicitud', application.applicationId]">
                             Ver detalle
                         </button>
                         }
                         @if (application.applicationStatus.name === ApplicationStatus.ENDORSED_BY_PRESIDENT_CPD) {
+                        <button pButton pRipple icon="pi pi-send" type="button" class="p-button-rounded p-button-text"
+                            (click)="submitApplication(application.applicationId)">
+                            Remitir
+                        </button>
                         <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text"
-                            [routerLink]="['../revisar-solicitud', application.applicationId]">
+                            [routerLink]="['../ver-detalle-solicitud', application.applicationId]">
                             Ver detalle
                         </button>
-                        <button pButton pRipple icon="pi pi-eye" type="button" class="p-button-rounded p-button-text"
+                        <button pButton pRipple icon="pi pi-file-pdf" type="button"
+                            class="p-button-rounded p-button-text"
+                            (click)="viewPdfCertificate(application.applicationId)">
+                            Ver acta
+                        </button>
+                        }
+                        @if (application.applicationStatus.name === ApplicationStatus.SEND_TO_CIARP) {
+                        <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text"
+                            [routerLink]="['../ver-detalle-solicitud', application.applicationId]">
+                            Ver detalle
+                        </button>
+                        <button pButton pRipple icon="pi pi-file-pdf" type="button"
+                            class="p-button-rounded p-button-text"
                             (click)="viewPdfCertificate(application.applicationId)">
                             Ver acta
                         </button>

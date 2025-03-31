@@ -213,4 +213,60 @@ export class ListApplicationsReviewComponent {
 
   }
 
+  submitApplication(applicationId: number) {
+
+    this.confirmationService.confirm({
+      target: 'body' as unknown as EventTarget,
+      message: '¿Está seguro(a) de remitir la solicitud?',
+      header: 'Confirmación',
+      closable: true,
+      closeOnEscape: true,
+      icon: 'pi pi-info-circle',
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true,
+
+      },
+      acceptButtonProps: {
+        label: 'Aceptar',
+      },
+      accept: async () => {
+        //Llamar al servicio para enviar la solicitud
+        await this.updateApplicationState(applicationId, ApplicationStatuses.SEND_TO_CIARP);
+        await this.getAllApplicationsByFacultyId();
+      },  
+    });
+  }
+
+  async updateApplicationState(applicationId: number, applicationStatus: ApplicationStatuses) {
+
+    return new Promise<void>((resolve, reject) => {
+
+      this.reviewApplicationsManagementUseCase.updateApplicationState(applicationId,
+        applicationStatus).subscribe({
+          next: (response: any) => {
+            //Mensaje de exito
+            this.messageService.add({
+              severity: 'success',
+              summary: '¡Solicitud remitida!',
+              detail: 'La solicitud ha sido remitida exitosamente.'
+            });
+            resolve();
+          },
+          error: (error) => {
+            console.error("error", error);
+            //Mensaje de error
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ups, algo salió mal',
+              detail: 'Tuvimos un problema al actualizar la solicitud de reconocimiento. Inténtelo de nuevo en unos minutos.'
+            });
+            resolve();
+          }
+        });
+
+    });
+  }
+
 }
