@@ -483,7 +483,7 @@ export class ViewApplicationDetailComponent {
         return;
       }
       if(this.isTeacher) {
-        this.router.navigate(['/revision-solicitudes/listar-solicitudes']);
+        this.router.navigate(['/solicitudes-reconocimiento/listar-solicitudes']);
         return;
       }
       this.router.navigate(['/revision-solicitudes/listar-solicitudes-revision-comite']);

@@ -40,18 +40,18 @@ export const routes: Routes = [
             {
                 path: 'revision-solicitudes',
                 canActivate: [AuthorizedGuard],
-                data: { roles: [RoleNames.CPD_SECRETARY, RoleNames.CPD_PRESIDENT, RoleNames.CPD_MEMBER] },
+                data: { roles: [RoleNames.CPD_SECRETARY, RoleNames.CPD_PRESIDENT, RoleNames.CPD_MEMBER, RoleNames.TEACHER] },
                 loadChildren: () => import('./review-applications/review-applications.routes').then(m => m.routes)
             }
         ]
     },
-    {
-        path: 'acceso-denegado',
-        canActivate: [authGuard],
-        component: AccessDeniedComponent,
-    },
-    {
-        path: '**',
-        redirectTo: '/acceso-denegado'
-    }
+    // {
+    //     path: 'acceso-denegado',
+    //     canActivate: [authGuard],
+    //     component: AccessDeniedComponent,
+    // },
+    // {
+    //     path: '**',
+    //     redirectTo: '/acceso-denegado'
+    // }
 ];

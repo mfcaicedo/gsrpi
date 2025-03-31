@@ -53,13 +53,16 @@
                 <td>
                     <div class="flex justify-between">
                         <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text"
-                            (click)="viewApplication(application)">
+                            (click)="viewApplication(application.applicationId)">
+                            Ver detalle
                         </button>
                         <button pButton pRipple icon="pi pi-pen-to-square" class="p-button-rounded p-button-text"
                             (click)="editApplication(application)">
+                            Editar
                         </button>
                         <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text text-red-500"
                             (click)="deleteApplication(application)">
+                            Eliminar
                         </button>
                     </div>
                 </td>

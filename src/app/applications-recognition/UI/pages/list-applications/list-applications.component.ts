@@ -121,12 +121,7 @@ export class ListApplicationsComponent {
 
   viewApplication(applicationId: number) {
 
-    this.messageService.add(
-      {
-        severity: 'info',
-        summary: 'Muy pronto estará disponible',
-        detail: 'Esta funcionalidad estará disponible en la siguiente versión.'
-      });
+    this.router.navigate(['/revision-solicitudes/ver-detalle-solicitud', applicationId]);
 
   }
 
