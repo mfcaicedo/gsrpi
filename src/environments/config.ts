@@ -47,6 +47,7 @@ const ENVIRONMENTS = {
     GET_ALL_APPLICATIONS_BY_FACULTY_ID_AND_SPECIFIC_STATUS: `${base_url_api_gsrpi}/obtener-listado-solicitudes-por-facultad-id-y-estado-especifico`,
     SAVE_POINTS_APPLICATION_RECOGNITION: `${base_url_api_gsrpi}/guardar-puntos-reconocimiento-solicitud`,
     UPDATE_POINTS_APPLICATION_RECOGNITION: `${base_url_api_gsrpi}/actualizar-puntos-reconocimiento-solicitud`,
+    GET_ALL_APPLICATIONS_BY_SPECIFIC_STATUS: `${base_url_api_gsrpi}/obtener-listado-solicitudes-por-estado-especifico`,
 
     //FILE MANAGEMENT
     CREATE_FILE: `${base_url_api_gsrpi}/subir-archivo`,

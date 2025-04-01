@@ -166,7 +166,7 @@ export class ReviewApplicationComponent implements OnInit {
   isCorrectValidation = false;
   disabledButtonAcceptApplication = true;
 
-  isCommittedMember = false;
+  role: string = '';
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router)
@@ -181,6 +181,10 @@ export class ReviewApplicationComponent implements OnInit {
 
   get StepsReviewApplication() {
     return StepsReviewApplication;
+  }
+
+  get RolesNames() {
+    return RoleNames;
   }
 
   async ngOnInit() {
@@ -330,12 +334,7 @@ export class ReviewApplicationComponent implements OnInit {
     this.authService.getUserDataSession().subscribe((data: any) => {
       this.personId = data.personId;
       const roles = data.userRoles;
-      roles.forEach((role: any) => {
-        if (role.role.name == RoleNames.CPD_MEMBER) {
-          this.isCommittedMember = true;
-          return;
-        }
-      });
+      this.role = roles[0].role.name;
     });
 
     //Cargamos informacion de la solicitud
@@ -632,8 +631,8 @@ export class ReviewApplicationComponent implements OnInit {
         next: (response: any) => {
 
           this.validationsResponse = response;
-          //Valido si todas las validaciones son correctas para habilitar boton de aceptar solicitud y recomendar puntos
-          this.isCorrectValidation = this.validationsResponse.every((item) => item?.validationState);
+          //Valido si todas las validaciones son correctas para habilitar boton de aceptar solicitud, recomendar puntos y validar puntaje
+          this.isCorrectValidation = this.validationsResponse.length === 5 && this.validationsResponse.every((item) => item?.validationState);
           this.disabledButtonAcceptApplication = this.isCorrectValidation ? false : true;
           // this.disabledButtonAcceptApplication = false;
 

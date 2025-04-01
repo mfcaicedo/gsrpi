@@ -10,6 +10,7 @@ export interface Application {
     applicationTypeName: string;
     createAt: string;
     updateAt: string;
+    ciarpSendDate: string;
     department: Partial<Department>;
     production: Partial<Production>;
     applicationStatus: Partial<StatusApplication>;
@@ -21,7 +22,7 @@ export interface Department {
     departmentId: number;
     name: string;
     location: string;
-    // faculty: Partial<Faculty>;
+    faculty: Partial<Faculty>;
 }
 
 export interface Faculty {
