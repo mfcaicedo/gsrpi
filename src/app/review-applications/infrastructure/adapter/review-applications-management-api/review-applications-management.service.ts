@@ -57,4 +57,8 @@ export class ReviewApplicationsManagementService extends ReviewApplicationsGatew
     return this.http.post<GenericResponse>(ENVIRONMENTS.SAVE_POINTS_APPLICATION_RECOGNITION, teacherApplication)
   }
 
+  override getAllApplicationsBySpecificStatus(status: ApplicationStatuses): Observable<GenericResponse> {
+    return this.http.get<GenericResponse>(`${ENVIRONMENTS.GET_ALL_APPLICATIONS_BY_SPECIFIC_STATUS}/${status}`);
+  }
+
 }

@@ -43,4 +43,11 @@ export class ReviewApplicationsManagementUseCase {
         return this.reviewApplicationsGateway.savePointsApplicationRecognition(teacherApplication);
     }
 
+    /**
+     * Casos de uso para el ciarp
+     */
+    getAllApplicationsBySpecificStatus(status: ApplicationStatuses) {
+        return this.reviewApplicationsGateway.getAllApplicationsBySpecificStatus(status);
+    }
+
 }
