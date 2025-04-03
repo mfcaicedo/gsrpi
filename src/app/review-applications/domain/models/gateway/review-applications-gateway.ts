@@ -13,9 +13,10 @@ export abstract class ReviewApplicationsGateway {
     abstract getApplicationReviewByApplicationIdAndPersonId(applicationId: number, personId: number): Observable<GenericResponse>;
     abstract getApplicationReviewByApplicationId(applicationId: number): Observable<GenericResponse>;
     abstract savePointsApplicationRecognition(teacherApplication: Partial<TeacherApplication>): Observable<GenericResponse>;
-
+    abstract updatePointsApplicationRecognition(teacherApplication: Partial<TeacherApplication>): Observable<GenericResponse>;
     /**
      * Casos de uso para el ciarp
-     */
+    */
     abstract getAllApplicationsBySpecificStatus(status: ApplicationStatuses): Observable<GenericResponse>;
+    abstract getPointsApplicationRecognition(teacherApplicationId: number): Observable<GenericResponse>;
 }
