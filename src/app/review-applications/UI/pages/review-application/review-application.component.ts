@@ -682,6 +682,30 @@ export class ReviewApplicationComponent implements OnInit {
   }
 
   enableBeforeValidation() {
+
+    //Si está en la validacion 1 de información personal del solicitante debe volver a la lista de solicitudes
+    if (this.currentStep === StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT) {
+      switch (this.role) {
+        case RoleNames.CIARP_MEMBER:
+          this.router.navigate(['/revision-solicitudes/listar-solicitudes-revision-comite-ciarp']);
+          return;
+        case RoleNames.CIARP_SECRETARY:
+          this.router.navigate(['/revision-solicitudes/listar-solicitudes-revision-ciarp']);
+          return;
+          case RoleNames.TEACHER:
+          this.router.navigate(['/solicitudes-reconocimiento/listar-solicitudes']);
+          return;
+          case RoleNames.CPD_MEMBER:
+            this.router.navigate(['/revision-solicitudes/listar-solicitudes-revision-comite']);
+          return;
+          case RoleNames.CPD_SECRETARY:
+          this.router.navigate(['/revision-solicitudes/listar-solicitudes-revision']);  
+          return;
+        default:
+      }
+      return;
+    }
+
     const beforeStep = this.beforeStepMap.get(this.currentStep);
 
     if (beforeStep) {

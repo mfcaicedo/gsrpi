@@ -394,8 +394,7 @@
                     </p>
                 </div>
                 <div class="col-12 flex-column sm:col-10 xl:10 flex sm:flex-row gap-2 pl-0">
-                    <button pButton type="button" severity="secondary" pRipple label="Anterior"
-                        [disabled]="currentStep === StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT"
+                    <button pButton type="button" severity="secondary" pRipple label="Anterior" [disabled]="false"
                         class="w-full border-round" (click)="enableBeforeValidation()">
                     </button>
                     <button pButton pRipple label="Guardar" type="submit" [disabled]="!isValidFormInStep"
@@ -417,13 +416,12 @@
                     }
                     <!-- CIARP -->
                     @if(role === RolesNames.CIARP_SECRETARY) {
+                        <button pButton pRipple label="Devolver solicitud" type="button" class="w-full border-round"
+                        (click)="returnApplicationInCiarp()" [disabled]="this.isCorrectValidation">
+                    </button>
                     <button pButton pRipple label="Validar puntaje" type="button" class="w-full border-round"
                         [routerLink]="['../../asignar-puntos',this.applicationId,this.responseBodyApplication.teacherApplications?.[0]?.teacherApplicationId]"
                         [disabled]="disabledButtonAcceptApplication">
-                    </button>
-                    <button pButton pRipple label="Devolver solicitud" type="button" class="w-full border-round"
-                        (click)="returnApplicationInCiarp()"
-                        [disabled]="this.isCorrectValidation">
                     </button>
                     }
                     @if(role === RolesNames.CIARP_MEMBER) {
