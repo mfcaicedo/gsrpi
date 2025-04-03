@@ -699,7 +699,7 @@ export class ReviewApplicationComponent implements OnInit {
 
   }
 
-  acceptApplication() {
+  acceptApplication() { // En CPD
 
     this.confirmationService.confirm({
       target: 'body' as unknown as EventTarget,
@@ -719,6 +719,9 @@ export class ReviewApplicationComponent implements OnInit {
       },
       accept: async () => {
 
+        this.applicationStatus = this.isCorrectValidation ? ApplicationStatuses.REVIEWED_BY_CPD_SECRETARY :
+          ApplicationStatuses.RETURNED_IN_CPD;
+
         await this.updateApplicationState();
 
       },
@@ -726,9 +729,6 @@ export class ReviewApplicationComponent implements OnInit {
   }
 
   async updateApplicationState() {
-
-    this.applicationStatus = this.isCorrectValidation ? ApplicationStatuses.REVIEWED_BY_CPD_SECRETARY :
-      ApplicationStatuses.RETURNED_IN_CPD;
 
     return new Promise<void>((resolve, reject) => {
 
@@ -828,6 +828,35 @@ export class ReviewApplicationComponent implements OnInit {
   recommendPoints() {
     this.router.navigate(['/revision-solicitudes/recomendar-puntos', this.applicationId,
       this.responseBodyApplication.teacherApplications?.[0].teacherApplicationId]);
+  }
+
+  returnApplicationInCiarp() {
+
+    this.confirmationService.confirm({
+      target: 'body' as unknown as EventTarget,
+      message: '¿Está seguro(a) de devolver la solicitud de reconocimiento?',
+      header: 'Confirmación',
+      closable: true,
+      closeOnEscape: true,
+      icon: 'pi pi-info-circle',
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true,
+
+      },
+      acceptButtonProps: {
+        label: 'Aceptar',
+      },
+      accept: async () => {
+
+        this.applicationStatus = ApplicationStatuses.RETURNED_IN_CIARP;
+        
+        await this.updateApplicationState();
+
+      },
+    });
+
   }
 
   pageChange(event: { first: number; rows: number; }) {
