@@ -8,6 +8,7 @@ import { ListApplicationsReviewCiarpMembersComponent } from "./UI/pages/ciarp/li
 import { ListApplicationsReviewCiarpSecretaryComponent } from "./UI/pages/ciarp/list-applications-review-ciarp-secretary/list-applications-review-ciarp-secretary.component";
 import { AssignPointsApplicationComponent } from "./UI/pages/ciarp/assign-points-application/assign-points-application.component";
 import { AssignPointsApplicationDetailComponent } from "./UI/pages/ciarp/assign-points-application-detail/assign-points-application-detail.component";
+import { CreateResolutionComponent } from "./UI/pages/ciarp/create-resolution/create-resolution.component";
 
 export const routes: Routes = [
     {
@@ -45,5 +46,9 @@ export const routes: Routes = [
     {
         path: 'ver-detalle-puntos-asignados/:applicationId/:teacherApplicationId',
         component: AssignPointsApplicationDetailComponent
+    },
+    {
+        path: 'crear-resolucion/:applicationId',
+        component: CreateResolutionComponent
     }
 ];
