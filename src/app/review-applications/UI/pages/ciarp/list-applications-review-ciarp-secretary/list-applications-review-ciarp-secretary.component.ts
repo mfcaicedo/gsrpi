@@ -49,7 +49,11 @@ export class ListApplicationsReviewCiarpSecretaryComponent {
 
   async ngOnInit() {
 
-    await this.getAllApplicationsByFacultyId();
+    await this.getAllApplicationsBySpecificStatus();
+    await this.getAllApplicationsBySpecificStatus(ApplicationStatuses.REVIEWED_BY_CIARP_SECRETARY);
+    await this.getAllApplicationsBySpecificStatus(ApplicationStatuses.REVIEWED_BY_CIARP_MEMBER);
+    await this.getAllApplicationsBySpecificStatus(ApplicationStatuses.ENDORSED_CIARP);
+    await this.getAllApplicationsBySpecificStatus(ApplicationStatuses.REJECTED_CIARP);
 
   }
 
@@ -57,9 +61,9 @@ export class ListApplicationsReviewCiarpSecretaryComponent {
     return ApplicationStatuses;
   }
 
-  async getAllApplicationsByFacultyId() {
+  async getAllApplicationsBySpecificStatus(applicationStatus: ApplicationStatuses = ApplicationStatuses.SEND_TO_CIARP) {
     return new Promise<void>((resolve, reject) => {
-      this.reviewApplicationsManagementUseCase.getAllApplicationsBySpecificStatus(this.applicationStatus).subscribe({
+      this.reviewApplicationsManagementUseCase.getAllApplicationsBySpecificStatus(applicationStatus).subscribe({
         next: (response: any) => {
           if (response) {
             response.forEach((application: any) => {
@@ -208,7 +212,7 @@ export class ListApplicationsReviewCiarpSecretaryComponent {
       accept: async () => {
         //Llamar al servicio para enviar la solicitud
         await this.updateApplicationState(applicationId, ApplicationStatuses.SEND_TO_CIARP);
-        await this.getAllApplicationsByFacultyId();
+        await this.getAllApplicationsBySpecificStatus();
       },
     });
   }

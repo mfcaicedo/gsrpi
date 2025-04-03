@@ -48,6 +48,7 @@ const ENVIRONMENTS = {
     SAVE_POINTS_APPLICATION_RECOGNITION: `${base_url_api_gsrpi}/guardar-puntos-reconocimiento-solicitud`,
     UPDATE_POINTS_APPLICATION_RECOGNITION: `${base_url_api_gsrpi}/actualizar-puntos-reconocimiento-solicitud`,
     GET_ALL_APPLICATIONS_BY_SPECIFIC_STATUS: `${base_url_api_gsrpi}/obtener-listado-solicitudes-por-estado-especifico`,
+    GET_POINTS_APPLICATION_RECOGNITION: `${base_url_api_gsrpi}/obtener-puntos-reconocimiento-solicitud`,
 
     //FILE MANAGEMENT
     CREATE_FILE: `${base_url_api_gsrpi}/subir-archivo`,
