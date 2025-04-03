@@ -1,0 +1,37 @@
+<div class="">
+    <div class="">
+        <h2>
+            Asignación de puntos a la solicitud de reconocimiento de producción intelectual
+        </h2>
+    </div>
+    <div class="my-3">
+        <p class="text-primary text-md font-medium">
+            Puntos asignados para la solicitud:
+            <span style="color: var(--text-color);" class="font-bold">
+                {{assignedPoints}}
+            </span>
+        </p>
+    </div>
+    <div class="mt-3 mb-2">
+        <p class="text-primary text-md font-medium my-2">
+            Procedimiento realizado para el cálculo de puntos
+        </p>
+        <div class="card bg-blue-500 col-12 md:col-6" style="height: 100px;">
+        </div>
+    </div>
+    <div class="col-12 sm:col-7 flex flex-row gap-2 pl-0">
+        <button pButton severity="secondary" pRipple label="Anterior" [disabled]="false" class="w-full border-round"
+            [routerLink]="['../../../revisar-solicitud',applicationId]">
+        </button>
+        <button pButton pRipple label="Rechazar solicitud" type="button" [disabled]="false" class="w-full border-round"
+            (click)="modalConfirmationRejectOrEndorseAppication(false)">
+        </button>
+        <button pButton pRipple label=" Avalar solicitud" type="button" [disabled]="false" class="w-full border-round"
+            (click)="modalConfirmationRejectOrEndorseAppication()">
+        </button>
+    </div>
+
+    <!-- Dialog alert -->
+    <p-toast />
+    <p-confirmdialog />
+</div>

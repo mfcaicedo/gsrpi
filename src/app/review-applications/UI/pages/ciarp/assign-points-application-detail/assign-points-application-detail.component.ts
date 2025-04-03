@@ -17,19 +17,18 @@ import { TableModule } from 'primeng/table';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { ApplicationStatuses } from '../../../../../shared/utils/enums/review-applications.enum';
-import { TeacherApplication } from '../../../../../shared/utils/models/applications-common.model';
 import { ReviewApplicationsManagementUseCase } from '../../../../domain/usecase/review-applications-management-usecase';
 
 @Component({
-  selector: 'app-assign-points-application',
+  selector: 'app-assign-points-application-detail',
   imports: [CommonModule, ButtonModule, ProgressBarModule, SelectModule, FormsModule, InputTextModule,
     ReactiveFormsModule, RouterModule, ToastModule, ConfirmDialogModule, RadioButtonModule, TextareaModule,
     InputNumberModule, TableModule, IconFieldModule, InputIconModule, DialogModule],
   providers: [ConfirmationService, MessageService],
-  templateUrl: './assign-points-application.component.html',
-  styleUrl: './assign-points-application.component.css'
+  templateUrl: './assign-points-application-detail.component.html',
+  styleUrl: './assign-points-application-detail.component.css'
 })
-export class AssignPointsApplicationComponent {
+export class AssignPointsApplicationDetailComponent {
 
   isValidForm: boolean = false;
 
@@ -37,7 +36,6 @@ export class AssignPointsApplicationComponent {
 
   applicationId = 0;
   teacherApplicationId = 0;
-  recommendedPoints = 0;
   assignedPoints = 0;
   isNewAssignedPoints = false;
   isCorrectValidation = false;
@@ -69,7 +67,6 @@ export class AssignPointsApplicationComponent {
 
     this.reviewApplicationsManagementUseCase.getPointsApplicationRecognition(this.teacherApplicationId).subscribe({
       next: (response: any) => {
-        this.recommendedPoints = response.recommendedPoints;
         this.assignedPoints = response.assignedPoints;
       },
       error: (error) => {
@@ -78,24 +75,11 @@ export class AssignPointsApplicationComponent {
     });
   }
 
-  onSubmit() {
+  modalConfirmationRejectOrEndorseAppication(endorse = true) {
 
-    this.formGroupPoints.markAllAsTouched();
-    if (this.formGroupPoints.invalid) {
-      return;
-    }
-
-    this.isNewAssignedPoints = this.formGroupPoints.value.points > 0 ? true : false;
-    //Modal de confirmación de guardar datos
-    this.modalConfirmationSavePoints();
-
-  }
-
-  modalConfirmationSavePoints() {
-
-    let message = `¿Está seguro(a) de asignar el puntaje ${this.recommendedPoints} recomendado a la solicitud?`;
-    if (this.isNewAssignedPoints) {
-      message = `¿Está seguro(a) de guardar el nuevo puntaje ${this.formGroupPoints.value.points} asignado a la solicitud?`;
+    let message = `¿Está seguro(a) de avalar la solicitud?`;
+    if (!endorse) {
+      message = `¿Está seguro(a) de rechazar la solicitud?`;
     }
 
     this.confirmationService.confirm({
@@ -116,34 +100,33 @@ export class AssignPointsApplicationComponent {
       },
       accept: async () => {
 
-        await this.saveAssignedPointsOfApplication();
+        if (endorse) {
+          await this.updateApplicationState(ApplicationStatuses.ENDORSED_CIARP);
+        } else {
+          await this.updateApplicationState(ApplicationStatuses.REJECTED_CIARP);
+        }
       },
     });
 
   }
 
-  async saveAssignedPointsOfApplication() {
-
-    const requestBody: Partial<TeacherApplication> = {
-      teacherApplicationId: this.teacherApplicationId,
-      assignedPoints: this.isNewAssignedPoints ? this.formGroupPoints.value.points : this.recommendedPoints,
-    }
-
+  async updateApplicationState(applicationStatus: ApplicationStatuses) {
     return new Promise<void>((resolve, reject) => {
-
-      this.reviewApplicationsManagementUseCase.updatePointsApplicationRecognition(requestBody).subscribe({
+      this.reviewApplicationsManagementUseCase.updateApplicationState(
+        this.applicationId,
+        applicationStatus
+      ).subscribe({
         next: async (response: any) => {
-          //Mensaje de exito
           this.messageService.add({
             severity: 'success',
             summary: '¡Registro exitoso!',
-            detail: 'Los puntos han sido asignados y guardados exitosamente.'
+            detail: 'La solicitud ha sido avalada exitosamente.'
           });
           resolve();
-
-          //Se actualiza el estado de la solicitud a revisada
-          await this.updateApplicationState();
-
+          //Redireccionar a la lista de solicitudes
+          setTimeout(() => {
+            this.router.navigate(['revision-solicitudes/listar-solicitudes-revision-comite-ciarp']);
+          }, 3000);
         },
         error: (error) => {
           console.error("error", error);
@@ -151,41 +134,11 @@ export class AssignPointsApplicationComponent {
           this.messageService.add({
             severity: 'error',
             summary: 'Ups, algo salió mal',
-            detail: 'Tuvimos un problema al guardar los puntos. Inténtelo de nuevo en unos minutos.'
+            detail: 'Tuvimos un problema al avalar la solicitud. Inténtelo de nuevo en unos minutos.'
           });
           resolve();
         }
       });
-
-    });
-
-  }
-
-  async updateApplicationState() {
-    return new Promise<void>((resolve, reject) => {
-      this.reviewApplicationsManagementUseCase.updateApplicationState(
-        this.applicationId,
-        ApplicationStatuses.REVIEWED_BY_CIARP_SECRETARY
-      ).subscribe({
-        next: async (response: any) => {
-          resolve();
-          //Redireccionar a la lista de solicitudes
-          setTimeout(() => {
-            this.router.navigate(['revision-solicitudes/listar-solicitudes-revision-ciarp']);
-          }, 3000);
-        },
-        error: (error) => {
-          console.error("error", error);
-          resolve();
-        }
-      });
-    });
-  }
-
-  automaticCalculationPoints() {
-    //TODO: Lógica para calcular los puntos automáticamente y asignarlos al campo de puntos
-    this.formGroupPoints.patchValue({
-      points: 4
     });
   }
 
