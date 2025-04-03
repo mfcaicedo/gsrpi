@@ -169,9 +169,7 @@ export class ViewApplicationDetailComponent {
   isCorrectValidation = false;
   disabledButtonAcceptApplication = true;
 
-  isCommitteeChairman = false;
-  isCpdSecretary = false;
-  isTeacher = false;
+  role: string = '';
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router)
@@ -190,6 +188,10 @@ export class ViewApplicationDetailComponent {
 
   get ValidationTypes() {
     return ValidationTypes;
+  }
+
+  get RoleNames() {
+    return RoleNames;
   }
 
   async ngOnInit() {
@@ -252,20 +254,7 @@ export class ViewApplicationDetailComponent {
     this.authService.getUserDataSession().subscribe((data: any) => {
       this.personId = data.personId;
       const roles = data.userRoles;
-      roles.forEach((role: any) => {
-        if (role.role.name == RoleNames.CPD_PRESIDENT) {
-          this.isCommitteeChairman = true;
-          return;
-        }
-        if (role.role.name == RoleNames.CPD_SECRETARY) {
-          this.isCpdSecretary = true;
-          return;
-        }
-        if (role.role.name == RoleNames.TEACHER) {
-          this.isTeacher = true;
-          return;
-        }
-      });
+      this.role = roles[0].role.name;
     });
 
     //Cargamos informacion de la solicitud
@@ -478,16 +467,23 @@ export class ViewApplicationDetailComponent {
 
     //Si está en la validacion 1 de información personal del solicitante debe volver a la lista de solicitudes
     if (this.currentStep === StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT) {
-      if (this.isCpdSecretary) {
-        this.router.navigate(['/revision-solicitudes/listar-solicitudes-revision']);
-        return;
+      switch (this.role) {
+        case RoleNames.CPD_SECRETARY:
+          this.router.navigate(['/revision-solicitudes/listar-solicitudes-revision']);
+          return;
+        case RoleNames.TEACHER:
+          this.router.navigate(['/solicitudes-reconocimiento/listar-solicitudes']);
+          return;
+        case RoleNames.CPD_MEMBER:
+          this.router.navigate(['/revision-solicitudes/listar-solicitudes-revision-comite']);
+          return;
+        case RoleNames.CIARP_MEMBER:
+          this.router.navigate(['/revision-solicitudes/listar-solicitudes-revision-comite-ciarp']);
+          return;
+        case RoleNames.CIARP_SECRETARY:
+          this.router.navigate(['/revision-solicitudes/listar-solicitudes-revision-ciarp']);
+          return;
       }
-      if(this.isTeacher) {
-        this.router.navigate(['/solicitudes-reconocimiento/listar-solicitudes']);
-        return;
-      }
-      this.router.navigate(['/revision-solicitudes/listar-solicitudes-revision-comite']);
-      return;
     }
 
     const beforeStep = this.beforeStepMap.get(this.currentStep);

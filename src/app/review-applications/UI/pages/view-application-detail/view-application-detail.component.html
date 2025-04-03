@@ -230,9 +230,15 @@
                         class="w-full border-round" (click)="enableBeforeValidation()">
                     </button>
                     @if (currentStep === StepsReviewApplication.STEP_5_DOCUMENTS) {
-                    @if (isCommitteeChairman) {
+                    @if (role === RoleNames.CPD_PRESIDENT) {
                     <button pButton pRipple label="Avalar solicitud" type="button" class="w-full border-round"
                         (click)="endorseApplication()" [disabled]="false">
+                    </button>
+                    }
+                    @else if (role === RoleNames.CIARP_MEMBER) {
+                    <button pButton pRipple label="Siguiente" type="button" class="w-full border-round"
+                        [routerLink]="['../../ver-detalle-puntos-asignados',this.applicationId,this.responseBodyApplication.teacherApplications?.[0]?.teacherApplicationId]"
+                        [disabled]="false">
                     </button>
                     }
                     }
