@@ -189,7 +189,7 @@ export class RegisterRelatedWorksComponent {
   }
 
   onSubmit() {
-    
+
     this.registerRelatedWorksForm.markAllAsTouched();
     if (this.registerRelatedWorksForm.invalid) {
       return;
