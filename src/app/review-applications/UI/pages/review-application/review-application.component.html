@@ -401,21 +401,21 @@
                         class="w-full border-round">
                     </button>
                     @if (currentStep === StepsReviewApplication.STEP_5_DOCUMENTS) {
-                    @if (role === RolesNames.CPD_SECRETARY) {
+                    @if (role === RoleNames.CPD_SECRETARY) {
                     <button pButton pRipple
                         [label]="this.isCorrectValidation ? 'Aceptar solicitud' : 'Devolver solicitud'" type="button"
                         class="w-full border-round" (click)="acceptApplication()"
                         [disabled]="disabledButtonAcceptApplication">
                     </button>
                     }
-                    @if(role === RolesNames.CPD_MEMBER) {
+                    @if(role === RoleNames.CPD_MEMBER) {
                     <button pButton pRipple label="Recomendar puntos" type="button" class="w-full border-round"
                         [routerLink]="['../../asignar-puntos',this.applicationId,this.responseBodyApplication.teacherApplications?.[0]?.teacherApplicationId]"
                         [disabled]="disabledButtonAcceptApplication">
                     </button>
                     }
                     <!-- CIARP -->
-                    @if(role === RolesNames.CIARP_SECRETARY) {
+                    @if(role === RoleNames.CIARP_SECRETARY) {
                         <button pButton pRipple label="Devolver solicitud" type="button" class="w-full border-round"
                         (click)="returnApplicationInCiarp()" [disabled]="this.isCorrectValidation">
                     </button>
@@ -424,7 +424,7 @@
                         [disabled]="disabledButtonAcceptApplication">
                     </button>
                     }
-                    @if(role === RolesNames.CIARP_MEMBER) {
+                    @if(role === RoleNames.CIARP_MEMBER) {
                     <button pButton pRipple label="Siguiente" type="button" class="w-full border-round"
                         [routerLink]="['../../asignar-puntos',this.applicationId,this.responseBodyApplication.teacherApplications?.[0]?.teacherApplicationId]"
                         [disabled]="isDisabledNextStep">

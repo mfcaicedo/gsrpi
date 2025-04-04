@@ -183,7 +183,7 @@ export class ReviewApplicationComponent implements OnInit {
     return StepsReviewApplication;
   }
 
-  get RolesNames() {
+  get RoleNames() {
     return RoleNames;
   }
 
