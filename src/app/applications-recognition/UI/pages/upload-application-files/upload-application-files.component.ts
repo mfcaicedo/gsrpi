@@ -13,7 +13,6 @@ import { UserManagementUseCase } from '../../../../user-management/domain/usecas
 import { ApplicationTempManagementUsecase } from '../../../domain/usecase/application-temp-management-usecase';
 import { getCurrentDate } from '../../../../shared/utils/management-date';
 import { ApplicationManagementUseCase } from '../../../domain/usecase/application-management-usecase';
-import { filter, firstValueFrom } from 'rxjs';
 import { FileMetadata } from '../../../../shared/utils/models/file-common.model';
 
 @Component({
@@ -26,17 +25,16 @@ import { FileMetadata } from '../../../../shared/utils/models/file-common.model'
 })
 export class UploadApplicationFilesComponent {
 
-  userUid = '';
-  userId = 0;
-  personId = 0;
-  teacherId = 0;
-
   selectedFiles: File[] = [];
   filesIds: number[] = [];
 
   applicationRequest: ApplicationRequest = {} as ApplicationRequest;
 
   isDisabledSendApplication = true;
+  isDisabledBtnUpload = false;
+
+  teacherId = 0;
+  role = '';
 
   private readonly confirmationService = inject(ConfirmationService);
   private readonly router = inject(Router);
@@ -48,63 +46,13 @@ export class UploadApplicationFilesComponent {
 
   async ngOnInit() {
 
-    this.userUid = (await firstValueFrom(this.authService.getSession().pipe(filter(data => !!data)))).user.id as string;
-
-    //1. Consultar usuario por uid 
-    await this.getUserByUid();
-    //2. Consultar persona por id de usuario
-    await this.getPersonByUserId();
-    //3. Consultar docente por id de persona
-    await this.getTeacherByPersonId();
+    this.authService.getUserDataSession().subscribe((data: any) => {
+      this.teacherId = data.teacherId;
+      const roles = data.userRoles;
+      this.role = roles[0].role.name;
+    });
 
     await this.getApplicationTempByTeacherId();
-
-  }
-
-  async getUserByUid() {
-    return new Promise((resolve) => {
-      this.userManagementUseCase.getUserByUid(this.userUid).subscribe({
-        next: (response: any) => {
-          this.userId = response.userId;
-          resolve(true);
-        },
-        error: (error) => {
-          resolve(false);
-          console.log("error", error);
-        }
-      });
-    });
-  }
-
-  async getPersonByUserId() {
-    return new Promise((resolve) => {
-      this.userManagementUseCase.getPersonByUserId(this.userId).subscribe({
-        next: (response: any) => {
-          this.personId = response.personId;
-          resolve(true);
-        },
-        error: (error) => {
-          resolve(false);
-          console.log("error", error);
-        }
-      });
-    });
-  }
-
-  async getTeacherByPersonId() {
-
-    return new Promise((resolve) => {
-      this.userManagementUseCase.getTeacherByPersonId(this.personId).subscribe({
-        next: (response: any) => {
-          this.teacherId = response.teacherId;
-          resolve(true);
-        },
-        error: (error) => {
-          resolve(false);
-          console.log("error", error);
-        }
-      });
-    });
 
   }
 
@@ -193,7 +141,12 @@ export class UploadApplicationFilesComponent {
   async onUpload() {
 
     if (!this.selectedFiles || this.selectedFiles.length < 2) {
-      console.error("Debe seleccionar al menos dos archivos");
+      this.messageService.add(
+        {
+          severity: 'warn',
+          summary: 'Archivos no seleccionados',
+          detail: 'Debe seleccionar los archivos de producción intelectual y copia de clasificación'
+        });
       return Promise.reject("Debe seleccionar al menos dos archivos");
     }
 
@@ -247,6 +200,7 @@ export class UploadApplicationFilesComponent {
 
         //Activo el boton enviar solicitud
         this.isDisabledSendApplication = false;
+        this.isDisabledBtnUpload = true;
       } else {
         this.messageService.add(
           {

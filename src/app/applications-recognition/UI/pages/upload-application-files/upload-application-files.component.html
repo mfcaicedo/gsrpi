@@ -46,7 +46,7 @@
         <button pButton severity="secondary" type="button" pRipple label="Anterior" [disabled]="false"
             class="w-full border-round" [routerLink]="['../../terminos-condiciones/step-7']">
         </button>
-        <button pButton pRipple label="Subir archivos" (click)="onUpload()" [disabled]="" type="button"
+        <button pButton pRipple label="Subir archivos" (click)="onUpload()" [disabled]="isDisabledBtnUpload" type="button"
             class="w-full border-round">
         </button>
         <button pButton pRipple label="Enviar solicitud" type="button" [disabled]="isDisabledSendApplication"
