@@ -188,8 +188,6 @@ export class CreateApplicationComponent {
       this.applicationTempManagementUseCase.saveApplicationTemp(this.requestBody).subscribe({
         next: (response) => {
 
-          this.registerForm.reset();
-
           this.messageService.add(
             {
               severity: 'success',
