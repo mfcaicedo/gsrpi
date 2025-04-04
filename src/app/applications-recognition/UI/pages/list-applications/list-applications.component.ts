@@ -13,6 +13,8 @@ import { AuthService } from '../../../../auth/auth.service';
 import { ApplicationManagementUseCase } from '../../../domain/usecase/application-management-usecase';
 import { KeyValueOption } from '../../../../shared/utils/models/form-builder.model';
 import { Application } from '../../../../shared/utils/models/applications-common.model';
+import { RoleNames } from '../../../../auth/enums/roles.enum';
+import { ApplicationStatuses } from '../../../../shared/utils/enums/review-applications.enum';
 
 @Component({
   selector: 'app-list-applications',
@@ -38,16 +40,29 @@ export class ListApplicationsComponent {
     { key: 2, value: 'Bonificación - PM-FO-4-FOR-3' },
   ];
 
+  role = '';
+
   private readonly confirmationService = inject(ConfirmationService);
   private readonly router = inject(Router);
   private readonly messageService = inject(MessageService);
   private readonly authService = inject(AuthService);
   private readonly applicationManagementUseCase = inject(ApplicationManagementUseCase);
 
+  get RoleNames() {
+    return RoleNames;
+  }
+  get ApplicationStatuses() {
+    return ApplicationStatuses;
+  }
+
   async ngOnInit() {
 
     this.authService.getUserDataSession().subscribe(data => {
       this.teacherId = data.teacherId || 0;
+    });
+
+    this.authService.getUserDataSession().subscribe(data => {
+      this.role = data.userRoles?.[0].role?.name || '';
     });
 
     await this.getAllApplicationsByTeacherId();

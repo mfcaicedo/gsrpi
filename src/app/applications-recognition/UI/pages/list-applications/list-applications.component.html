@@ -5,8 +5,7 @@
         </h2>
     </div>
     <p-table #dt1 [value]="applications" [paginator]="true" [rows]="5" [first]="first" [showCurrentPageReport]="true"
-        [tableStyle]="{ 'min-width': '50rem' }" selectionMode="single" dataKey="id" 
-        [globalFilterFields]="['applicationId','production.workTitle', 'applicationTypeName', 'production.productionType.name', 
+        [tableStyle]="{ 'min-width': '50rem' }" selectionMode="single" dataKey="id" [globalFilterFields]="['applicationId','production.workTitle', 'applicationTypeName', 'production.productionType.name', 
         'createAt','applicationStatus.name']"
         currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} solicitudes"
         (onPage)="pageChange($event)" [rowsPerPageOptions]="[5, 10, 15, 20, 25]" dataKey="id">
@@ -56,14 +55,30 @@
                             (click)="viewApplication(application.applicationId)">
                             Ver detalle
                         </button>
-                        <button pButton pRipple icon="pi pi-pen-to-square" class="p-button-rounded p-button-text"
-                            (click)="editApplication(application)">
-                            Editar
-                        </button>
+                        @if(application.applicationStatus.name === ApplicationStatuses.SENT_TO_CPD) {
                         <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text text-red-500"
                             (click)="deleteApplication(application)">
                             Eliminar
                         </button>
+                        }
+                        @if (application.applicationStatus.name === ApplicationStatuses.RETURNED_IN_CPD) {
+                        <button pButton pRipple icon="pi pi-pen-to-square" class="p-button-rounded p-button-text"
+                            (click)="editApplication(application)">
+                            Editar
+                        </button>
+                        }
+                        @if (application.applicationStatus.name === ApplicationStatuses.RETURNED_IN_CIARP) {
+                        <button pButton pRipple icon="pi pi-pen-to-square" class="p-button-rounded p-button-text"
+                            (click)="editApplication(application)">
+                            Editar
+                        </button>
+                        }
+                        @if (application.applicationStatus.name === ApplicationStatuses.REJECTED_CIARP) {
+                        <button pButton pRipple icon="pi pi-pen-to-square" class="p-button-rounded p-button-text"
+                            (click)="editApplication(application)">
+                            Editar
+                        </button>
+                        }
                     </div>
                 </td>
             </tr>
