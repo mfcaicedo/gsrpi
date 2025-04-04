@@ -389,7 +389,6 @@ export class ViewApplicationDetailComponent {
       this.reviewApplicationsManagementUseCase.getApplicationReviewByApplicationId(this.applicationId).subscribe({
         next: (response: any) => {
           this.validationsResponse = response;
-          console.log("validationsResponse", this.validationsResponse);
           resolve();
         },
         error: (error) => {

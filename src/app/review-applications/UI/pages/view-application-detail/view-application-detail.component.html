@@ -199,29 +199,24 @@
             </h5>
             <form action="" [formGroup]="validationForm" (submit)="onSubmit()">
                 <div class="grid gap-2 ml-0">
-                    @if (currentStep === StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT) {
+                    @if ([
+                    StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT,
+                    StepsReviewApplication.STEP_2_APPLICATION_RECOGNITION,
+                    StepsReviewApplication.STEP_3_PRODUCTION_BY_TYPE,
+                    StepsReviewApplication.STEP_4_APPLICATON_RECOGNIZED,
+                    StepsReviewApplication.STEP_5_DOCUMENTS
+                    ].includes(currentStep)) {
+                    @if (getValidationsStep(currentStep).length > 0) {
                     @for (validation of getValidationsStep(currentStep); track $index) {
                     <app-view-validation-detail [validation]="validation ?? {}"></app-view-validation-detail>
                     }
                     }
-                    @else if (currentStep === StepsReviewApplication.STEP_2_APPLICATION_RECOGNITION) {
-                    @for (validation of getValidationsStep(currentStep); track $index) {
-                    <app-view-validation-detail [validation]="validation ?? {}"></app-view-validation-detail>
-                    }
-                    }
-                    @else if (currentStep === StepsReviewApplication.STEP_3_PRODUCTION_BY_TYPE) {
-                    @for (validation of getValidationsStep(currentStep); track $index) {
-                    <app-view-validation-detail [validation]="validation ?? {}"></app-view-validation-detail>
-                    }
-                    }
-                    @else if (currentStep === StepsReviewApplication.STEP_4_APPLICATON_RECOGNIZED) {
-                    @for (validation of getValidationsStep(currentStep); track $index) {
-                    <app-view-validation-detail [validation]="validation ?? {}"></app-view-validation-detail>
-                    }
-                    }
-                    @else if (currentStep === StepsReviewApplication.STEP_5_DOCUMENTS) {
-                    @for (validation of getValidationsStep(currentStep); track $index) {
-                    <app-view-validation-detail [validation]="validation ?? {}"></app-view-validation-detail>
+                    @else {
+                    <div class="card">
+                        <span style="color: var(--text-color);">
+                            No hay visto bueno ni observaciones realizadas para este paso
+                        </span>
+                    </div>
                     }
                     }
                 </div>
