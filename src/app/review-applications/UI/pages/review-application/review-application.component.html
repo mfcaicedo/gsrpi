@@ -220,6 +220,7 @@
             </div>
             }
         </form>
+        <hr style="border: 1px dashed; border-radius: 5px;">
         <div class="">
             <h5 class="">
                 Visto bueno y observaciones
@@ -410,7 +411,7 @@
                     }
                     @if(role === RoleNames.CPD_MEMBER) {
                     <button pButton pRipple label="Recomendar puntos" type="button" class="w-full border-round"
-                        [routerLink]="['../../asignar-puntos',this.applicationId,this.responseBodyApplication.teacherApplications?.[0]?.teacherApplicationId]"
+                        [routerLink]="['../../recomendar-puntos',this.applicationId,this.responseBodyApplication.teacherApplications?.[0]?.teacherApplicationId]"
                         [disabled]="disabledButtonAcceptApplication">
                     </button>
                     }

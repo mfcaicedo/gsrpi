@@ -40,6 +40,9 @@
 
     /* Se personaliza el color la paginación de la tabla */
     --p-paginator-nav-button-selected-background: var(--primary-color) !important;
+
+    /* Se personliza el color de fondo al th del header de una tabla cuando se selecciona un filtro asc o desc  */
+    --p-datatable-header-cell-selected-background: white !important;
 }
 
 body {
