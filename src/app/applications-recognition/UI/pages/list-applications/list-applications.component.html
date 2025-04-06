@@ -4,6 +4,7 @@
             Tus solicitudes de reconocimiento de producción intelectual
         </h2>
     </div>
+    @if (this.applications.length > 0) {
     <p-table #dt1 [value]="applications" [paginator]="true" [rows]="5" [first]="first" [showCurrentPageReport]="true"
         [tableStyle]="{ 'min-width': '50rem' }" selectionMode="single" dataKey="id" [globalFilterFields]="['applicationId','production.workTitle', 'applicationTypeName', 'production.productionType.name', 
         'createAt','applicationStatus.name']"
@@ -84,7 +85,7 @@
             </tr>
         </ng-template>
     </p-table>
-
+    }
     <!-- Dialog alert -->
     <p-toast />
     <p-confirmdialog />
