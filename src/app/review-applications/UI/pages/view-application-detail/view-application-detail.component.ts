@@ -350,7 +350,7 @@ export class ViewApplicationDetailComponent {
       observations: this.responseBodyApplication.production?.observations,
 
       //Specific Production Data - step 3
-      productionType: jsonDataSpecificProductionData.productionType,
+      productionType: this.responseBodyApplication.production?.productionType?.typeProductionId,
       magazineType: jsonDataSpecificProductionData.magazineType,
       doi: jsonDataSpecificProductionData.doi,
       issn: jsonDataSpecificProductionData.issn,
