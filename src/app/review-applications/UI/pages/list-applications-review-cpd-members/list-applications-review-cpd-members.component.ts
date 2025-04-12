@@ -16,11 +16,12 @@ import { CreateInitialConfigurationUsecase } from '../../../../system-configurat
 import { ReviewApplicationsManagementUseCase } from '../../../domain/usecase/review-applications-management-usecase';
 import { ApplicationStatuses } from '../../../../shared/utils/enums/review-applications.enum';
 import { RoleNames } from '../../../../auth/enums/roles.enum';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'app-list-applications-review-cpd-members',
   imports: [CommonModule, ButtonModule, RouterModule, IconFieldModule, InputIconModule, InputTextModule,
-    ToastModule, ConfirmDialogModule, TableModule],
+    ToastModule, ConfirmDialogModule, TableModule, MessageModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './list-applications-review-cpd-members.component.html',
   styleUrl: './list-applications-review-cpd-members.component.css'

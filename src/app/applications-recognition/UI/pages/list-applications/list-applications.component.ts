@@ -15,11 +15,12 @@ import { KeyValueOption } from '../../../../shared/utils/models/form-builder.mod
 import { Application } from '../../../../shared/utils/models/applications-common.model';
 import { RoleNames } from '../../../../auth/enums/roles.enum';
 import { ApplicationStatuses } from '../../../../shared/utils/enums/review-applications.enum';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'app-list-applications',
   imports: [CommonModule, ButtonModule, RouterModule, IconFieldModule, InputIconModule, InputTextModule,
-    ToastModule, ConfirmDialogModule, TableModule],
+    ToastModule, ConfirmDialogModule, TableModule, MessageModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './list-applications.component.html',
   styleUrl: './list-applications.component.css'

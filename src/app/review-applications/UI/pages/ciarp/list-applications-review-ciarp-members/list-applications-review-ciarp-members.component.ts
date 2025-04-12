@@ -15,11 +15,12 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'app-list-applications-review-ciarp-members',
   imports: [CommonModule, ButtonModule, RouterModule, IconFieldModule, InputIconModule, InputTextModule,
-    ToastModule, ConfirmDialogModule, TableModule],
+    ToastModule, ConfirmDialogModule, TableModule, MessageModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './list-applications-review-ciarp-members.component.html',
   styleUrl: './list-applications-review-ciarp-members.component.css'

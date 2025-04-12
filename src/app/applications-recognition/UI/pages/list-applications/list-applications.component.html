@@ -86,6 +86,13 @@
         </ng-template>
     </p-table>
     }
+    @else {
+    <div class="flex flex-column align-items-center justify-content-center mt-3">
+        <p-message severity="info" text="No tienes solicitudes de reconocimiento de producción intelectual
+            enviadas." icon="pi pi-info-circle">
+        </p-message>
+    </div>
+    }
     <!-- Dialog alert -->
     <p-toast />
     <p-confirmdialog />

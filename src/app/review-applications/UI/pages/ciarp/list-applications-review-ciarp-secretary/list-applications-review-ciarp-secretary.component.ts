@@ -15,11 +15,12 @@ import { Application } from '../../../../../shared/utils/models/applications-com
 import { KeyValueOption } from '../../../../../shared/utils/models/form-builder.model';
 import { CreateInitialConfigurationUsecase } from '../../../../../system-configuration/domain/usecase/create-initial-configuration-usecase';
 import { ReviewApplicationsManagementUseCase } from '../../../../domain/usecase/review-applications-management-usecase';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'app-list-applications-review-ciarp-secretary',
   imports: [CommonModule, ButtonModule, RouterModule, IconFieldModule, InputIconModule, InputTextModule,
-    ToastModule, ConfirmDialogModule, TableModule],
+    ToastModule, ConfirmDialogModule, TableModule, MessageModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './list-applications-review-ciarp-secretary.component.html',
   styleUrl: './list-applications-review-ciarp-secretary.component.css'
