@@ -3,24 +3,61 @@
         <h2>
             Recomendación de puntos a la solicitud de reconocimiento de producción intelectual
         </h2>
-
         <h4>
             Elige la opción que desees..
         </h4>
-
     </div>
     <div class="grid">
-        <div class="col-12 md:col-6">
+        <div class="col-12">
             <p class="text-primary text-md font-medium mb-0">
                 Recomendación de puntos
             </p>
-            <div class="col-12 sm:col-6 md:col-8 xl:col-6 pl-0">
+            <div class="col-12 sm:col-6 md:col-6 xl:col-3 pl-0">
                 <button pButton pRipple label="Calcular automáticamente" type="button" class="w-full border-round"
                     (click)="automaticCalculationPoints()">
                 </button>
             </div>
+            @if (isProccessCalculatePoints){
+            <div class="my-3">
+                <h5>
+                    Proceso para el cálculo automático de puntos
 
-            <div class="col-12 sm:col-12 md:col-12 pl-0">
+                </h5>
+                <div class="card m-0 border-2 mt-2">
+                    <div class="col-12 sm:col-12 md:col-12">
+                        <div class="mb-3">
+                            <p class="text-primary text-md font-medium">
+                                Tipo de producción:
+                                <span style="color: var(--text-color);">
+                                    {{automaticPointsData?.productionType?.name}}
+                                </span>
+                            </p>
+                            <p class="text-primary text-md font-medium">
+                                Tipo de artículo:
+                                <span style="color: var(--text-color);">
+                                    {{automaticPointsData?.articleType}}
+                                </span>
+                            </p>
+                            <p class="text-primary text-md font-medium">
+                                Categoría publindex:
+                                <span style="color: var(--text-color);">
+                                    {{automaticPointsData?.publindexCategory}}
+                                </span>
+                            </p>
+                            <p class="text-primary text-md font-medium">
+                                Número total de autores:
+                                <span style="color: var(--text-color);">
+                                    {{automaticPointsData?.numberOfAuthors}}
+                                </span>
+                            </p>
+                        </div>
+                        <h4 class="mb-2">🧾 Detalle del cálculo:</h4>
+                        <markdown class="variable-binding" [data]="calculationProcessText"></markdown>
+                    </div>
+                </div>
+            </div>
+            }
+            <div class="col-12 sm:col-12 md:col-6 pl-0">
                 <form action="" [formGroup]="formGroupPoints" (submit)="onSubmit()">
                     <label for="points" class="block text-primary text-md font-medium mb-2">
                         Asignación de puntos manual <span class="text-orange-500">*</span>
@@ -46,13 +83,14 @@
                     </div>
                     }
                 </form>
+                <div class="">
+                    <p class="mt-2">
+                        <span class="font-bold">Nota:</span>
+                        En caso de no calcular el puntaje automáticamente o si no está conforme con el cálculo
+                        automático, puede asignar manualmente el puntaje a la solicitud.
+                    </p>
+                </div>
             </div>
-
-        </div>
-        <div class="col-12 md:col-6">
-            <p class="text-primary text-md font-medium">
-                Proceso de cálculo de puntos automático
-            </p>
 
         </div>
     </div>
