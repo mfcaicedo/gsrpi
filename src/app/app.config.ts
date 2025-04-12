@@ -19,11 +19,13 @@ import { ApplicationsRecognitionGateway } from './applications-recognition/domai
 import { ApplicationManagementService } from './applications-recognition/infrastructure/adapter/application-management-api/application-management.service';
 import { ReviewApplicationsGateway } from './review-applications/domain/models/gateway/review-applications-gateway';
 import { ReviewApplicationsManagementService } from './review-applications/infrastructure/adapter/review-applications-management-api/review-applications-management.service';
+import { provideMarkdown } from 'ngx-markdown';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
     provideAnimationsAsync(),
+    provideMarkdown(),
     provideAnimations(),
     //Se agrega el interceptor de autenticacion
     provideHttpClient(withInterceptors([authInterceptor])),
@@ -44,7 +46,7 @@ export const appConfig: ApplicationConfig = {
         config: {
           tokenGetter: () => localStorage.getItem('accessToken')
         }
-      })
+      }),
     ]),
     //Para que se ejecute el refresh token al iniciar la aplicacion
     // {
