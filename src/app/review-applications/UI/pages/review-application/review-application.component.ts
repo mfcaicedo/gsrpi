@@ -95,7 +95,7 @@ export class ReviewApplicationComponent implements OnInit {
   ];
 
   articleTypeDataList: KeyValueOption[] = [
-    { key: 1, value: 'Artículo tradicional "Full paper", completo y autónimo en su temática' },
+    { key: 1, value: 'Artículo tradicional "Full paper", completo y autónomo en su temática' },
     { key: 2, value: 'Comunicación corta "artículo corto"' },
     { key: 3, value: 'Reporte de caso' },
     { key: 4, value: 'Revisiones de tema' },
