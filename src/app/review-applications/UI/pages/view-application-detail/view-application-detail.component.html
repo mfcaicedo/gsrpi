@@ -212,15 +212,15 @@
                     }
                     }
                     @else {
-                    <div class="card">
-                        <span style="color: var(--text-color);">
-                            No hay visto bueno ni observaciones realizadas para este paso
-                        </span>
+                    <div class="mt-3">
+                        <p-message severity="info" text="No hay visto bueno ni observaciones realizadas para este paso"
+                            icon="pi pi-info-circle">
+                        </p-message>
                     </div>
                     }
                     }
                 </div>
-                <div class="col-12 flex-column sm:col-6 xl:10 flex sm:flex-row gap-2 pl-0">
+                <div class="col-12 flex-column sm:col-6 xl:10 flex sm:flex-row gap-2 pl-0 mt-3">
                     <button pButton type="button" severity="secondary" pRipple label="Anterior"
                         class="w-full border-round" (click)="enableBeforeValidation()">
                     </button>

@@ -35,6 +35,7 @@ import { FormBodySpecificProductionDataMagazineComponent } from '../../../../sha
 import { ViewValidationDetailComponent } from '../../shared/components/view-validation-detail/view-validation-detail.component';
 import { StepperModule } from 'primeng/stepper';
 import { DynamicStepperComponent } from '../../shared/components/dynamic-stepper/dynamic-stepper.component';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'app-view-application-detail',
@@ -42,7 +43,7 @@ import { DynamicStepperComponent } from '../../shared/components/dynamic-stepper
     ReactiveFormsModule, RouterModule, ToastModule, ConfirmDialogModule, FormBodyApplicantTeacherComponent,
     RadioButtonModule, TextareaModule, FormBodyGeneralProductionDataComponent, InputNumberModule,
     FormBodySpecificProductionDataMagazineComponent, TableModule, IconFieldModule, InputIconModule, DialogModule,
-    ViewValidationDetailComponent, StepperModule, DynamicStepperComponent],
+    ViewValidationDetailComponent, StepperModule, DynamicStepperComponent, MessageModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './view-application-detail.component.html',
   styleUrl: './view-application-detail.component.css'
