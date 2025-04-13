@@ -24,6 +24,7 @@ export class DynamicStepperComponent implements OnInit {
         { key: 5, value: 'Documentos' }
       ];
     }
+
   }
 
 }

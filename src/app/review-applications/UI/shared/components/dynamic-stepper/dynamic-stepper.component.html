@@ -1,7 +1,13 @@
 <p-stepper [value]="activeCurrentStep" class="basis-[50rem]" [linear]="isLinear">
     <p-step-list>
-        @for (step of steps; track $index) {
+        <p-step [value]="steps[0].key">{{ steps[0].value }}</p-step>
+        <p-step [value]="steps[1].key">{{ steps[1].value }}</p-step>
+        <p-step [value]="steps[2].key">{{ steps[2].value }}</p-step>
+        <p-step [value]="steps[3].key">{{ steps[3].value }}</p-step>
+        <p-step [value]="steps[4].key">{{ steps[4].value }}</p-step>
+        <!-- Temporalmente no se puedo usar el for porque no renderiza la linea separadora entre cada step -->
+        <!-- @for (step of steps; track $index) {
         <p-step [value]="step.key">{{step.value}}</p-step>
-        }
+        } -->
     </p-step-list>
 </p-stepper>
