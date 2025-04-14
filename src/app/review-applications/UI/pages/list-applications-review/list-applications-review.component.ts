@@ -15,11 +15,12 @@ import { AuthService } from '../../../../auth/auth.service';
 import { ReviewApplicationsManagementUseCase } from '../../../domain/usecase/review-applications-management-usecase';
 import { CreateInitialConfigurationUsecase } from '../../../../system-configuration/domain/usecase/create-initial-configuration-usecase';
 import { ApplicationStatuses } from '../../../../shared/utils/enums/review-applications.enum';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'app-list-applications-review',
   imports: [CommonModule, ButtonModule, RouterModule, IconFieldModule, InputIconModule, InputTextModule,
-    ToastModule, ConfirmDialogModule, TableModule],
+    ToastModule, ConfirmDialogModule, TableModule, MessageModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './list-applications-review.component.html',
   styleUrl: './list-applications-review.component.css'
