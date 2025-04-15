@@ -5,6 +5,7 @@ import { UserGateway } from '../../../domain/models/gateway/user-gateway';
 import { UserListPaginated, User } from '../../../domain/models/user.model';
 import ENVIRONMENTS from '../../../../../environments/config';
 import { GenericResponse } from '../../../../shared/utils/models/request-response.model';
+import { ENVIRONMENT } from '../../../../../environments/environment.prod';
 @Injectable({
   providedIn: 'root'
 })
@@ -23,7 +24,8 @@ export class UserManagementService extends UserGateway {
     throw new Error('Method not implemented.');
   }
   override getUserByUid(uid: string): Observable<User> {
-    return this.http.get<User>(`${ENVIRONMENTS.GET_USER_BY_UID}/${uid}`);
+    console.log("la ruta 1 ", ENVIRONMENTS.GET_USER_BY_UID);
+    return this.http.get<User>(`${ENVIRONMENT.BASE_URL_API_GSRPI}/obtener-usuario-por-uid/${uid}`);
   }
   override createUser(user: User): Observable<User> {
     throw new Error('Method not implemented.');
