@@ -3,9 +3,6 @@
         {
             "source": "/api/:path*",
             "destination": "http://api.example.com/:path*",
-            "headers": {
-                "Host": "api.example.com"
-            }
         }
     ],
     "functions": {
