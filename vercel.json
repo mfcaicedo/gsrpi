@@ -1,4 +1,16 @@
 {
     "rewrites": [
-    ]
+        {
+            "source": "/api/:path*",
+            "destination": "http://api.example.com/:path*",
+            "headers": {
+                "Host": "api.example.com"
+            }
+        }
+    ],
+    "functions": {
+        "api/**/*.ts": {
+            "runtime": "vercel-node@4.0.0"
+        }
+    }
 }
