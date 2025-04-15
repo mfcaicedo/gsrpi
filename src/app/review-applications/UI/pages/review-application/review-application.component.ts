@@ -851,7 +851,7 @@ export class ReviewApplicationComponent implements OnInit {
 
   recommendPoints() {
     this.router.navigate(['/revision-solicitudes/recomendar-puntos', this.applicationId,
-      this.responseBodyApplication.teacherApplications?.[0].teacherApplicationId]);
+      this.responseBodyApplication.teacherApplications?.[0].teacherApplicationId, false]);
   }
 
   returnApplicationInCiarp() {

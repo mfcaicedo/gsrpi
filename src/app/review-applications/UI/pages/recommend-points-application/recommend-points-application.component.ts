@@ -24,6 +24,8 @@ import { KeyValueOption } from '../../../../shared/utils/models/form-builder.mod
 import { ArticleType, PERCENTAGE, PublindexCategory } from '../../../domain/enums/calculate-points.enum';
 import { PointsMap } from '../../../domain/models/calculate-points.model';
 import { MarkdownComponent } from 'ngx-markdown';
+import { AuthService } from '../../../../auth/auth.service';
+import { RoleNames } from '../../../../auth/enums/roles.enum';
 
 @Component({
   selector: 'app-recommend-points-application',
@@ -36,6 +38,7 @@ import { MarkdownComponent } from 'ngx-markdown';
 })
 export class RecommendPointsApplicationComponent implements OnInit {
 
+  role = '';
   isValidForm: boolean = false;
 
   formGroupPoints!: FormGroup;
@@ -73,6 +76,8 @@ export class RecommendPointsApplicationComponent implements OnInit {
   basePointsMessage = '';
   articleTypeMessage = '';
 
+  isViewDetail: boolean = false;
+
   private readonly confirmationService = inject(ConfirmationService);
   private readonly messageService = inject(MessageService);
   private readonly router = inject(Router);
@@ -80,19 +85,29 @@ export class RecommendPointsApplicationComponent implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly reviewApplicationsManagementUseCase = inject(ReviewApplicationsManagementUseCase)
   private readonly applicationManagementUseCase = inject(ApplicationManagementUseCase);
+  private readonly authService = inject(AuthService);
 
-  ngOnInit(): void {
+  async ngOnInit() {
 
     this.activedRoute.params.subscribe(async params => {
       this.applicationId = params['applicationId'] ?? 0;
       this.teacherApplicationId = params['teacherApplicationId'] ?? 0;
+      this.isViewDetail = params['isViewDetail'] ?? false;
     });
 
     this.formGroupPoints = this.formBuilder.group({
       points: [undefined, [Validators.required, Validators.min(1), Validators.max(100)]],
     });
 
-    this.getApplicationReviewById(this.applicationId);
+    this.authService.getUserDataSession().subscribe((data: any) => {
+      const roles = data.userRoles;
+      this.role = roles[0].role.name;
+    })
+
+    await this.getApplicationReviewById(this.applicationId);
+
+    //si es ver detalle se muestra el calculo automatico
+    this.automaticCalculationPoints();
 
   }
 
@@ -313,6 +328,11 @@ export class RecommendPointsApplicationComponent implements OnInit {
     this.formGroupPoints.patchValue({
       points: points
     });
+
+    //Si es ver detalle se deshabilita el campo de puntos 
+    if (this.isViewDetail) {
+      this.formGroupPoints.disable();
+    }
   }
 
   /**
@@ -491,6 +511,15 @@ export class RecommendPointsApplicationComponent implements OnInit {
 
   get points() {
     return this.formGroupPoints.get('points');
+  }
+
+  returnViewApplicationList() {
+    if (this.role === RoleNames.CPD_MEMBER) {
+      this.router.navigate(['revision-solicitudes/revisar-solicitud,applicationId']);
+    }
+    if (this.role === RoleNames.CPD_SECRETARY) {
+      this.router.navigate(['revision-solicitudes/ver-detalle-solicitud', this.applicationId]);
+    }
   }
 
 }

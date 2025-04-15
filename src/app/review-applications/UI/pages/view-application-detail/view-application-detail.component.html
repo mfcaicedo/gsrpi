@@ -230,11 +230,13 @@
                         (click)="endorseApplication()" [disabled]="false">
                     </button>
                     }
-                    @else if (role === RoleNames.CIARP_MEMBER) {
-                    <button pButton pRipple label="Siguiente" type="button" class="w-full border-round"
-                        [routerLink]="['../../ver-detalle-puntos-asignados',this.applicationId,this.responseBodyApplication.teacherApplications?.[0]?.teacherApplicationId]"
-                        [disabled]="false">
+                    @if(role === RoleNames.CPD_SECRETARY){
+                    <button pButton pRipple label="Siguiente" type="button" class="w-full border-round" [routerLink]="['../../recomendar-puntos',
+                        this.applicationId,this.responseBodyApplication.teacherApplications?.[0]?.teacherApplicationId,
+                        true]" [disabled]="false">
                     </button>
+                    }
+                    @if (role === RoleNames.CIARP_MEMBER) {
                     }
                     }
                     @else {

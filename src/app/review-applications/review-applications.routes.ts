@@ -24,7 +24,7 @@ export const routes: Routes = [
         component: ReviewApplicationComponent
     },
     {
-        path: 'recomendar-puntos/:applicationId/:teacherApplicationId',
+        path: 'recomendar-puntos/:applicationId/:teacherApplicationId/:isViewDetail',
         component: RecommendPointsApplicationComponent
     },
     {
