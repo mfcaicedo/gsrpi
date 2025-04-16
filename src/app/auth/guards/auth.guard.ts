@@ -4,9 +4,17 @@ import { AuthService } from '../auth.service';
 import { map, take } from 'rxjs';
 
 export const authGuard: CanActivateFn = (route, state) => {
-  if (!inject(AuthService).getSession().pipe(take(1), map(session => session !== null))) {
-    inject(Router).navigate(['/login']);
-    return false;
-  }
-  return true;
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  console.log("si");
+  return authService.getSession().pipe(
+    take(1),
+    map(session => {
+      if (session === null) {
+        router.navigate(['/login']);
+        return false;
+      }
+      return true;
+    })
+  );
 };
