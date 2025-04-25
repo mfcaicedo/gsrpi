@@ -112,7 +112,7 @@ export class AppMenuComponent implements OnInit {
                             routerLink: ['/solicitudes-reconocimiento/crear-solicitud']
                         },
                         {
-                            label: 'Listar solicitudes', icon: 'pi pi-fw pi-cog',
+                            label: 'Listar solicitudes', icon: 'pi pi-list-check',
                             routerLink: ['/solicitudes-reconocimiento/listar-solicitudes']
                         },
                     ]
@@ -125,7 +125,7 @@ export class AppMenuComponent implements OnInit {
                         label: 'Producción académica',
                         items: [
                             {
-                                label: 'Listar solicitudes', icon: 'pi pi-fw pi-cog',
+                                label: 'Listar solicitudes', icon: 'pi pi-list-check',
                                 routerLink: ['/revision-solicitudes/listar-solicitudes-revision']
                             },
                         ]
@@ -137,7 +137,7 @@ export class AppMenuComponent implements OnInit {
                         label: 'Producción académica',
                         items: [
                             {
-                                label: 'Listar solicitudes', icon: 'pi pi-fw pi-cog',
+                                label: 'Listar solicitudes', icon: 'pi pi-list-check',
                                 routerLink: ['/revision-solicitudes/listar-solicitudes-revision-comite']
                             }
                         ]
@@ -149,7 +149,7 @@ export class AppMenuComponent implements OnInit {
                         label: 'Producción académica',
                         items: [
                             {
-                                label: 'Listar solicitudes', icon: 'pi pi-fw pi-cog',
+                                label: 'Listar solicitudes', icon: 'pi pi-list-check',
                                 routerLink: ['/revision-solicitudes/listar-solicitudes-revision-comite']
                             }
                         ]
@@ -161,7 +161,7 @@ export class AppMenuComponent implements OnInit {
                         label: 'Producción académica',
                         items: [
                             {
-                                label: 'Listar solicitudes', icon: 'pi pi-fw pi-cog',
+                                label: 'Listar solicitudes', icon: 'pi pi-list-check',
                                 routerLink: ['/revision-solicitudes/listar-solicitudes-revision-ciarp']
                             }
                         ]
