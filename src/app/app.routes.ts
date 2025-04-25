@@ -5,6 +5,7 @@ import { accountGuard, authGuard } from './auth/guards';
 import { AuthorizedGuard } from './auth/guards/authorized.guard';
 import { RoleNames } from './auth/enums/roles.enum';
 import { AccessDeniedComponent } from './auth/pages/access-denied/access-denied.component';
+import { PrivacyPoliciesComponent } from './shared/components/privacy-policies/privacy-policies.component';
 
 export const routes: Routes = [
     {
@@ -20,6 +21,10 @@ export const routes: Routes = [
             {
                 path: '',
                 component: WelcomeComponent
+            },
+            {
+                path: 'politicas',
+                component: PrivacyPoliciesComponent,
             },
             {
                 path: 'gestion-usuarios',

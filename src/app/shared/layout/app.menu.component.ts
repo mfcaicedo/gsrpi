@@ -52,6 +52,15 @@ export class AppMenuComponent implements OnInit {
             this.getMenuByRole(role.role?.name ?? '')[0]
             ]
         });
+        //se agrega la opción de configuración al final del menú
+        this.model = [...this.model,
+        {
+            label: 'Protección de datos',
+            items: [
+                { label: 'Políticas', icon: 'pi pi-lock', routerLink: ['/politicas'], },
+            ]
+        }
+        ]
     }
 
     private getMenuByRole(roleName: string) {
