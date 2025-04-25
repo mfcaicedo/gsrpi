@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { User } from './interfaces/models/user.model';
 import { Login, LoginError, LoginResponse, LoginSuccess } from './login/types/login-response.type';
-import { BehaviorSubject, Observable, catchError, from, of, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, from, map, of, switchMap, tap, throwError } from 'rxjs';
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { IS_PUBLIC } from './auth.interceptor';
 import ENVIRONMENTS from '../../environments/config';
@@ -51,15 +51,29 @@ export class AuthService {
       // }
       // }
     );
+    this.initializeAuthState();
   }
 
-  getSession() {
+  private async initializeAuthState() {
+    const { data: { session } } = await this.supabase.auth.getSession();
+    this.session.next(session);
+    this.supabase.auth.onAuthStateChange((_event, session) => {
+      this.session.next(session);
+    });
+  }
 
-    if (this.session.value === null) {
-      this.updateAuthStatus();
+  getSession(): Observable<Session | null> {
+    if (this.session.value !== null) {
+      return this.session.asObservable(); // ya está cargada
     }
-    return this.session.asObservable();
-
+  
+    // Hacemos el fetch async, y luego emitimos
+    return from(this.supabase.auth.getSession()).pipe(
+      switchMap(({ data: { session } }) => {
+        this.session.next(session);
+        return this.session.asObservable(); // ahora sí con el valor actualizado
+      })
+    );
   }
 
   get user(): WritableSignal<User | null> {
@@ -87,7 +101,8 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return this.session.value !== null;
+    //TODO: revisar mañana 
+    return this.session.value !== null; 
   }
 
   getDecodeToken() {
@@ -99,7 +114,7 @@ export class AuthService {
 
   }
 
-  updateAuthStatus() {
+  async updateAuthStatus() {
 
     this.supabase.auth.getSession().then(({ data: { session } }) => {
       this.session.next(session);
