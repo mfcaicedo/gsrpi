@@ -236,7 +236,17 @@
                         true]" [disabled]="false">
                     </button>
                     }
-                    @if (role === RoleNames.CIARP_MEMBER) {
+                    @if(role === RoleNames.CIARP_MEMBER) {
+                    <button pButton pRipple label="Siguiente" type="button" class="w-full border-round"
+                        [routerLink]="['../../asignar-puntos',this.applicationId,this.responseBodyApplication.teacherApplications?.[0]?.teacherApplicationId,true]"
+                        [disabled]="false">
+                    </button>
+                    }
+                    @if(role === RoleNames.CIARP_SECRETARY) {
+                    <button pButton pRipple label="Siguiente" type="button" class="w-full border-round"
+                        [routerLink]="['../../asignar-puntos',this.applicationId,this.responseBodyApplication.teacherApplications?.[0]?.teacherApplicationId,true]"
+                        [disabled]="false">
+                    </button>
                     }
                     }
                     @else {

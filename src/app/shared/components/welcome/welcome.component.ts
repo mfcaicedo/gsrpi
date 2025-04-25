@@ -38,7 +38,7 @@ export class WelcomeComponent implements OnInit {
   showModalFunctionalityNotAvailable() {
     this.messageService.add({
       severity: 'info',
-      summary: '¡Ups!',
+      summary: 'Muy pronto estará disponible',
       detail: 'Esta funcionalidad estará disponible en futuras versiones.',
     });
   }

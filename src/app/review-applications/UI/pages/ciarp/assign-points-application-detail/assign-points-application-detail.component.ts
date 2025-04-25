@@ -18,6 +18,8 @@ import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { ApplicationStatuses } from '../../../../../shared/utils/enums/review-applications.enum';
 import { ReviewApplicationsManagementUseCase } from '../../../../domain/usecase/review-applications-management-usecase';
+import { AuthService } from '../../../../../auth/auth.service';
+import { RoleNames } from '../../../../../auth/enums/roles.enum';
 
 @Component({
   selector: 'app-assign-points-application-detail',
@@ -41,12 +43,19 @@ export class AssignPointsApplicationDetailComponent {
   isCorrectValidation = false;
   isDisabledAcceptApplication = true;
 
+  role = '';
+
   private readonly confirmationService = inject(ConfirmationService);
   private readonly messageService = inject(MessageService);
   private readonly router = inject(Router);
   private readonly activedRoute = inject(ActivatedRoute);
   private readonly formBuilder = inject(FormBuilder);
   private readonly reviewApplicationsManagementUseCase = inject(ReviewApplicationsManagementUseCase)
+  private readonly authService = inject(AuthService);
+
+  get RoleNames() {
+    return RoleNames
+  }
 
   ngOnInit(): void {
 
@@ -54,6 +63,11 @@ export class AssignPointsApplicationDetailComponent {
       this.applicationId = params['applicationId'] ?? 0;
       this.teacherApplicationId = params['teacherApplicationId'] ?? 0;
     });
+
+    this.authService.getUserDataSession().subscribe((data: any) => {
+      const roles = data.userRoles;
+      this.role = roles[0].role.name;
+    })
 
     this.formGroupPoints = this.formBuilder.group({
       points: [undefined, [Validators.min(1), Validators.max(100)]],

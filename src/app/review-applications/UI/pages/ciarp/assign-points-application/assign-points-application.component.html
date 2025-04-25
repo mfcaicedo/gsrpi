@@ -12,12 +12,48 @@
         </p>
     </div>
     <div class="mt-3 mb-2">
+        <h5>
+            Procedimiento realizado para el cálculo de puntos
+        </h5>
+        <div class="card m-0 border-2 mt-2">
+            <div class="col-12 sm:col-12 md:col-12">
+                <div class="mb-3">
+                    <p class="text-primary text-md font-medium">
+                        Tipo de producción:
+                        <span style="color: var(--text-color);">
+                            {{automaticPointsData?.productionType?.name}}
+                        </span>
+                    </p>
+                    <p class="text-primary text-md font-medium">
+                        Tipo de artículo:
+                        <span style="color: var(--text-color);">
+                            {{automaticPointsData?.articleType}}
+                        </span>
+                    </p>
+                    <p class="text-primary text-md font-medium">
+                        Categoría publindex:
+                        <span style="color: var(--text-color);">
+                            {{automaticPointsData?.publindexCategory}}
+                        </span>
+                    </p>
+                    <p class="text-primary text-md font-medium">
+                        Número total de autores:
+                        <span style="color: var(--text-color);">
+                            {{automaticPointsData?.numberOfAuthors}}
+                        </span>
+                    </p>
+                </div>
+                <h4 class="mb-2">🧾 Detalle del cálculo:</h4>
+                <markdown class="variable-binding" [data]="calculationProcessText"></markdown>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="mt-3 mb-2">
         <p class="text-primary text-md font-medium my-2">
             Procedimiento realizado para el cálculo de puntos
         </p>
-        <div class="card bg-blue-500 col-12 md:col-6" style="height: 100px;">
-        </div>
-    </div>
+        
+    </div> -->
     <div class="col-12 pl-0">
         <p class="text-primary text-md font-medium mb-0">
             También puedes asignar un puntaje manualmente a continuación...
@@ -64,12 +100,30 @@
     </div>
 
     <div class="col-12 sm:col-7 flex flex-row gap-2 pl-0">
+        @if (role === RoleNames.CIARP_MEMBER) {
         <button pButton severity="secondary" pRipple label="Anterior" [disabled]="false" class="w-full border-round"
-            [routerLink]="['../../../revisar-solicitud',applicationId]">
+            [routerLink]="['../../../../ver-detalle-solicitud',applicationId]">
+        </button>
+        <button pButton pRipple label="Rechazar solicitud" type="button" [disabled]="false" class="w-full border-round"
+            (click)="modalConfirmationRejectOrEndorseAppication(false)">
+        </button>
+        <button pButton pRipple label=" Avalar solicitud" type="button" [disabled]="false" class="w-full border-round"
+            (click)="modalConfirmationRejectOrEndorseAppication()">
+        </button>
+        }
+        @else if (role === RoleNames.CIARP_SECRETARY && !isViewDetail) {
+        <button pButton severity="secondary" pRipple label="Anterior" [disabled]="false" class="w-full border-round"
+            [routerLink]="['../../../../revisar-solicitud',applicationId]">
         </button>
         <button pButton pRipple label="Guardar" type="button" [disabled]="!this.formGroupPoints.valid"
             class="w-full border-round" (click)="onSubmit()">
         </button>
+        }
+        @else if (role === RoleNames.CIARP_SECRETARY && isViewDetail) {
+        <button pButton severity="secondary" pRipple label="Anterior" [disabled]="false" class="w-full border-round"
+            [routerLink]="['../../../../ver-detalle-solicitud',applicationId]">
+        </button>
+        }
     </div>
 
     <!-- Dialog alert -->

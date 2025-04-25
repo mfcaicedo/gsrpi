@@ -40,7 +40,7 @@ export const routes: Routes = [
         component: ListApplicationsReviewCiarpMembersComponent
     },
     {
-        path: 'asignar-puntos/:applicationId/:teacherApplicationId',
+        path: 'asignar-puntos/:applicationId/:teacherApplicationId/:isViewDetail',
         component: AssignPointsApplicationComponent
     },
     {

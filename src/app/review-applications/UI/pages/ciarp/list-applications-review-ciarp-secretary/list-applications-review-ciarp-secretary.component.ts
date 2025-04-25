@@ -19,6 +19,7 @@ import { MessageModule } from 'primeng/message';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { ListFacultiesUsecase } from '../../../../../system-configuration/domain/usecase/list-faculties-usecase';
+import { RoleNames } from '../../../../../auth/enums/roles.enum';
 
 @Component({
   selector: 'app-list-applications-review-ciarp-secretary',
@@ -52,6 +53,8 @@ export class ListApplicationsReviewCiarpSecretaryComponent {
 
   filterForm!: FormGroup;
 
+  // role = '';
+
   private readonly confirmationService = inject(ConfirmationService);
   private readonly router = inject(Router);
   private readonly messageService = inject(MessageService);
@@ -69,6 +72,10 @@ export class ListApplicationsReviewCiarpSecretaryComponent {
     return ApplicationStatuses;
   }
 
+  // get RoleNames() {
+  //   return RoleNames;
+  // }
+
   async ngOnInit() {
 
     this.filterForm = this.formBuilder.group({
@@ -76,6 +83,11 @@ export class ListApplicationsReviewCiarpSecretaryComponent {
       productionType: [null],
       faculty: [null],
     });
+
+    // this.authService.getUserDataSession().subscribe((data: any) => {
+    //   const roles = data.userRoles;
+    //   this.role = roles[0].role.name;
+    // })
 
     this.getAllFaculties();
 
