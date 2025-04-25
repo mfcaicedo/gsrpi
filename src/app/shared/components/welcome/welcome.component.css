@@ -1,0 +1,12 @@
+.card-options:hover {
+    background: var(--primary-light-color) !important;
+    border: 2px solid var(--primary-light-color) !important;
+}
+
+.card-options:hover i {
+    color: white !important;
+}
+
+.card-options:hover h3 {
+    color: white !important;
+}

@@ -354,3 +354,7 @@ button {
     border: 3px solid var(--text-color) !important;
     color: var(--text-color) !important;
 }
+
+.border-primary-light {
+    border-color: var(--primary-light-color) !important;
+}
