@@ -141,7 +141,6 @@ export class LoginComponent implements OnInit {
     return new Promise((resolve) => {
       this.userManagementUseCase.getTeacherByPersonId(this.userDataSession.personId ?? 0).subscribe({
         next: (response: any) => {
-          console.log("response getTeacherByPersonId", response);
           if (response !== null) {
             this.userDataSession.teacherId = response.teacherId;
           }
