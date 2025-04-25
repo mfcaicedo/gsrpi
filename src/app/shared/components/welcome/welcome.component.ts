@@ -4,10 +4,14 @@ import { AuthService } from '../../../auth/auth.service';
 import { RoleNames } from '../../../auth/enums/roles.enum';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-welcome',
-  imports: [ButtonModule, RouterModule, CommonModule],
+  imports: [ButtonModule, RouterModule, CommonModule, ToastModule, ConfirmDialogModule],
+  providers: [ConfirmationService, MessageService],
   templateUrl: './welcome.component.html',
   styleUrl: './welcome.component.css'
 })
@@ -16,6 +20,7 @@ export class WelcomeComponent implements OnInit {
   role = '';
 
   private readonly authService = inject(AuthService);
+  private readonly messageService = inject(MessageService);
 
   get RoleNames() {
     return RoleNames;
@@ -28,6 +33,14 @@ export class WelcomeComponent implements OnInit {
       this.role = roles[0].role.name;
     });
 
+  }
+
+  showModalFunctionalityNotAvailable() {
+    this.messageService.add({
+      severity: 'info',
+      summary: '¡Ups!',
+      detail: 'Esta funcionalidad estará disponible en futuras versiones.',
+    });
   }
 
 }

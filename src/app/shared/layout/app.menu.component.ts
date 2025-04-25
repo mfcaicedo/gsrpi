@@ -96,19 +96,18 @@ export class AppMenuComponent implements OnInit {
                         label: 'Configuración CIARP',
                         items: [
                             {
-                                label: 'Configuración CIARP', icon: 'pi pi-fw pi-cog',
-                                items: [
-                                    {
-                                        label: 'Registrar miembros CIARP', icon: 'pi pi-fw pi-cog',
-                                        routerLink: ['/configuracion-sistema/registrar-ciarp']
-                                    },
-                                    {
-                                        label: 'Registrar secretaria CIARP', icon: 'pi pi-fw pi-cog',
-                                        routerLink: ['/configuracion-sistema/registrar-secretaria-ciarp']
-                                    }
-                                ],
+                                label: 'Listar integrantes CIARP', icon: 'pi pi-list-check',
+                                routerLink: ['/configuracion-sistema/gestionar-ciarp']
                             },
-                        ]
+                            {
+                                label: 'Registrar miembros CIARP', icon: 'pi pi-users',
+                                routerLink: ['/configuracion-sistema/registrar-ciarp']
+                            },
+                            {
+                                label: 'Registrar secretaria CIARP', icon: 'pi pi-user-plus',
+                                routerLink: ['/configuracion-sistema/registrar-secretaria-ciarp']
+                            }
+                        ],
                     },
                 ]
 

@@ -3,22 +3,42 @@
         <h2>¡Bievenido! al Sistema de gestión y trámite de Solicitudes de Reconocimiento de Producción Intelectual</h2>
     </div>
     @if (role === RoleNames.CIARP_SECRETARY) {
-    <div class="flex flex-row gap-3">
-        <div
-            class="card w-full text-center mb-0 cursor-pointer border border-primary card-options"
+    <div class="flex flex-wrap gap-3 justify-content-star">
+        <div class="card flex-grow-1 min-w-20rem text-center mb-0 cursor-pointer border border-primary card-options"
             [routerLink]="['revision-solicitudes/listar-solicitudes-revision-ciarp']">
             <i class="pi pi-list-check" style="font-size: 2.5rem; color: var(--primary-color)"></i>
             <h3 class="">
                 Listar solicitudes
             </h3>
         </div>
-        <div
-            class="card w-full text-center mb-0 cursor-pointer border border-primary card-options"
+        <div class="card flex-grow-1 min-w-20rem text-center mb-0 cursor-pointer border border-primary card-options"
             [routerLink]="['/solicitudes']">
             <i class="pi pi-file-pdf" style="font-size: 2.5rem; color: var(--primary-color)"></i>
             <h3 class="">
                 Guía de puntajes
             </h3>
+        </div>
+    </div>
+    }
+    @else if (role === RoleNames.ADMIN_CIARP) {
+    <div class="flex flex-wrap gap-3 justify-content-start">
+        <div class="card flex-grow-1 min-w-20rem text-center mb-0 cursor-pointer border border-primary card-options"
+            (click)="showModalFunctionalityNotAvailable()">
+            <!-- [routerLink]="['configuracion-sistema/gestionar-ciarp']" -->
+            <i class="pi pi-list-check" style="font-size: 2.5rem; color: var(--primary-color)"></i>
+            <h3>Listar integrantes CIARP</h3>
+        </div>
+
+        <div class="card flex-grow-1 min-w-20rem text-center mb-0 cursor-pointer border border-primary card-options"
+            [routerLink]="['configuracion-sistema/registrar-ciarp']">
+            <i class="pi pi-file-pdf" style="font-size: 2.5rem; color: var(--primary-color)"></i>
+            <h3>Registrar miembros CIARP</h3>
+        </div>
+
+        <div class="card flex-grow-1 min-w-20rem text-center mb-0 cursor-pointer border border-primary card-options"
+            [routerLink]="['configuracion-sistema/registrar-secretaria-ciarp']">
+            <i class="pi pi-file-pdf" style="font-size: 2.5rem; color: var(--primary-color)"></i>
+            <h3>Registrar secretaria CIARP</h3>
         </div>
     </div>
     }
@@ -30,3 +50,6 @@
     </div>
     }
 </div>
+<!-- Dialog alert -->
+<p-toast />
+<p-confirmdialog />
