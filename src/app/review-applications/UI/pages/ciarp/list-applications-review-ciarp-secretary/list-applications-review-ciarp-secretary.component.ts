@@ -16,11 +16,14 @@ import { KeyValueOption } from '../../../../../shared/utils/models/form-builder.
 import { CreateInitialConfigurationUsecase } from '../../../../../system-configuration/domain/usecase/create-initial-configuration-usecase';
 import { ReviewApplicationsManagementUseCase } from '../../../../domain/usecase/review-applications-management-usecase';
 import { MessageModule } from 'primeng/message';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SelectModule } from 'primeng/select';
+import { ListFacultiesUsecase } from '../../../../../system-configuration/domain/usecase/list-faculties-usecase';
 
 @Component({
   selector: 'app-list-applications-review-ciarp-secretary',
   imports: [CommonModule, ButtonModule, RouterModule, IconFieldModule, InputIconModule, InputTextModule,
-    ToastModule, ConfirmDialogModule, TableModule, MessageModule],
+    ToastModule, ConfirmDialogModule, TableModule, MessageModule, SelectModule, FormsModule, ReactiveFormsModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './list-applications-review-ciarp-secretary.component.html',
   styleUrl: './list-applications-review-ciarp-secretary.component.css'
@@ -39,7 +42,15 @@ export class ListApplicationsReviewCiarpSecretaryComponent {
     { key: 2, value: 'Bonificación - PM-FO-4-FOR-3' },
   ];
 
+  productionTypeDataList: KeyValueOption[] = [
+    { key: 1, value: 'Trabajo, ensayo o artículo, de carácter científico, técnico, ...' },
+  ];
+
+  facultiesList: KeyValueOption[] = [];
+
   applicationStatus: ApplicationStatuses = ApplicationStatuses.SEND_TO_CIARP;
+
+  filterForm!: FormGroup;
 
   private readonly confirmationService = inject(ConfirmationService);
   private readonly router = inject(Router);
@@ -47,8 +58,26 @@ export class ListApplicationsReviewCiarpSecretaryComponent {
   private readonly authService = inject(AuthService);
   private readonly reviewApplicationsManagementUseCase = inject(ReviewApplicationsManagementUseCase);
   private readonly configurationUseCase = inject(CreateInitialConfigurationUsecase);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly listFacultiesUseCase = inject(ListFacultiesUsecase);
+
+  constructor() {
+    this.filterForm = this.formBuilder.group({});
+  }
+
+  get ApplicationStatus() {
+    return ApplicationStatuses;
+  }
 
   async ngOnInit() {
+
+    this.filterForm = this.formBuilder.group({
+      applicationType: [null],
+      productionType: [null],
+      faculty: [null],
+    });
+
+    this.getAllFaculties();
 
     await this.getAllApplicationsBySpecificStatus();
     await this.getAllApplicationsBySpecificStatus(ApplicationStatuses.REVIEWED_BY_CIARP_SECRETARY);
@@ -58,8 +87,19 @@ export class ListApplicationsReviewCiarpSecretaryComponent {
 
   }
 
-  get ApplicationStatus() {
-    return ApplicationStatuses;
+  getAllFaculties() {
+
+    this.listFacultiesUseCase.getAllFaculties().subscribe({
+      next: (response) => {
+        this.facultiesList = response.map((faculty) => {
+          return { key: faculty.facultyId, value: faculty.name };
+        });
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+
   }
 
   async getAllApplicationsBySpecificStatus(applicationStatus: ApplicationStatuses = ApplicationStatuses.SEND_TO_CIARP) {
@@ -100,6 +140,18 @@ export class ListApplicationsReviewCiarpSecretaryComponent {
       });
     });
 
+  }
+
+  onSubmit() {
+    // console.log("form", this.filterForm.value);
+    //TODO: Llamar al servicio para filtrar las solicitudes (Por el momento no hay datos para diferentes 
+    // para filtrar) 
+
+  }
+
+  cleanFilters() {
+    this.filterForm.reset();
+    // this.getAllApplicationsBySpecificStatus();
   }
 
   next() {
