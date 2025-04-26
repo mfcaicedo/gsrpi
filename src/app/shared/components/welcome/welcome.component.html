@@ -60,6 +60,78 @@
         </div>
     </div>
     }
+    @else if (role === RoleNames.TEACHER) {
+    <div class="flex flex-wrap gap-3 justify-content-star">
+        <div class="card flex-grow-1 min-w-20rem text-center mb-0 cursor-pointer border border-primary card-options"
+            [routerLink]="['solicitudes-reconocimiento/crear-solicitud']">
+            <i class="pi pi-file-plus" style="font-size: 2.5rem; color: var(--primary-color)"></i>
+            <h3 class="">
+                Crear solicitud
+            </h3>
+        </div>
+        <div class="card flex-grow-1 min-w-20rem text-center mb-0 cursor-pointer border border-primary card-options"
+            [routerLink]="['solicitudes-reconocimiento/listar-solicitudes']">
+            <i class="pi pi-list-check" style="font-size: 2.5rem; color: var(--primary-color)"></i>
+            <h3 class="">
+                Listar solicitudes
+            </h3>
+        </div>
+    </div>
+    }
+    @else if (role === RoleNames.CPD_SECRETARY) {
+    <div class="flex flex-wrap gap-3 justify-content-star">
+        <div class="card flex-grow-1 min-w-20rem text-center mb-0 cursor-pointer border border-primary card-options"
+            [routerLink]="['revision-solicitudes/listar-solicitudes-revision']">
+            <i class="pi pi-list-check" style="font-size: 2.5rem; color: var(--primary-color)"></i>
+            <h3 class="">
+                Listar solicitudes
+            </h3>
+        </div>
+        <div class="card flex-grow-1 min-w-20rem text-center mb-0 cursor-pointer border border-primary card-options"
+            [routerLink]="['/solicitudes']">
+            <i class="pi pi-file-pdf" style="font-size: 2.5rem; color: var(--primary-color)"></i>
+            <h3 class="">
+                Guía de puntajes
+            </h3>
+        </div>
+    </div>
+    }
+    @else if (role === RoleNames.CPD_MEMBER) {
+    <div class="flex flex-wrap gap-3 justify-content-star">
+        <div class="card flex-grow-1 min-w-20rem text-center mb-0 cursor-pointer border border-primary card-options"
+            [routerLink]="['revision-solicitudes/listar-solicitudes-revision-comite']">
+            <i class="pi pi-list-check" style="font-size: 2.5rem; color: var(--primary-color)"></i>
+            <h3 class="">
+                Listar solicitudes
+            </h3>
+        </div>
+        <div class="card flex-grow-1 min-w-20rem text-center mb-0 cursor-pointer border border-primary card-options"
+            [routerLink]="['/solicitudes']">
+            <i class="pi pi-file-pdf" style="font-size: 2.5rem; color: var(--primary-color)"></i>
+            <h3 class="">
+                Guía de puntajes
+            </h3>
+        </div>
+    </div>
+    }
+    @else if (role === RoleNames.CPD_PRESIDENT) {
+    <div class="flex flex-wrap gap-3 justify-content-star">
+        <div class="card flex-grow-1 min-w-20rem text-center mb-0 cursor-pointer border border-primary card-options"
+            [routerLink]="['revision-solicitudes/listar-solicitudes-revision-comite']">
+            <i class="pi pi-list-check" style="font-size: 2.5rem; color: var(--primary-color)"></i>
+            <h3 class="">
+                Listar solicitudes
+            </h3>
+        </div>
+        <div class="card flex-grow-1 min-w-20rem text-center mb-0 cursor-pointer border border-primary card-options"
+            [routerLink]="['/solicitudes']">
+            <i class="pi pi-file-pdf" style="font-size: 2.5rem; color: var(--primary-color)"></i>
+            <h3 class="">
+                Guía de puntajes
+            </h3>
+        </div>
+    </div>
+    }
     @else {
     <div class="flex flex-column mb-3 py-2">
         <span class="text-primary mb-1">
