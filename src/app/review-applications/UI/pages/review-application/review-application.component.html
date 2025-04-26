@@ -403,10 +403,11 @@
                     </button>
                     @if (currentStep === StepsReviewApplication.STEP_5_DOCUMENTS) {
                     @if (role === RoleNames.CPD_SECRETARY) {
-                    <button pButton pRipple
-                        [label]="this.isCorrectValidation ? 'Aceptar solicitud' : 'Devolver solicitud'" type="button"
-                        class="w-full border-round" (click)="acceptApplication()"
-                        [disabled]="disabledButtonAcceptApplication">
+                    <button pButton pRipple label="Aceptar solicitud" type="button" class="w-full border-round"
+                        (click)="acceptApplication(true)" [disabled]="disabledButtonAcceptApplication">
+                    </button>
+                    <button pButton pRipple label="Devolver solicitud" type="button" class="w-full border-round"
+                        (click)="acceptApplication(false)" [disabled]="!disabledButtonAcceptApplication">
                     </button>
                     }
                     @if(role === RoleNames.CPD_MEMBER) {
@@ -418,17 +419,17 @@
                     }
                     <!-- CIARP -->
                     @if(role === RoleNames.CIARP_SECRETARY) {
-                        <button pButton pRipple label="Devolver solicitud" type="button" class="w-full border-round"
+                    <button pButton pRipple label="Devolver solicitud" type="button" class="w-full border-round"
                         (click)="returnApplicationInCiarp()" [disabled]="this.isCorrectValidation">
                     </button>
                     <button pButton pRipple label="Validar puntaje" type="button" class="w-full border-round"
-                        [routerLink]="['../../asignar-puntos',this.applicationId,this.responseBodyApplication.teacherApplications?.[0]?.teacherApplicationId]"
+                        [routerLink]="['../../asignar-puntos',this.applicationId,this.responseBodyApplication.teacherApplications?.[0]?.teacherApplicationId,false]"
                         [disabled]="disabledButtonAcceptApplication">
                     </button>
                     }
                     @if(role === RoleNames.CIARP_MEMBER) {
                     <button pButton pRipple label="Siguiente" type="button" class="w-full border-round"
-                        [routerLink]="['../../asignar-puntos',this.applicationId,this.responseBodyApplication.teacherApplications?.[0]?.teacherApplicationId]"
+                        [routerLink]="['../../asignar-puntos',this.applicationId,this.responseBodyApplication.teacherApplications?.[0]?.teacherApplicationId,true]"
                         [disabled]="isDisabledNextStep">
                     </button>
                     }

@@ -723,11 +723,18 @@ export class ReviewApplicationComponent implements OnInit {
 
   }
 
-  acceptApplication() { // En CPD
+  acceptApplication(isAcceptApplication: boolean) { // En CPD
+
+    let message = '';
+    if (isAcceptApplication) {
+      message = '¿Está seguro(a) de aceptar la solicitud de reconocimiento?';
+    } else {
+      message = '¿Está seguro(a) de devolver la solicitud de reconocimiento?';
+    }
 
     this.confirmationService.confirm({
       target: 'body' as unknown as EventTarget,
-      message: '¿Está seguro(a) de aceptar/devolver la solicitud de reconocimiento?',
+      message: message,
       header: 'Confirmación',
       closable: true,
       closeOnEscape: true,
@@ -743,7 +750,7 @@ export class ReviewApplicationComponent implements OnInit {
       },
       accept: async () => {
 
-        this.applicationStatus = this.isCorrectValidation ? ApplicationStatuses.REVIEWED_BY_CPD_SECRETARY :
+        this.applicationStatus = isAcceptApplication ? ApplicationStatuses.REVIEWED_BY_CPD_SECRETARY :
           ApplicationStatuses.RETURNED_IN_CPD;
 
         await this.updateApplicationState();
