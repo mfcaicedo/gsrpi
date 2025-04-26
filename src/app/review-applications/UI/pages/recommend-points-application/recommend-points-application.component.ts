@@ -92,7 +92,7 @@ export class RecommendPointsApplicationComponent implements OnInit {
     this.activedRoute.params.subscribe(async params => {
       this.applicationId = params['applicationId'] ?? 0;
       this.teacherApplicationId = params['teacherApplicationId'] ?? 0;
-      this.isViewDetail = params['isViewDetail'] ?? false;
+      this.isViewDetail = params['isViewDetail'] === 'true' ? true : false;
     });
 
     this.formGroupPoints = this.formBuilder.group({
@@ -107,7 +107,9 @@ export class RecommendPointsApplicationComponent implements OnInit {
     await this.getApplicationReviewById(this.applicationId);
 
     //si es ver detalle se muestra el calculo automatico
-    this.automaticCalculationPoints();
+    if (this.isViewDetail) {
+      this.automaticCalculationPoints();
+    }
 
   }
 
@@ -514,10 +516,14 @@ export class RecommendPointsApplicationComponent implements OnInit {
   }
 
   returnViewApplicationList() {
-    if (this.role === RoleNames.CPD_MEMBER) {
-      this.router.navigate(['revision-solicitudes/revisar-solicitud,applicationId']);
-    }
-    if (this.role === RoleNames.CPD_SECRETARY) {
+    if (!this.isViewDetail) {
+      if (this.role === RoleNames.CPD_MEMBER) {
+        this.router.navigate(['revision-solicitudes/revisar-solicitud', this.applicationId]);
+      }
+      if (this.role === RoleNames.CPD_SECRETARY) {
+        this.router.navigate(['revision-solicitudes/ver-detalle-solicitud', this.applicationId]);
+      }
+    } else {
       this.router.navigate(['revision-solicitudes/ver-detalle-solicitud', this.applicationId]);
     }
   }
