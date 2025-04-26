@@ -116,7 +116,7 @@ export class AppMenuComponent implements OnInit {
                     label: 'Solicitudes de producción',
                     items: [
                         {
-                            label: 'Crear solicitud', icon: 'pi pi-fw pi-cog',
+                            label: 'Crear solicitud', icon: 'pi pi-file-plus',
                             routerLink: ['/solicitudes-reconocimiento/crear-solicitud']
                         },
                         {
