@@ -16,11 +16,13 @@ import { ReviewApplicationsManagementUseCase } from '../../../domain/usecase/rev
 import { CreateInitialConfigurationUsecase } from '../../../../system-configuration/domain/usecase/create-initial-configuration-usecase';
 import { ApplicationStatuses } from '../../../../shared/utils/enums/review-applications.enum';
 import { MessageModule } from 'primeng/message';
+import { SelectModule } from 'primeng/select';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-list-applications-review',
   imports: [CommonModule, ButtonModule, RouterModule, IconFieldModule, InputIconModule, InputTextModule,
-    ToastModule, ConfirmDialogModule, TableModule, MessageModule],
+    ToastModule, ConfirmDialogModule, TableModule, MessageModule, SelectModule, FormsModule, ReactiveFormsModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './list-applications-review.component.html',
   styleUrl: './list-applications-review.component.css'
@@ -42,17 +44,43 @@ export class ListApplicationsReviewComponent {
     { key: 2, value: 'Bonificación - PM-FO-4-FOR-3' },
   ];
 
+  productionTypeDataList: KeyValueOption[] = [
+    { key: 1, value: 'Trabajo, ensayo o artículo, de carácter científico,' },
+  ];
+
+  applicationStatusDataList: KeyValueOption[] = [
+    {key: 1, value: ApplicationStatuses.SENT_TO_CPD},
+    {key: 2, value: ApplicationStatuses.REVIEWED_BY_CPD_SECRETARY},
+    {key: 3, value: ApplicationStatuses.RETURNED_IN_CPD},
+    {key: 4, value: ApplicationStatuses.REVIEWED_BY_CPD_MEMBER},
+    {key: 5, value: ApplicationStatuses.ENDORSED_BY_PRESIDENT_CPD},
+    {key: 6, value: ApplicationStatuses.SEND_TO_CIARP},
+  ];
+
+  filterForm!: FormGroup;
+
   private readonly confirmationService = inject(ConfirmationService);
   private readonly router = inject(Router);
   private readonly messageService = inject(MessageService);
   private readonly authService = inject(AuthService);
   private readonly reviewApplicationsManagementUseCase = inject(ReviewApplicationsManagementUseCase);
   private readonly configurationUseCase = inject(CreateInitialConfigurationUsecase);
+  private readonly formBuilder = inject(FormBuilder);
+
+  constructor() { 
+    this.filterForm = this.formBuilder.group({});
+  }
 
   async ngOnInit() {
 
     this.authService.getConfigurationId().subscribe((id: number) => {
       this.configurationId = id;
+    });
+
+    this.filterForm = this.formBuilder.group({
+      applicationType: [null],
+      productionType: [null],
+      applicationStatus: [null],
     });
 
     await this.getConfigurationById();
@@ -121,6 +149,34 @@ export class ListApplicationsReviewComponent {
 
       });
     });
+
+  }
+
+  onSubmit() {
+
+    const applicationType = this.filterForm.get('applicationType')?.value;
+    const productionType = this.filterForm.get('productionType')?.value;
+    const applicationStatus = this.filterForm.get('applicationStatus')?.value;
+
+    if (applicationType) {
+      this.dt1.filter(applicationType, 'applicationTypeName', 'equals');
+    }
+    if (productionType) {
+      this.dt1.filter(productionType, 'production.productionType.name', 'contains');
+    }
+    if (applicationStatus) {
+      this.dt1.filter(applicationStatus, 'applicationStatus.name', 'equals');
+    }
+
+  }
+
+  cleanFilters() {
+    this.filterForm.reset();
+    this.dt1.filterGlobal('', 'contains');
+    //reseteo de los filtros
+    this.dt1.filters = {};
+    this.dt1.clear();
+
 
   }
 

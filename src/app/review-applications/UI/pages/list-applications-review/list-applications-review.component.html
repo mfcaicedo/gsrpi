@@ -5,8 +5,50 @@
         </h2>
     </div>
     @if (this.applications.length > 0) {
+
+    <div class="">
+        <form action="" [formGroup]="filterForm" (submit)="onSubmit()">
+            <div class="card grid">
+                <div class="col-12 sm:col-4 mb-3 pl-0">
+                    <label for="applicationType" class="block text-primary text-lg font-medium mb-2">
+                        Tipo de solicitud
+                    </label>
+                    <p-select class="p-3" [options]="applicationTypes" [required]="false" [showClear]="true"
+                        formControlName="applicationType" optionLabel="value" optionValue="value" [filter]="true" filterBy="value"
+                        placeholder="Seleccione el tipo de solicitud" class="w-full md:w-56" />
+                </div>
+                <div class="col-12 sm:col-4 mb-3 pl-0">
+                    <label for="productionType" class="block text-primary text-lg font-medium mb-2">
+                        Tipo producción
+                    </label>
+                    <p-select class="p-3" [options]="productionTypeDataList" [required]="false" [showClear]="true"
+                        formControlName="productionType" optionValue="value" optionLabel="value" [filter]="true"
+                        filterBy="value" placeholder="Seleccione el tipo de producción" class="w-full md:w-56" />
+                </div>
+                <div class="col-12 sm:col-4 mb-3 pl-0">
+                    <label for="applicationStatus" class="block text-primary text-lg font-medium mb-2">
+                        Estado
+                    </label>
+                    <p-select class="p-3" [options]="applicationStatusDataList" [required]="false" [showClear]="true"
+                        formControlName="applicationStatus" optionValue="value" optionLabel="value" [filter]="true"
+                        filterBy="value" placeholder="Seleccione el tipo de producción" class="w-full md:w-56" />
+                </div>
+                <div class="col-12 sm:col-6 flex flex-row gap-2 pl-0">
+                    <button pButton pRipple label="Buscar" type="submit" [disabled]="!filterForm.valid"
+                        class="w-full border-round">
+                    </button>
+                    <button pButton severity="secondary" type="button" pRipple label="Limpiar" [disabled]="false"
+                        class="w-full border-round" (click)="cleanFilters()">
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <p-table #dt1 [value]="applications" [paginator]="true" [rows]="5" [first]="first" [showCurrentPageReport]="true"
-        [tableStyle]="{ 'min-width': '50rem' }" selectionMode="single" dataKey="id" [globalFilterFields]="['applicationId', 'applicationTypeCatId', 'production.productionType.name', 
+        [tableStyle]="{ 'min-width': '50rem' }" selectionMode="single" dataKey="id" 
+        [globalFilterFields]="['applicationId', 'applicationTypeName', 
+        'production.productionType.name', 
         'createAt','applicationStatus.name']"
         currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} solicitudes"
         (onPage)="pageChange($event)" [rowsPerPageOptions]="[5, 10, 15, 20, 25]" dataKey="id">
@@ -31,7 +73,7 @@
                     Solicitante <p-sortIcon field="nombresSolicitante" />
                 </th>
                 <th class="text-primary" pSortableColumn="applicationTypeName">
-                    Reconocimiento <p-sortIcon field="applicationTypeName" />
+                    Tipo solicitud <p-sortIcon field="applicationTypeName" />
                 </th>
                 <th class="text-primary" pSortableColumn="production.productionType.name">
                     Tipo producción <p-sortIcon field="production.productionType.name" />
