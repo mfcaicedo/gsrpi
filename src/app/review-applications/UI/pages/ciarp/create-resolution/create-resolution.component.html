@@ -1,1 +1,22 @@
-<p>create-resolution works!</p>
+<div class="">
+    <h2>
+        Resolución de la solicitud avalada por el CIARP
+    </h2>
+</div>
+
+<div class="">
+    <p-editor [(ngModel)]="text" [style]="{ height: '430px' }" />
+</div>
+
+<div class="col-12 sm:col-7 flex flex-row gap-2 pl-0">
+    <button pButton severity="secondary" pRipple label="Anterior" [disabled]="false" class="w-full border-round"
+        [routerLink]="['../../listar-solicitudes-revision-ciarp']">
+    </button>
+    <button pButton pRipple label="Enviar notificación" type="button" [disabled]="false" class="w-full border-round"
+        (click)="modalConfirmationSendNotification()">
+    </button>
+</div>
+
+<!-- Dialog alert -->
+<p-toast />
+<p-confirmdialog />

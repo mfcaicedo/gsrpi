@@ -1,0 +1,60 @@
+/* editor.component.css */
+/* .toolbar {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #f9f9f9;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.toolbar button {
+    margin-right: 0.5rem;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid #dfd5d5;
+    border-radius: 4px;
+    background-color: #eee;
+    cursor: pointer;
+}
+
+.toolbar button.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.ProseMirror table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1rem 0;
+}
+
+.ProseMirror th,
+.ProseMirror td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+.ProseMirror th {
+    background-color: #f3f3f3;
+    font-weight: bold;
+}
+
+table, td, th {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+  } */
