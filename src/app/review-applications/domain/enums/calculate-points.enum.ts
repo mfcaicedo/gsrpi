@@ -7,6 +7,12 @@ export enum ArticleType {
     EDITORIAL = 6
 }
 
+export enum ProductionType {
+    ARTICLE = 1,
+    BOOK = 2,
+    OTHER = 3
+}
+
 export enum PublindexCategory {
     A1 = 1,
     A2 = 2,

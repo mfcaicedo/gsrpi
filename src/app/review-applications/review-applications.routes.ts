@@ -9,6 +9,8 @@ import { ListApplicationsReviewCiarpSecretaryComponent } from "./UI/pages/ciarp/
 import { AssignPointsApplicationComponent } from "./UI/pages/ciarp/assign-points-application/assign-points-application.component";
 import { AssignPointsApplicationDetailComponent } from "./UI/pages/ciarp/assign-points-application-detail/assign-points-application-detail.component";
 import { CreateResolutionComponent } from "./UI/pages/ciarp/create-resolution/create-resolution.component";
+import { AgendaManagementComponent } from "./UI/pages/agenda-management/agenda-management.component";
+import { CreateCertificateComponent } from "./UI/pages/cpd/create-certificate/create-certificate.component";
 
 export const routes: Routes = [
     {
@@ -50,5 +52,14 @@ export const routes: Routes = [
     {
         path: 'crear-resolucion/:applicationId',
         component: CreateResolutionComponent
+    },
+    {
+        path: 'gestionar-agenda',
+        component: AgendaManagementComponent
+    },
+    {
+        path: 'crear-acta/:applicationId',
+        component: CreateCertificateComponent
     }
+
 ];

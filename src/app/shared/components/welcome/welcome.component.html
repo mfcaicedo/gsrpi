@@ -5,6 +5,14 @@
     @if (role === RoleNames.CIARP_SECRETARY) {
     <div class="flex flex-wrap gap-3 justify-content-star">
         <div class="card flex-grow-1 min-w-20rem text-center mb-0 cursor-pointer border border-primary card-options"
+            (click)="showModalFunctionalityNotAvailable()">
+            <!-- [routerLink]="['revision-solicitudes/listar-solicitudes-revision']" -->
+            <i class="pi pi-users" style="font-size: 2.5rem; color: var(--primary-color)"></i>
+            <h3 class="">
+                Gestionar CIARP
+            </h3>
+        </div>
+        <div class="card flex-grow-1 min-w-20rem text-center mb-0 cursor-pointer border border-primary card-options"
             [routerLink]="['revision-solicitudes/listar-solicitudes-revision-ciarp']">
             <i class="pi pi-list-check" style="font-size: 2.5rem; color: var(--primary-color)"></i>
             <h3 class="">

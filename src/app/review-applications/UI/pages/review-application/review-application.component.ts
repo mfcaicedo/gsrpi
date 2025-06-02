@@ -358,6 +358,7 @@ export class ReviewApplicationComponent implements OnInit {
       this.applicationManagementUseCase.getApplicationById(applicationId).subscribe({
         next: (response: any) => {
           this.responseBodyApplication = response;
+          console.log("object", this.responseBodyApplication);
           this.autoCompleteFormApplication();
           this.currentStep = StepsReviewApplication.STEP_1_PERSONAL_INFORMATION_APPLICANT;
 
@@ -428,7 +429,7 @@ export class ReviewApplicationComponent implements OnInit {
       observations: this.responseBodyApplication.production?.observations,
 
       //Specific Production Data - step 3
-      productionType: jsonDataSpecificProductionData.productionType,
+      productionType: this.responseBodyApplication?.production?.productionType?.typeProductionId,
       magazineType: jsonDataSpecificProductionData.magazineType,
       doi: jsonDataSpecificProductionData.doi,
       issn: jsonDataSpecificProductionData.issn,

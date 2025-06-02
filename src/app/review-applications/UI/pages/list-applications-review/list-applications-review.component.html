@@ -14,8 +14,8 @@
                         Tipo de solicitud
                     </label>
                     <p-select class="p-3" [options]="applicationTypes" [required]="false" [showClear]="true"
-                        formControlName="applicationType" optionLabel="value" optionValue="value" [filter]="true" filterBy="value"
-                        placeholder="Seleccione el tipo de solicitud" class="w-full md:w-56" />
+                        formControlName="applicationType" optionLabel="value" optionValue="value" [filter]="true"
+                        filterBy="value" placeholder="Seleccione el tipo de solicitud" class="w-full md:w-56" />
                 </div>
                 <div class="col-12 sm:col-4 mb-3 pl-0">
                     <label for="productionType" class="block text-primary text-lg font-medium mb-2">
@@ -46,20 +46,27 @@
     </div>
 
     <p-table #dt1 [value]="applications" [paginator]="true" [rows]="5" [first]="first" [showCurrentPageReport]="true"
-        [tableStyle]="{ 'min-width': '50rem' }" selectionMode="single" dataKey="id" 
-        [globalFilterFields]="['applicationId', 'applicationTypeName', 
+        [tableStyle]="{ 'min-width': '50rem' }" selectionMode="single" dataKey="id" [globalFilterFields]="['applicationId', 'applicationTypeName', 
         'production.productionType.name', 
         'createAt','applicationStatus.name']"
         currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} solicitudes"
         (onPage)="pageChange($event)" [rowsPerPageOptions]="[5, 10, 15, 20, 25]" dataKey="id">
         <ng-template #caption>
-            <p-iconfield iconPosition="left">
-                <p-inputicon>
-                    <i class="pi pi-search"></i>
-                </p-inputicon>
-                <input pInputText type="text" [ngStyle]="{ 'width': '70%' }" (input)="search($event)"
-                    placeholder="Buscar..." />
-            </p-iconfield>
+            <div class="flex flex-row">
+                <div class="" [ngStyle]="{ 'width': '70%' }">
+                    <p-iconfield iconPosition="left">
+                        <p-inputicon>
+                            <i class="pi pi-search"></i>
+                        </p-inputicon>
+                        <input pInputText type="text" [ngStyle]="{ 'width': '95%' }" (input)="search($event)"
+                            placeholder="Buscar..." />
+                    </p-iconfield>
+                </div>
+                <button pButton pRipple type="button" class="border-round" [ngStyle]="{ 'width': '30%' }"
+                    (click)="submitApplication(1)">
+                    Remitir solicitudes avaladas
+                </button>
+            </div>
         </ng-template>
         <ng-template #header>
             <tr>

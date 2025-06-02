@@ -47,11 +47,20 @@ export class AppMenuComponent implements OnInit {
             },
         ];
         //Se obtine el menú por cada rol que tenga el usuario
+        const menuByRole: any[] = [];
         this.roles.forEach(role => {
-            this.model = [...this.model,
-            this.getMenuByRole(role.role?.name ?? '')[0]
-            ]
+            menuByRole.push(this.getMenuByRole(role.role?.name ?? ''));
+            // this.model = [...this.model,
+            // this.getMenuByRole(role.role?.name ?? '')[0]
+            // ]
         });
+        //Se agrega el menú por cada rol al menú principal
+        for (let i = 0; i < menuByRole.length; i++) {
+            if (menuByRole[i].length > 0) {
+                this.model = [...this.model, ...menuByRole[i]];
+            }
+        }
+        console.log("this.model", this.model);
         //se agrega la opción de configuración al final del menú
         this.model = [...this.model,
         {
@@ -78,11 +87,11 @@ export class AppMenuComponent implements OnInit {
                                         routerLink: ['/configuracion-sistema/registrar-facultad']
                                     },
                                     {
-                                        label: 'Registrar miembros CPD', icon: 'pi pi-fw pi-cog',
+                                        label: 'Registrar miembros CPD', icon: 'pi pi-users',
                                         routerLink: ['/configuracion-sistema/registrar-cpd']
                                     },
                                     {
-                                        label: 'Registrar secretaria CPD', icon: 'pi pi-fw pi-cog',
+                                        label: 'Registrar secretaria CPD', icon: 'pi pi-user-plus',
                                         routerLink: ['/configuracion-sistema/registrar-secretaria-cpd']
                                     }
                                 ],
@@ -136,6 +145,10 @@ export class AppMenuComponent implements OnInit {
                                 label: 'Listar solicitudes', icon: 'pi pi-list-check',
                                 routerLink: ['/revision-solicitudes/listar-solicitudes-revision']
                             },
+                            {
+                                label: 'Gestionar agenda', icon: 'pi pi-calendar',
+                                routerLink: ['/revision-solicitudes/gestionar-agenda']
+                            }
                         ]
                     },
                 ]
@@ -165,6 +178,23 @@ export class AppMenuComponent implements OnInit {
                 ]
             case RoleNames.CIARP_SECRETARY:
                 return [
+                    {
+                        label: 'Configuración CIARP',
+                        items: [
+                            {
+                                label: 'Listar integrantes CIARP', icon: 'pi pi-list-check',
+                                routerLink: ['/configuracion-sistema/gestionar-ciarp']
+                            },
+                            {
+                                label: 'Registrar miembros CIARP', icon: 'pi pi-users',
+                                routerLink: ['/configuracion-sistema/registrar-ciarp']
+                            },
+                            {
+                                label: 'Registrar secretaria CIARP', icon: 'pi pi-user-plus',
+                                routerLink: ['/configuracion-sistema/registrar-secretaria-ciarp']
+                            }
+                        ],
+                    },
                     {
                         label: 'Producción académica',
                         items: [

@@ -26,6 +26,7 @@ import { PointsMap } from '../../../domain/models/calculate-points.model';
 import { MarkdownComponent } from 'ngx-markdown';
 import { AuthService } from '../../../../auth/auth.service';
 import { RoleNames } from '../../../../auth/enums/roles.enum';
+import { PointsCalculatorStrategy } from '../../../domain/usecase/poinst-calculator-strategy';
 
 @Component({
   selector: 'app-recommend-points-application',
@@ -78,6 +79,8 @@ export class RecommendPointsApplicationComponent implements OnInit {
 
   isViewDetail: boolean = false;
 
+  private pointsCalculator: PointsCalculatorStrategy;
+
   private readonly confirmationService = inject(ConfirmationService);
   private readonly messageService = inject(MessageService);
   private readonly router = inject(Router);
@@ -86,6 +89,10 @@ export class RecommendPointsApplicationComponent implements OnInit {
   private readonly reviewApplicationsManagementUseCase = inject(ReviewApplicationsManagementUseCase)
   private readonly applicationManagementUseCase = inject(ApplicationManagementUseCase);
   private readonly authService = inject(AuthService);
+
+  constructor() {
+    this.pointsCalculator = new PointsCalculatorStrategy('');
+  }
 
   async ngOnInit() {
 
@@ -295,6 +302,33 @@ export class RecommendPointsApplicationComponent implements OnInit {
     const typeProductionId = this.automaticPointsData.productionType?.typeProductionId;
     const articleTypeId = dataJson?.articleType;
     const publindexCategoryId = dataJson?.publindexCategory;
+
+    // const calculationData = {
+    //   articleTypeId: dataJson?.articleType,
+    //   publindexCategoryId: dataJson?.publindexCategory,
+    //   numberOfAuthors: this.automaticPointsData.numberOfAuthors
+    // };
+
+
+    // // seteo la estrategia de calculo de puntos dependiendo del tipo de produccion
+    // this.pointsCalculator.setStrategy(typeProductionId);
+
+    // // Calculo los puntos automaticamente segun la estrategia
+    // const points = this.pointsCalculator.calculatePoints(calculationData);
+    
+    // // Obtengo la explicacion del calculo
+    // this.calculationProcessText = this.pointsCalculator.getCalculationExplanation(calculationData);
+    
+    // // Actualizo el formulario con los puntos calculados
+    // this.formGroupPoints.patchValue({
+    //   points: points
+    // });
+    
+    // // Si es ver detalle se deshabilita el campo de puntos
+    // if (this.isViewDetail) {
+    //   this.formGroupPoints.disable();
+    // }
+
 
     switch (typeProductionId) {
       case 1: // Trabajo, ensayo o artículo científico

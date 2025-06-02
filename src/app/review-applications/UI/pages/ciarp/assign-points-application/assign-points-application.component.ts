@@ -102,7 +102,7 @@ export class AssignPointsApplicationComponent {
     this.activedRoute.params.subscribe(async params => {
       this.applicationId = params['applicationId'] ?? 0;
       this.teacherApplicationId = params['teacherApplicationId'] ?? 0;
-      this.isViewDetail = params['isViewDetail'] ?? false;
+      this.isViewDetail = params['isViewDetail'] === 'true' ? true : false; // Convertir a booleano
     });
 
 
@@ -405,6 +405,7 @@ export class AssignPointsApplicationComponent {
 
     //Se verifica que si el puntaje consultado es diferente al puntaje calculado
     //significa que se asignaron puntos manualmente por lo tanto no muestro el procedimiento
+    console.log("object", this.recommendedPoints, points);
     if (this.recommendedPoints !== points) {
       this.calculationProcessText = `
         **El puntaje recomendado por el sistema es diferente al asignado manualmente.**
