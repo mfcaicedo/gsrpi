@@ -1,0 +1,22 @@
+<div class="">
+    <h2>
+        Acta de las solicitudes avaladas perteneciente a la agenda actual
+    </h2>
+</div>
+
+<div class="">
+    <p-editor [(ngModel)]="text" [style]="{ height: '430px' }" />
+</div>
+
+<div class="col-12 sm:col-7 flex flex-row gap-2 pl-0">
+    <button pButton severity="secondary" pRipple label="Anterior" [disabled]="false" class="w-full border-round"
+        [routerLink]="['../../gestionar-agenda']">
+    </button>
+    <button pButton pRipple label="Exportar acta" type="button" [disabled]="false" class="w-full border-round"
+        (click)="modalConfirmationExportCetificate()">
+    </button>
+</div>
+
+<!-- Dialog alert -->
+<p-toast />
+<p-confirmdialog />
