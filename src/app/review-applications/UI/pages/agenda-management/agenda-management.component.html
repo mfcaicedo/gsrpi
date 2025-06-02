@@ -1,0 +1,76 @@
+<div class="">
+    <div class="">
+        <h2>
+            Agenda actual para revisión de solicitudes
+        </h2>
+    </div>
+    <div class="">
+        <form action="" [formGroup]="registerAgendaForm" (submit)="onSubmit()">
+            <h5>
+                Vigencia de la agenda actual:
+            </h5>
+            <div class="grid">
+                <div class="col-12 sm:col-6 md:col-3">
+                    <label for="startDate" class="block text-primary text-md font-medium mb-2">
+                        Fecha de inicio <span class="text-orange-500">*</span>
+                    </label>
+                    <p-datepicker placeholder="Seleccione fecha inicio" formControlName="startDate" class="w-full"
+                        showIcon iconDisplay="input" dateFormat="dd/mm/yy" />
+                    @if (this.registerAgendaForm.get('startDate')?.hasError('required') &&
+                    this.registerAgendaForm.get('startDate')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        La fecha de inicio es requerida
+                    </div>
+                    }
+                </div>
+                <div class="col-12 sm:col-6 md:col-3">
+                    <label for="endDate" class="block text-primary text-md font-medium mb-2">
+                        Fecha finalización <span class="text-orange-500">*</span>
+                    </label>
+                    <p-datepicker placeholder="Seleccione fecha fin" formControlName="endDate" class="w-full" showIcon
+                        iconDisplay="input" dateFormat="dd/mm/yy" />
+                    @if (this.registerAgendaForm.get('endDate')?.hasError('required') &&
+                    this.registerAgendaForm.get('endDate')?.touched){
+                    <div class="text-error text-sm mt-1">
+                        La fecha fin es requerida
+                    </div>
+                    }
+                </div>
+                <div class="col-12 sm:col-6 md:col-3">
+                    <label for="endDate" class="block text-primary text-md font-medium mb-2">
+                        Estado
+                    </label>
+                    <p class="font-bold">
+                        Vigente
+                    </p>
+                </div>
+                <div class="col-12 sm:col-6 md:col-3" style="align-content: center;">
+                    <!-- <button pButton severity="secondary" type="button" pRipple label="Anterior" [disabled]="false"
+                    class="w-full border-round" [routerLink]="['../../registrar-tipo-produccion/step-4']">
+                </button> -->
+                    <button pButton pRipple label="Editar" type="submit" [disabled]="false" class="w-full border-round">
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="">
+        <h5>También puedes</h5>
+        <div class="flex flex-wrap gap-3 justify-content-star">
+            <div class="card flex-grow-1 min-w-20rem text-center mb-0 cursor-pointer border border-primary card-options"
+                [routerLink]="['../crear-acta/1']">
+                <i class="pi pi-file-word" style="font-size: 2.5rem; color: var(--primary-color)"></i>
+                <h3 class="">
+                    Generar acta de la agenda
+                </h3>
+            </div>
+            <div class="card flex-grow-1 min-w-20rem text-center mb-0 cursor-pointer border border-primary card-options"
+                [routerLink]="['revision-solicitudes/listar-solicitudes-revision-ciarp']">
+                <i class="pi pi-calendar" style="font-size: 2.5rem; color: var(--primary-color)"></i>
+                <h3 class="">
+                    Crear nueva agenda
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>
