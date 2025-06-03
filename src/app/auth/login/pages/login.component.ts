@@ -32,6 +32,8 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   userDataSession: Partial<UserDataSession> = {};
 
+  isLoadingLogin = false;
+
   private readonly authService = inject(AuthService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
@@ -57,7 +59,7 @@ export class LoginComponent implements OnInit {
       this.loginForm.markAllAsTouched();
       return;
     }
-
+    this.isLoadingLogin = true;
     this.authService.login(this.loginForm.value as Login).subscribe({
       next: async (response) => {
         // const loginSuccessData: LoginSuccess = {
@@ -82,6 +84,7 @@ export class LoginComponent implements OnInit {
 
           this.authService.getSession().pipe(take(1)).subscribe(() => {
             this.router.navigate(['/']);
+            this.isLoadingLogin = false;
           });
 
         } else if (response.error.status === 400) {
@@ -90,12 +93,15 @@ export class LoginComponent implements OnInit {
             summary: 'Error',
             detail: 'El correo o la contraseña ingresados son incorrectos.'
           });
+          this.isLoadingLogin = false;
         } else {
           console.log("Error desconocido, intente nuevamente");
+          this.isLoadingLogin = false;
         }
       },
       error: (error) => {
         console.log('Login error ', error);
+        this.isLoadingLogin = false;
       }
     });
 

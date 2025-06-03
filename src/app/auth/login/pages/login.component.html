@@ -7,8 +7,7 @@
     </div>
     <h3>Gestión de Solicitudes de Reconocimiento de Producción Intelectual</h3>
 </div>
-<div
-    class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+<div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
     <div class="flex flex-column align-items-center justify-content-center">
         <!-- Login -->
         <div class="border-round-3xl shadow-5">
@@ -66,7 +65,8 @@
                                 ¿Olvidó su contraseña?
                             </a>
                         </div>
-                        <button pButton pRipple label="Iniciar sesión" class="w-full p-3 text-xl border-round">
+                        <button pButton pRipple [label]="!isLoadingLogin ? 'Iniciar sesión': ''"
+                            [loading]="isLoadingLogin" class="w-full p-3 text-xl border-round">
                         </button>
                     </form>
                 </div>

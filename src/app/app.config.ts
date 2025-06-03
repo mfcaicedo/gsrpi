@@ -20,6 +20,7 @@ import { ApplicationManagementService } from './applications-recognition/infrast
 import { ReviewApplicationsGateway } from './review-applications/domain/models/gateway/review-applications-gateway';
 import { ReviewApplicationsManagementService } from './review-applications/infrastructure/adapter/review-applications-management-api/review-applications-management.service';
 import { provideMarkdown } from 'ngx-markdown';
+import { loadingInterceptor } from './auth/loading.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -28,7 +29,7 @@ export const appConfig: ApplicationConfig = {
     provideMarkdown(),
     provideAnimations(),
     //Se agrega el interceptor de autenticacion
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, loadingInterceptor])),
     //Configuracion de PrimeNG
     providePrimeNG({
       theme: {

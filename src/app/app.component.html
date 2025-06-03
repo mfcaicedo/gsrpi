@@ -1,4 +1,5 @@
-<!-- <div class="card flex justify-center">
-  <p-button label="Check"></p-button>
-</div> -->
+<div class="loading-spinner" *ngIf="isLoading$ | async" >
+  <p-progress-spinner class="loading-spinner-component" ariaLabel="loading" />
+</div>
+
 <router-outlet />
