@@ -38,7 +38,7 @@ export class AgendaManagementComponent implements OnInit {
 
     this.registerAgendaForm = this.formBuilder.group({
       startDate: [new Date('05-06-2025'), [Validators.required]],
-      endDate: [new Date('05-23-2025'), [Validators.required]],
+      endDate: [new Date('06-23-2025'), [Validators.required]],
     });
 
   }
